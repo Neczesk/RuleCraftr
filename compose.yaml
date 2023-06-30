@@ -36,8 +36,10 @@ services:
       - api
     restart: always
   certbot:
-      image: certbot/certbot:latest
-      volumes:
-       - ./certbot/www/:/var/www/certbot/
-       - ./certbot/conf/:/etc/letsencrypt/
-      command: certonly --webroot -w /var/www/certbot --force-renewal --email haltermann.kyle@gmail.com -d rulecrafter.net --agree-tos
+    image: certbot/certbot:latest
+    volumes:
+     - ./certbot/www/:/var/www/certbot/
+     - ./certbot/conf/:/etc/letsencrypt/
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email haltermann.kyle@gmail.com -d rulecrafter.net --agree-tos
+    depends_on:
+     - nginx
