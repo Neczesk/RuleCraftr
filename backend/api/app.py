@@ -21,7 +21,7 @@ app.wsgi_app = ProxyFix(
 app.secret_key = os.getenv('API_SECRET_KEY')
 login_manager: LoginManager = LoginManager()
 login_manager.init_app(app)
-CORS(app, supports_credentials=True)
+CORS(app, origins=[os.getenv('HOST_URL')], supports_credentials=True)
 
 
 @login_manager.user_loader
@@ -30,7 +30,7 @@ def load_user(id):
     return user
 
 
-@app.route('/login', methods=['POST', 'OPTIONS'])
+@app.route('/api/login', methods=['POST', 'OPTIONS'])
 def login():
     if request.method == 'POST':
         login_data = request.get_json()
@@ -44,7 +44,7 @@ def login():
         if user is None or not user.check_password(password):
             return standard_response({'Failure': 'Invalid username or password'}, 401)
 
-        login_user(user, remember=True, duration=timedelta.days(30))
+        login_user(user, remember=True, duration=timedelta(days=30))
         responsedata = {
             "username": userdata["username"],
             "id": userdata['id'],
@@ -64,7 +64,7 @@ def login():
         return response
 
 
-@app.route('/signup', methods=['POST', 'OPTIONS'])
+@app.route('/api/signup', methods=['POST', 'OPTIONS'])
 def signup():
     if request.method == 'POST':
         userdata = request.get_json()
@@ -96,7 +96,7 @@ def signup():
         return response
 
 
-@app.route('/logout', methods=['POST', 'OPTIONS'])
+@app.route('/api/logout', methods=['POST', 'OPTIONS'])
 @login_required
 def logout():
     if request.method == 'POST':
@@ -115,7 +115,7 @@ def logout():
         return response
 
 
-@app.route("/user/<int:id>/changepassword", methods=['PUT', 'OPTIONS'], strict_slashes=True)
+@app.route("/api/user/<int:id>/changepassword", methods=['PUT', 'OPTIONS'], strict_slashes=True)
 @login_required
 def change_password(id: int):
     if request.method == 'PUT':
@@ -136,7 +136,7 @@ def change_password(id: int):
         return response
 
 
-@app.route("/user/<int:id>/deleteaccount", methods=['OPTIONS', 'DELETE'], strict_slashes=True)
+@app.route("/api/user/<int:id>/deleteaccount", methods=['OPTIONS', 'DELETE'], strict_slashes=True)
 @login_required
 def delete_account(id: int):
     if request.method == 'DELETE':
@@ -157,7 +157,7 @@ def delete_account(id: int):
         return response
 
 
-@app.route("/user/<int:id>/changeusername", methods=['PUT', 'OPTIONS'], strict_slashes=True)
+@app.route("/api/user/<int:id>/changeusername", methods=['PUT', 'OPTIONS'], strict_slashes=True)
 @login_required
 def change_username(id: int):
     if request.method == 'PUT':
@@ -178,7 +178,7 @@ def change_username(id: int):
         return response
 
 
-@app.route("/user/<int:id>", methods=["GET"], strict_slashes=True)
+@app.route("/api/user/<int:id>", methods=["GET"], strict_slashes=True)
 @login_required
 def get_user(id: int):
     if id == current_user.id:
@@ -196,7 +196,7 @@ def standard_response(body, code):
     return response
 
 
-@app.route("/rulesets/<int:id>", methods=['GET', 'DELETE', 'OPTIONS'], strict_slashes=True)
+@app.route("/api/rulesets/<int:id>", methods=['GET', 'DELETE', 'OPTIONS'], strict_slashes=True)
 @login_required
 def get_ruleset(id: int):
     ruleset = rulesets.get_ruleset(id)
@@ -220,7 +220,7 @@ def get_ruleset(id: int):
         return response
 
 
-@app.route("/rulesets", methods=['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'], strict_slashes=True)
+@app.route("/api/rulesets", methods=['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'], strict_slashes=True)
 @login_required
 def get_rulesets():
     if request.method == 'GET':
@@ -253,7 +253,7 @@ def get_rulesets():
             return standard_response({"Failure": "Can't edit a ruleset belonging to someone else"}, 403)
 
 
-@app.route("/rulesets/<int:id>/articles", methods=['GET'])
+@app.route("/api/rulesets/<int:id>/articles", methods=['GET'])
 @login_required
 def get_articles_for_ruleset(id):
     user_id = current_user.id
@@ -264,7 +264,7 @@ def get_articles_for_ruleset(id):
         return standard_response({"Failure": "Not allowed to access articles from another ruleset"}, 403)
 
 
-@app.route("/rulesets/<int:id>/keywords", methods=['GET'])
+@app.route("/api/rulesets/<int:id>/keywords", methods=['GET'])
 @login_required
 def get_keywords_for_ruleset(id):
     user_id = current_user.id
@@ -275,7 +275,7 @@ def get_keywords_for_ruleset(id):
         return standard_response({"Failure": "Not allowed to access keywords from another ruleset"}, 403)
 
 
-@app.route("/articles", methods=['POST', 'OPTIONS', 'PUT', 'DELETE'])
+@app.route("/api/articles", methods=['POST', 'OPTIONS', 'PUT', 'DELETE'])
 @login_required
 def create_article():
     if request.method == 'POST':
@@ -324,7 +324,7 @@ def generate_invite_codes():
         return standard_response(body, 200)
 
 
-@app.route("/keywords", methods=['POST', 'OPTIONS', 'PUT', 'DELETE'])
+@app.route("/api/keywords", methods=['POST', 'OPTIONS', 'PUT', 'DELETE'])
 @login_required
 def create_keyword():
     if request.method == 'POST':
