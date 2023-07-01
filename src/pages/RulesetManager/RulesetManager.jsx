@@ -35,6 +35,7 @@ import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
 import { useNavigate } from 'react-router'
+import { useSnackbar } from 'notistack'
 
 function RulesetManager() {
   const user = useUserStore((state) => state.user)
@@ -49,12 +50,17 @@ function RulesetManager() {
       .then(() => getRulesetsForUser(user.id))
       .then((value) => setRulesets(value))
   }
+  const { enqueueSnackbar } = useSnackbar()
   const createNewRuleset = (newRulesetData) => {
-    createRuleset(newRulesetData).then((response) =>
-      getRulesetsForUser(user.id)
-        .then((value) => setRulesets(value))
-        .then(() => startEditingRuleset(response.id))
-    )
+    createRuleset(newRulesetData).then((response) => {
+      if (Object.keys(response).includes('Failure')) {
+        enqueueSnackbar(response.Failure, { variant: 'error' })
+      } else {
+        getRulesetsForUser(user.id)
+          .then((value) => setRulesets(value))
+          .then(() => startEditingRuleset(response.id))
+      }
+    })
   }
   const deleteRuleset = (id) => {
     dataDeleteRuleset(id)
@@ -301,7 +307,9 @@ function RulesetManager() {
                 size="small"
                 value={metadataEditedValue.public}
                 onChange={(event) => {
-                  setMetadataEditedValue({ ...metadataEditedValue, public: event.target.value })
+                  console.log(event.target.value)
+                  setMetadataEditedValue({ ...metadataEditedValue, public: Boolean(event.target.value) })
+                  console.log(metadataEditedValue)
                 }}
               >
                 <option value={true}>True</option>

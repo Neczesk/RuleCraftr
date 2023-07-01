@@ -11,7 +11,11 @@ export async function insertRuleset(newRulesetData){
         ruleset = (await instance.post(url, newRulesetData)).data
         return ruleset
     } catch (e) {
-        console.log(e)
+        if (Object.keys((e.response.data)).includes("Failure")){
+            return e.response.data
+        } else return {
+            Failure: "An unknown error occured"
+        }
     }
 }
 
