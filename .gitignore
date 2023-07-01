@@ -9,6 +9,7 @@ __pycache__/
 .yarn/
 .yarnrc.yml
 certbot/conf/accounts/
+certbot/
 
 # Distribution / packaging
 .Python
