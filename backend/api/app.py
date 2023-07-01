@@ -313,7 +313,7 @@ def create_article():
             return standard_response({"Failure": "Not allowed to delete articles from a ruleset that doesn't belong to you"}, 200)
 
 
-@app.route("/admin/invitecodes", methods=['POST'], strict_slashes=True)
+@app.route("/api/admin/invitecodes", methods=['POST'], strict_slashes=True)
 @login_required
 def generate_invite_codes():
     if (current_user.is_admin != True):
