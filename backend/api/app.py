@@ -5,16 +5,18 @@ from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 from datetime import timedelta
 import os
+import logging
 
-import api.services.rulesets as rulesets
-import api.services.users as users
-import api.services.articles as articles
-import api.services.keywords as keywords
-import api.services.invite_codes as invite_codes
-import api.models.user
-
+from .services import rulesets as rulesets
+from .services import users as users
+from .services import articles as articles
+from .services import keywords as keywords
+from .services import invite_codes as invite_codes
+from .models.user import User
 
 app = Flask(__name__)
+if os.getenv("MODE") == "DEVELOPMENT":
+    app.debug = True
 app.wsgi_app = ProxyFix(
     app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
 )
@@ -22,6 +24,12 @@ app.secret_key = os.getenv('API_SECRET_KEY')
 login_manager: LoginManager = LoginManager()
 login_manager.init_app(app)
 CORS(app, origins=[os.getenv('HOST_URL')], supports_credentials=True)
+
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 
 @login_manager.user_loader
@@ -72,7 +80,7 @@ def signup():
             return standard_response({"Failure": "No account data was sent"}, 400)
 
         user, code = users.create_user(userdata)
-        if (not isinstance(user, api.models.user.User)):
+        if (not isinstance(user, User)):
             return standard_response(user, code)
 
         response_data = {

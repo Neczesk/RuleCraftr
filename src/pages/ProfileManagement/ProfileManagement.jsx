@@ -232,7 +232,7 @@ function ProfileManagement() {
             disabled={
               !validateChangePasswordValue() ||
               !validateChangePasswordMatch() ||
-              validate_password_strength(changePasswordDialogValue.newPassword1, user) <= 2
+              validate_password_strength(changePasswordDialogValue.newPassword1, user) <= 1
             }
           >
             Confirm

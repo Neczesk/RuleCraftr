@@ -27,7 +27,11 @@ function LoginPage(props) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [inviteCode, setInviteCode] = useState('')
   const validateAccountCreate = () => {
-    return username !== '' && password !== '' && inviteCode !== ''
+    //First check that there are values in all the fields
+    let status = username !== '' && password !== '' && inviteCode !== ''
+    if (validate_password_strength(password, username) <= 1) status = false
+    if (confirmPassword == '') status = false
+    return status
   }
   const shouldDisplayPasswordMatchError = () => {
     if (password !== '' && confirmPassword !== '' && password !== confirmPassword) return true

@@ -196,3 +196,7 @@ config.json
 
 mydomain.crt
 mydomain.key
+
+compose.yaml
+backend/prod_dockerfile
+invitecodes.txt

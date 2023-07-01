@@ -109,7 +109,7 @@ function RulesetManager() {
                     align="left"
                     variant="text"
                     size="small"
-                    disabled={user.id !== ruleset.user_id}
+                    disabled={user ? user.id !== ruleset.user_id : false}
                     sx={{ textTransform: 'none', textAlign: 'left', padding: 0, overflow: 'hidden', minWidth: 0 }}
                   >
                     {ruleset.rn_name}
@@ -158,7 +158,7 @@ function RulesetManager() {
                   <span>
                     <IconButton
                       disabled={
-                        user.id !== ruleset.user_id ||
+                        user?.id !== ruleset.user_id ||
                         (!!editingRulesetId && editingRulesetId !== ruleset.id) ||
                         (!!editingRulesetId && editingRulesetId === ruleset.id && !validateMetadata())
                       }

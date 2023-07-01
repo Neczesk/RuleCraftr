@@ -1,4 +1,4 @@
-import api.dao.rulesets as rulesets
+from ..dao import rulesets as rulesets
 
 
 def create_ruleset(ruleset_data):

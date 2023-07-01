@@ -10,8 +10,6 @@ def validate_invite_code(key_value):
     invite_code = invite_codes.get_code_by_key_value(key_value)
     if (not invite_code or invite_code["user_used"] or invite_code["used_date"]):
         return False
-    invite_code["used_date"] = datetime.utcnow()
-    invite_codes.update_invite_code(invite_code)
     return True
 
 
@@ -20,6 +18,7 @@ def set_invite_code_user_used(key_value, user_id):
     if (invite_code["user_used"]):
         return False
     invite_code["user_used"] = user_id
+    invite_code["used_date"] = datetime.utcnow()
     invite_codes.update_invite_code(invite_code)
     return True
 
