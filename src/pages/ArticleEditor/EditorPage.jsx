@@ -82,7 +82,6 @@ function EditorPage() {
         lg={7}
         xl={8}
         sx={{
-          padding: 1,
           height: '100%',
         }}
       >
@@ -93,7 +92,7 @@ function EditorPage() {
           inspectKeyword={selectKeyword}
         />
       </Grid>
-      <Grid item xs={4} lg={3} xl={2}>
+      <Grid item xs={4} lg={3} xl={2} sx={{ height: '100%' }}>
         <KeywordInspector keywordId={selectedKeyword} onSelectKeyword={selectKeyword} />
       </Grid>
     </Grid>

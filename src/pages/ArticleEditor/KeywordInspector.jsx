@@ -117,7 +117,14 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
 
   return (
     <>
-      <Box marginBottom={2}>
+      <Box
+        marginBottom={0}
+        maxHeight="100%"
+        height="100%"
+        display="flex"
+        flexDirection="column"
+        sx={{ overflowX: 'hidden' }}
+      >
         <Toolbar>
           <Container>
             <ButtonGroup>
@@ -150,7 +157,10 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
             onSelect={selectKeyword}
           />
         </Box>
-        <Box display={selectedView === 0 ? 'block' : 'none'} sx={{ padding: 1 }}>
+        <Box
+          display={selectedView === 0 ? 'block' : 'none'}
+          sx={{ paddingX: 1, overflowY: 'auto', overflowX: 'hidden' }}
+        >
           {!editKeywordToggle ? (
             <Grid container justifyContent="center" alignItems="center">
               <Grid item alignContent="center">
@@ -201,8 +211,9 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
               variant="standard"
             />
           </Box>
-          <Box mt={3}>
+          <Box mt={3} overflowX="hidden">
             <TextField
+              InputProps={{ sx: { pb: 0 } }}
               onKeyDown={handleKeyFields}
               fullWidth
               multiline
