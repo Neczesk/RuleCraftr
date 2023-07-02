@@ -118,10 +118,10 @@ export async function saveRuleset(ruleset){
     const articles = newRuleset.articles.flatMap((article) => treeToArray(article))
     const articlesToPost = articles.filter((article) => !article.posted && !article.deleted).map((article) => {
         // eslint-disable-next-line no-unused-vars
-        const {synched: _synched, posted: _posted, id: _id,  ...postdata} = article
+        const {synched: _synched, posted: _posted, ...postdata} = article
         return postdata
     })
-    const postedArticles = articlesToPost.length ? await postArticles(articlesToPost) : []
+    if (articlesToPost.length) await postArticles(articlesToPost)
     const remainingArticles = articles.filter((article) => article.posted && article.synched && !article.deleted)
     const articlesToUpdate = articles.filter((article) => article.posted && !article.synched && !article.deleted).map((article) => {
         // eslint-disable-next-line no-unused-vars
@@ -131,17 +131,17 @@ export async function saveRuleset(ruleset){
     if (articlesToUpdate.length) await updateArticles(articlesToUpdate)
     const deletedArticles = articles.filter((article) => article.deleted && article.posted)
     if (deletedArticles.length) await deleteArticles(deletedArticles.map((article) => article.id))
-    const updatedArticles = [...remainingArticles, ...postedArticles, ...articlesToUpdate].map((article) => ({...article, synched: true, childrenArticles: null, posted: true}))
+    const updatedArticles = [...remainingArticles, ...articlesToPost, ...articlesToUpdate].map((article) => ({...article, synched: true, childrenArticles: null, posted: true}))
     newRuleset.articles = buildArticleTree(updatedArticles)
 
     // Similar update process for the keywords.
     const remainingKeywords = ruleset.keywords.filter((keyword) => keyword.posted && keyword.synced && !keyword.deleted)
     const keywordsToPost = ruleset.keywords.filter((keyword) => !keyword.posted && !keyword.deleted).map((keyword) => {
         // eslint-disable-next-line no-unused-vars
-        const {synced: _synced, posted: _posted, id: _id, ...postdata} = keyword
+        const {synced: _synced, posted: _posted, ...postdata} = keyword
         return postdata
     })
-    const postedKeywords = keywordsToPost.length ? await postKeywords(keywordsToPost) : []
+    if (keywordsToPost.length) await postKeywords(keywordsToPost)
 
     const keywordsToUpdate = ruleset.keywords.filter((keyword) => keyword.posted && !keyword.synced && !keyword.deleted).map((keyword) => {
         // eslint-disable-next-line no-unused-vars
@@ -154,7 +154,7 @@ export async function saveRuleset(ruleset){
     const deletedKeywords = ruleset.keywords.filter((keyword) => keyword.deleted && keyword.posted)
     if (deletedKeywords.length) await deleteKeywords(deletedKeywords.map((keyword) => keyword.id))
     
-    const updatedKeywords = [...remainingKeywords, ...postedKeywords, ...keywordsToUpdate].map((keyword) => ({...keyword, synced: true, posted:true}))
+    const updatedKeywords = [...remainingKeywords, ...keywordsToPost, ...keywordsToUpdate].map((keyword) => ({...keyword, synced: true, posted:true}))
     newRuleset.keywords = updatedKeywords
     newRuleset.synced = true
 

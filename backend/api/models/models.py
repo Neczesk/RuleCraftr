@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKeyConstraint, Integer, JSON, PrimaryKeyConstraint, Table, Text, UniqueConstraint, text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -69,18 +70,18 @@ class Rulesets(Base):
 class Articles(Base):
     __tablename__ = 'articles'
     __table_args__ = (
-        ForeignKeyConstraint(['parent'], ['articles.id'], name='articles_parent_fkey'),
+        ForeignKeyConstraint(['parent'], ['articles.id'], name='articles_articles_parent_fkey'),
         ForeignKeyConstraint(['ruleset'], ['rulesets.id'], name='articles_ruleset_fkey'),
         PrimaryKeyConstraint('id', name='articles_pkey')
     )
 
-    id = Column(Integer)
     title = Column(Text, nullable=False)
     ruleset = Column(Integer, nullable=False)
     sort = Column(Integer, nullable=False, server_default=text('0'))
     created_date = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
+    id = Column(UUID, server_default=text('gen_random_uuid()'))
     content = Column(JSON)
-    parent = Column(Integer)
+    parent = Column(UUID)
 
     articles = relationship('Articles', remote_side=[id], back_populates='articles_reverse')
     articles_reverse = relationship('Articles', remote_side=[parent], back_populates='articles')
@@ -94,10 +95,10 @@ class Keywords(Base):
         PrimaryKeyConstraint('id', name='keywords_pkey')
     )
 
-    id = Column(Integer)
     keyword = Column(Text, nullable=False)
     ruleset = Column(Integer, nullable=False)
     created_date = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
+    id = Column(UUID, server_default=text('gen_random_uuid()'))
     long_definition = Column(Text)
     short_definition = Column(Text)
 

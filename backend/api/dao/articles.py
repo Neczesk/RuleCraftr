@@ -19,6 +19,7 @@ def article_to_dict(a: Articles):
 
 def generate_new_article(articledata: dict):
     return Articles(
+        id=articledata["id"],
         title=articledata["title"],
         ruleset=articledata["ruleset"],
         content=articledata["content"],

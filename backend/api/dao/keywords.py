@@ -18,6 +18,7 @@ def keyword_to_dict(keyword: Keywords):
 
 def generate_new_keyword(keywordData: dict):
     return Keywords(
+        id=keywordData["id"],
         keyword=keywordData["keyword"],
         short_definition=keywordData["short_definition"],
         long_definition=keywordData["long_definition"],
