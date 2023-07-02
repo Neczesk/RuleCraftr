@@ -4,7 +4,7 @@ const instance = axios.create()
 instance.defaults.withCredentials = true
 
 export async function postKeywords(keywordData) {
-    const postData = keywordData.map((keyword) => ({long_definition: keyword.longDefinition, short_definition: keyword.shortDefinition, keyword: keyword.keyword, ruleset: keyword.ruleset}))
+    const postData = keywordData.map((keyword) => ({id: keyword.id, long_definition: keyword.longDefinition, short_definition: keyword.shortDefinition, keyword: keyword.keyword, ruleset: keyword.ruleset}))
 
     const url = import.meta.env.VITE_API_URL + "keywords"
     let response
