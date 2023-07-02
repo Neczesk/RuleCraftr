@@ -263,7 +263,8 @@ export default function ArticleEditor({ onEditorChange, initialValue, articleId,
                   </IconButton>
                   <IconButton
                     onClick={() => {
-                      ReactEditor.focus()
+                      RulesetEditor.toggleUnderlineMark(editor)
+                      ReactEditor.focus(editor)
                     }}
                   >
                     <FormatUnderlinedOutlinedIcon />

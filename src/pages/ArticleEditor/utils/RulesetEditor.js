@@ -120,7 +120,7 @@ const RulesetEditor = {
   },
 
   toggleUnderlineMark(editor) {
-    const isActive = RulesetEditor.isBoldMarkActive(editor);
+    const isActive = RulesetEditor.isUnderlineMarkActive(editor);
     if (isActive) {
       Editor.removeMark(editor, "underline");
     } else {
