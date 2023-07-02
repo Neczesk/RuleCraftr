@@ -99,7 +99,7 @@ const KeywordRefMenu = (props) => {
           options={options}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           id="keyword-ref-menu"
-          sx={{ width: 400 }}
+          sx={{ width: 400, margin: 1 }}
           renderOption={(props, option) => <li {...props}>{option.label}</li>}
           renderInput={(params) => <TextField autoFocus inputRef={inputRef} {...params} label="Keyword to Reference" />}
           onChange={(event, value) => {

@@ -37,7 +37,7 @@ const ArticleRefMenu = (props) => {
         isOptionEqualToValue={(option, value) => option.id === value.id}
         id="article-ref-menu"
         options={options}
-        sx={{ width: 400 }}
+        sx={{ width: 400, margin: 1 }}
         renderInput={(params) => <TextField autoFocus inputRef={inputRef} {...params} label="Article to Reference" />}
         onChange={(event, value) => {
           Transforms.select(props.editor, savedSelection.current)
