@@ -5,7 +5,7 @@ import ArticleEditor from './ArticleEditor'
 import ArticleTree from './ArticleTree'
 import useRulesetStore from '../../stores/rulesetStore'
 import KeywordInspector from './KeywordInspector'
-import { findArticleInRuleset, getRuleset } from '../../data/rulesets'
+import { findArticleInRuleset, findKeywordInRuleset, getRuleset } from '../../data/rulesets'
 import { useParams } from 'react-router'
 
 function EditorPage() {
@@ -40,7 +40,8 @@ function EditorPage() {
   }
   const [selectedKeyword, setSelectedKeyword] = useState(null)
   const selectKeyword = (id) => {
-    setSelectedKeyword(id)
+    const keyword = findKeywordInRuleset(id, ruleset)
+    if (keyword && !keyword.deleted) setSelectedKeyword(id)
   }
 
   const colWidth = { xs: 12, sm: 6, md: 4, lg: 3 }

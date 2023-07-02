@@ -25,7 +25,9 @@ const ArticleRefMenu = (props) => {
   if (!ruleset.articles) return
 
   const articleArray = ruleset.articles.flatMap((article) => treeToArray(article))
-  const options = articleArray.map((article) => ({ label: article.title, id: article.id }))
+  const options = articleArray
+    .filter((article) => !article.deleted)
+    .map((article) => ({ label: article.title, id: article.id }))
   return (
     <Popover
       anchorReference="anchorPosition"

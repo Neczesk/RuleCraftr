@@ -55,7 +55,9 @@ const KeywordRefMenu = (props) => {
   const [refValue, setRefValue] = useState('')
 
   if ((typeof ruleset.keywords !== 'undefined' || ruleset.keywords === null) && !Array.isArray(ruleset.keywords)) return
-  const options = ruleset.keywords.map((keyword) => ({ label: keyword.keyword, id: keyword.id }))
+  const options = ruleset.keywords
+    .filter((keyword) => !keyword.deleted)
+    .map((keyword) => ({ label: keyword.keyword, id: keyword.id }))
   const filter = createFilterOptions()
 
   return (
