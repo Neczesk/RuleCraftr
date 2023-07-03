@@ -16,10 +16,11 @@ const useRulesetStore = create((set) => ({
         ...state,
         ruleset: emptyRuleset
     }))},
-    setRuleset: (rulesetData) => {set((state) => ({
+    setRuleset: (rulesetData) => {set((state) => {
+        return ({
         ...state,
         ruleset:rulesetData
-    }))},
+    })})},
     setArticles: (articles) => set((state) => ({
         ...state,
         ruleset: {

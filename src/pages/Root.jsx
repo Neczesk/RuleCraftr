@@ -15,8 +15,8 @@ import ListOutlinedIcon from '@mui/icons-material/ListOutlined'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import UserToolbarInterface from './utils/UserToolbarInterface'
-import { Link as RouterLink, Outlet } from 'react-router-dom'
-import { useState } from 'react'
+import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import useRulesetStore from '../stores/rulesetStore'
 import useUserStore from '../stores/userStore'
 import { logoutUser } from '../data/users'
@@ -47,6 +47,10 @@ function Root() {
       console.error(error)
     }
   }
+  const location = useLocation()
+  useEffect(() => {
+    clearRuleset()
+  }, [location, clearRuleset])
   return (
     <>
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
