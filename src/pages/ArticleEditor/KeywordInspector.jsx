@@ -57,8 +57,8 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
     if (newKeyword) {
       setInspectorValue({
         keyword: newKeyword.keyword,
-        longDefinition: newKeyword.longDefinition,
-        shortDefinition: newKeyword.shortDefinition,
+        longDefinition: newKeyword.longDefinition ? newKeyword.longDefinition : '',
+        shortDefinition: newKeyword.shortDefinition ? newKeyword.shortDefinition : '',
       })
     }
   }, [keywordId, ruleset, keyword])
@@ -112,19 +112,14 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
   }
 
   const createKeyword = (newData) => {
-    setRuleset(addKeyword(ruleset, dataKeywords.createKeyword(ruleset.id, newData)))
+    const newKeyword = dataKeywords.createKeyword(ruleset.id, newData)
+    setRuleset(addKeyword(ruleset, newKeyword))
+    selectKeyword(newKeyword.id)
   }
 
   return (
     <>
-      <Box
-        marginBottom={0}
-        maxHeight="100%"
-        height="100%"
-        display="flex"
-        flexDirection="column"
-        sx={{ overflowX: 'hidden' }}
-      >
+      <Box marginBottom={0} maxHeight="100%" height="100%" display="flex" flexDirection="column">
         <Toolbar>
           <Container>
             <ButtonGroup>
@@ -211,7 +206,7 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
               variant="standard"
             />
           </Box>
-          <Box mt={3} overflowX="hidden">
+          <Box mt={3}>
             <TextField
               InputProps={{ sx: { pb: 0 } }}
               onKeyDown={handleKeyFields}

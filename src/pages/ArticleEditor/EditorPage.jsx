@@ -41,7 +41,7 @@ function EditorPage() {
   const [selectedKeyword, setSelectedKeyword] = useState(null)
   const selectKeyword = (id) => {
     const keyword = findKeywordInRuleset(id, ruleset)
-    if (keyword && !keyword.deleted) setSelectedKeyword(id)
+    setSelectedKeyword(keyword && !keyword.deleted ? id : null)
   }
 
   const colWidth = { xs: 12, sm: 6, md: 4, lg: 3 }
