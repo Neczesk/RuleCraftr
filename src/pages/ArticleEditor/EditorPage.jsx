@@ -52,6 +52,18 @@ function EditorPage() {
     setSaved(ruleset.synced)
   }, [ruleset])
 
+  useEffect(() => {
+    const handleUnload = (e) => {
+      if (!saved /* check your condition here */) {
+        e.preventDefault()
+        e.returnValue = '' // Chrome requires returnValue to be set.
+      }
+    }
+
+    window.addEventListener('beforeunload', handleUnload)
+    return () => window.removeEventListener('beforeunload', handleUnload)
+  }, [saved]) // Depend on your state variable
+
   const shouldBlock = useCallback(
     ({ currentLocation, nextLocation }) => !saved && currentLocation.pathname != nextLocation.pathname,
     [saved]
