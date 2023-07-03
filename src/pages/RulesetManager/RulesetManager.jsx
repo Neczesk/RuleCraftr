@@ -193,7 +193,7 @@ function RulesetManager() {
                   <span>
                     <IconButton
                       onClick={() => startEditingRuleset(ruleset.id)}
-                      disabled={user.id !== ruleset.user_id || !!editingRulesetId}
+                      disabled={user?.id !== ruleset.user_id || !!editingRulesetId}
                     >
                       <FormatAlignLeftOutlinedIcon />
                     </IconButton>
@@ -203,7 +203,7 @@ function RulesetManager() {
                   <span>
                     <IconButton
                       onClick={() => deleteRuleset(ruleset.id)}
-                      disabled={user.id !== ruleset.user_id || !!editingRulesetId}
+                      disabled={user?.id !== ruleset.user_id || !!editingRulesetId}
                     >
                       <DeleteOutlineOutlinedIcon />
                     </IconButton>

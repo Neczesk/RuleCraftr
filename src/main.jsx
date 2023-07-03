@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './pages/App.jsx';
-import { SnackbarProvider } from 'notistack';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './pages/App.jsx'
+import { SnackbarProvider } from 'notistack'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -9,4 +9,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <App />
     </SnackbarProvider>
   </React.StrictMode>
-);
+)

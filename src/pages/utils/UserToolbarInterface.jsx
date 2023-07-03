@@ -2,8 +2,8 @@ import { PropTypes } from 'prop-types'
 import { useState } from 'react'
 import { Button, Menu, MenuItem } from '@mui/material'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
-import { useNavigate } from 'react-router'
 import useUserStore from '../../stores/userStore'
+import { useNavigate } from 'react-router'
 
 function UserToolbarInterface(props) {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -33,18 +33,19 @@ function UserToolbarInterface(props) {
       <Menu anchorEl={anchorEl} open={open} onClose={closeMenu}>
         <MenuItem onClick={handleEditProfile}>Edit user profile</MenuItem>
         <MenuItem
-          onClick={() => {
+          onClick={async () => {
             closeMenu()
-            props.onLogout()
-            navigate('/login')
+            const success = await props.onLogout()
+
+            if (success) navigate('/home')
           }}
         >
           Switch User
         </MenuItem>
         <MenuItem
-          onClick={() => {
+          onClick={async () => {
             closeMenu()
-            const success = props.onLogout()
+            const success = await props.onLogout()
             if (success) navigate('/home')
           }}
         >
@@ -52,9 +53,9 @@ function UserToolbarInterface(props) {
         </MenuItem>
       </Menu>
       <Button
+        onClick={handleMainButtonClick}
         color="inherit"
         endIcon={props.user ? <AccountCircleOutlinedIcon /> : null}
-        onClick={handleMainButtonClick}
       >
         {props.user ? props.user.username : 'Login / Create Account'}
       </Button>

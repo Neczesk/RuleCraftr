@@ -12,12 +12,13 @@ import {
   LinearProgress,
 } from '@mui/material'
 import { useState } from 'react'
-import { PropTypes } from 'prop-types'
 import { useNavigate } from 'react-router'
 import { validate_password_strength, get_password_suggestion } from '../../data/passwords'
-import { enqueueSnackbar } from 'notistack'
+import { createAccount, loginUser } from '../../data/users'
+import { useSnackbar } from 'notistack'
+import useUserStore from '../../stores/userStore'
 
-function LoginPage(props) {
+function LoginPage() {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -76,22 +77,54 @@ function LoginPage(props) {
     return formatted
   }
 
+  const { enqueueSnackbar } = useSnackbar()
+  const setUser = useUserStore((state) => state.setUser)
+
+  const login = async (form) => {
+    const newUser = await loginUser(form)
+    if (Object.keys(newUser).includes('Failure')) {
+      enqueueSnackbar('Either the username or password is incorrect', { variant: 'error' })
+      return newUser
+    } else {
+      setUser(newUser)
+      return newUser
+    }
+  }
+
+  const signup = async (form) => {
+    const newUser = await createAccount(form)
+    if (Object.keys(newUser).includes('Failure')) {
+      const message = newUser.Failure
+      enqueueSnackbar(message, { variant: 'error' })
+      return newUser
+    } else {
+      setUser(newUser)
+      return newUser
+    }
+  }
+
   const handleKeys = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault()
       switch (currentTab) {
         case 0:
           if (validateLogin())
-            props.handleLogin({ username, password }).then((user) => {
-              const path = '../user/' + user.id.toString() + '/rulesets'
-              navigate(path)
+            login({ username, password }).then((user) => {
+              if (!Object.keys(user).includes('Failure')) {
+                enqueueSnackbar('Successfully logged in', { variant: 'success' })
+                const path = '../user/' + user.id.toString() + '/rulesets'
+                navigate(path)
+              }
             })
           break
         case 1:
           if (validateAccountCreate())
-            props.handleCreateAccount(prepareCreateAccountForm()).then((user) => {
-              const path = '../user/' + user.id.toString() + '/rulesets'
-              navigate(path)
+            signup(prepareCreateAccountForm()).then((user) => {
+              if (!Object.keys(user).includes('Failure')) {
+                enqueueSnackbar('Successfully Created Account', { variant: 'success' })
+                const path = '../user/' + user.id.toString() + '/rulesets'
+                navigate(path)
+              }
             })
       }
     }
@@ -188,7 +221,7 @@ function LoginPage(props) {
       <CardActions>
         <Button
           onClick={() => {
-            props.handleCreateAccount(prepareCreateAccountForm()).then((user) => {
+            signup(prepareCreateAccountForm()).then((user) => {
               if (!Object.keys(user).includes('Failure')) {
                 enqueueSnackbar('Successfully Created Account', { variant: 'success' })
                 const path = '../user/' + user.id.toString() + '/rulesets'
@@ -239,7 +272,7 @@ function LoginPage(props) {
       <CardActions>
         <Button
           onClick={() => {
-            props.handleLogin({ username, password }).then((user) => {
+            login({ username, password }).then((user) => {
               if (!Object.keys(user).includes('Failure')) {
                 enqueueSnackbar('Successfully logged in', { variant: 'success' })
                 const path = '../user/' + user.id.toString() + '/rulesets'
@@ -274,10 +307,6 @@ function LoginPage(props) {
       </Card>
     </Container>
   )
-}
-LoginPage.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-  handleCreateAccount: PropTypes.func.isRequired,
 }
 
 export default LoginPage
