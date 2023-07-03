@@ -16,6 +16,7 @@ function ArticleTree({ onArticleSelect, selectedNode }) {
     const parentArticle = findArticleInRuleset(parentId, ruleset.articles)
     const newArticle = createArticle(ruleset.id, parentArticle ? parentArticle.id : null, sort)
     setRuleset(addArticle(parentArticle ? parentArticle.id : null, ruleset, newArticle))
+    onArticleSelect(newArticle.id)
   }
   const onRemoveArticle = (articleId) => {
     setRuleset(removeArticle(articleId, ruleset))
