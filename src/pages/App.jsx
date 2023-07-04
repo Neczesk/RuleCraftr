@@ -6,6 +6,7 @@ import RulesetManager from './RulesetManager/RulesetManager'
 import LoginPage from './LoginPage/LoginPage'
 import ProfileManagement from './ProfileManagement/ProfileManagement'
 import Root from './Root'
+import { ThemeProvider, createTheme } from '@mui/material'
 
 function App() {
   const RedirectToHome = () => {
@@ -45,9 +46,37 @@ function App() {
     },
   ])
 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#B30024',
+      },
+      secondary: {
+        main: '#5C5C00',
+      },
+      tertiary: {
+        main: '#385B70',
+      },
+      primaryContainer: {
+        main: '#F9F0F2',
+      },
+      secondaryContainer: {
+        main: '#FFFFEB',
+        dark: '#F2F2E1',
+      },
+      tertiaryContainer: {
+        main: '#F2FBFF',
+      },
+    },
+  })
+
+  const composedTheme = createTheme(theme, {})
+
   return (
     <>
-      <RouterProvider router={router}></RouterProvider>
+      <ThemeProvider theme={composedTheme}>
+        <RouterProvider router={router}></RouterProvider>
+      </ThemeProvider>
     </>
   )
 }

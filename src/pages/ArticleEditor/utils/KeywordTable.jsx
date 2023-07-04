@@ -14,6 +14,7 @@ import PropTypes from 'prop-types'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import { useState } from 'react'
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined'
 
 function KeywordTable(props) {
   const [addingKeyword, setAddingKeyword] = useState(false)
@@ -30,9 +31,11 @@ function KeywordTable(props) {
         <TableRow key={keyword.id}>
           <TableCell component="th" scope="row">
             <Button
+              color="secondary"
               variant="text"
               size="small"
-              sx={{ textTransform: 'none' }}
+              sx={{ textTransform: 'none', fontWeight: 'bold' }}
+              endIcon={<OpenInNewOutlinedIcon fontSize="small" />}
               onClick={() => props.onSelect(keyword.id)}
             >
               {keyword.keyword}
@@ -51,8 +54,15 @@ function KeywordTable(props) {
     <TableRow key={-1}>
       <TableCell component="th" scope="row">
         {!addingKeyword ? (
-          <Button variant="text" size="small" sx={{ textTransform: 'none' }} onClick={() => setAddingKeyword(true)}>
-            {'Add...'}
+          <Button
+            endIcon={<OpenInNewOutlinedIcon fontSize="small" />}
+            color="secondary"
+            variant="text"
+            size="small"
+            sx={{ textTransform: 'none', fontWeight: 'bold', paddingX: 0 }}
+            onClick={() => setAddingKeyword(true)}
+          >
+            {'Add New...'}
           </Button>
         ) : (
           <TextField
@@ -68,6 +78,7 @@ function KeywordTable(props) {
       <TableCell align="right">
         {addingKeyword ? (
           <TextField
+            color="secondary"
             error={!validateNewKeyword()}
             placeholder="Short Definition"
             variant="standard"
@@ -80,6 +91,7 @@ function KeywordTable(props) {
       <TableCell align="right">
         <Stack direction="row">
           <IconButton
+            color="secondary"
             disabled={!addingKeyword || !validateNewKeyword()}
             size="small"
             onClick={() => {
@@ -93,6 +105,7 @@ function KeywordTable(props) {
             <AddOutlinedIcon fontSize="small" />
           </IconButton>
           <IconButton
+            color="secondary"
             disabled={!addingKeyword}
             size="small"
             onClick={() => {

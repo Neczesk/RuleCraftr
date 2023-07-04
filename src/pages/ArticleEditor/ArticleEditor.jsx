@@ -3,26 +3,17 @@ import { useCallback, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 //Slate Dependencies
-import { createEditor, Transforms } from 'slate'
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
+import { Transforms } from 'slate'
+import { Slate, Editable } from 'slate-react'
 // Custome slate dependencies
 import RulesetEditor from './utils/RulesetEditor'
-import { GenstaffEditor } from './utils/GenstaffEditor'
 import { ArticleLink, CodeElement, DefaultElement, HeaderElement, KeywordLink, Leaf } from './utils/elementComponents'
 // Material Dependencies
-import { Button, IconButton, ButtonGroup, Box, TextField, styled, Toolbar, Stack, Paper } from '@mui/material'
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'
-import FormatBoldOutlinedIcon from '@mui/icons-material/FormatBoldOutlined'
-import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined'
-import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined'
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
-import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
+import { Box, TextField, styled, Paper } from '@mui/material'
+
 // Local modules
 import useRulesetStore from '../../stores/rulesetStore'
-import { findArticleInRuleset, saveRuleset, updateArticle } from '../../data/rulesets'
-import KeywordRefMenu from './KeywordRefMenu'
-import ArticleRefMenu from './ArticleRefMenu'
-import StyleSelectAutocomplete from './utils/StyleSelectAutocomplete'
+import { findArticleInRuleset, updateArticle } from '../../data/rulesets'
 
 const StyledTextField = styled(TextField)({
   '& .MuiInputBase-input': {
@@ -34,20 +25,28 @@ const StyledTextField = styled(TextField)({
   },
 })
 
-export default function ArticleEditor({ onEditorChange, initialValue, articleId, selectArticle, inspectKeyword }) {
+export default function ArticleEditor({
+  onEditorChange,
+  initialValue,
+  articleId,
+  selectArticle,
+  inspectKeyword,
+  elevation,
+  editor,
+  setKeywordRefMenuOpen,
+  setArticleRefMenuOpen,
+  setArticleRefMenuPosition,
+  setKeywordRefMenuPosition,
+  setCurrentSelection,
+  saveArticle,
+}) {
   const ruleset = useRulesetStore((state) => state.ruleset)
   const setRuleset = useRulesetStore((state) => state.setRuleset)
   const [article, setArticle] = useState(null)
-  const saveArticle = () => {
-    const { selection } = editor
-    saveRuleset(ruleset).then((newRuleset) => setRuleset(newRuleset))
-    ReactEditor.focus(editor)
-    if (editor.selection) Transforms.select(editor, selection)
-  }
+
   const setArticleChanged = () => {
     setRuleset(updateArticle(articleId, ruleset, editor.children, null))
   }
-  const [editor] = useState(() => withReact(GenstaffEditor(createEditor())))
 
   /* eslint-disable react/prop-types */
   const renderElement = useCallback(
@@ -186,150 +185,65 @@ export default function ArticleEditor({ onEditorChange, initialValue, articleId,
     setArticleTitle(event.target.value)
   }
 
-  const [articleRefMenuOpen, setArticleRefMenuOpen] = useState(false)
-  const [articleRefMenuPosition, setArticleRefMenuPosition] = useState({ top: 0, left: 0 })
-  const handleArticleRefMenuClose = (id) => {
-    if (id) RulesetEditor.insertArticleRef(editor, id)
-    setArticleRefMenuOpen(false)
-    setTimeout(() => {
-      ReactEditor.focus(editor)
-    }, 0)
-  }
-
-  const [keywordRefMenuOpen, setKeywordRefMenuOpen] = useState(false)
-  const [keywordRefMenuPosition, setKeywordRefMenuPosition] = useState({ top: 0, left: 0 })
-  const handleKeywordRefMenuClose = (id) => {
-    if (id) RulesetEditor.insertKeywordRef(editor, id)
-    setKeywordRefMenuOpen(false)
-    setTimeout(() => {
-      ReactEditor.focus(editor)
-    }, 0)
-  }
-
-  const [currentSelection, setCurrentSelection] = useState(null)
-  const [currentNodeStyle, setCurrentNodeStyle] = useState('No Selection')
-  useEffect(() => {
-    if (!currentSelection) return
-    const currentStyle = RulesetEditor.getCurrentElementType(editor)
-    setCurrentNodeStyle(currentStyle ? currentStyle : 'No Selection')
-  }, [currentSelection, editor])
-  const handleStyleChange = (newStyle) => {
-    RulesetEditor.changeStyle(editor, newStyle)
-  }
-
   return (
     <>
-      <KeywordRefMenu
-        anchorPosition={keywordRefMenuPosition}
-        open={keywordRefMenuOpen}
-        onClose={handleKeywordRefMenuClose}
-        editor={editor}
-      />
-      <ArticleRefMenu
-        anchorPosition={articleRefMenuPosition}
-        open={articleRefMenuOpen}
-        onClose={handleArticleRefMenuClose}
-        editor={editor}
-      />
-      <Box
+      <Paper
         sx={{
-          overflowY: 'auto',
+          borderRadius: 0,
           height: '100%',
+          overflowY: 'auto',
+          borderLeft: '1px solid #BBBBBB',
+          borderRight: '1px solid #BBBBBB',
+          display: 'flex',
+          flexDirection: 'column',
         }}
+        elevation={elevation}
       >
-        <Box sx={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 99, mb: 2 }}>
-          <Toolbar disableGutters sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', pb: 1, pt: 2 }}>
-              <Stack direction="row">
-                <ButtonGroup variant="text">
-                  <IconButton onClick={saveArticle} disabled={ruleset?.synced}>
-                    <SaveOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      RulesetEditor.toggleBoldMark(editor)
-                      ReactEditor.focus(editor)
-                    }}
-                  >
-                    <FormatBoldOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      RulesetEditor.toggleItalicMark(editor)
-                      ReactEditor.focus(editor)
-                    }}
-                  >
-                    <FormatItalicOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      RulesetEditor.toggleUnderlineMark(editor)
-                      ReactEditor.focus(editor)
-                    }}
-                  >
-                    <FormatUnderlinedOutlinedIcon />
-                  </IconButton>
-                  <Button
-                    onClick={(event) => {
-                      event.preventDefault()
-                      setArticleRefMenuOpen(true)
-                      setArticleRefMenuPosition({ top: event.clientY, left: event.clientX })
-                    }}
-                    startIcon={<ArticleOutlinedIcon />}
-                  >
-                    Reference
-                  </Button>
-                  <Button
-                    onClick={(event) => {
-                      setKeywordRefMenuOpen(true)
-                      setKeywordRefMenuPosition({ top: event.clientY, left: event.clientX })
-                    }}
-                    startIcon={<KeyOutlinedIcon />}
-                  >
-                    Reference
-                  </Button>
-                </ButtonGroup>
-                <StyleSelectAutocomplete
-                  possibleStyles={['code', 'paragraph', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']}
-                  currentStyle={currentNodeStyle}
-                  onChange={handleStyleChange}
-                />
-              </Stack>
-            </Paper>
-          </Toolbar>
+        <Box flexGrow="1" padding={1} display="flex" flexDirection="column">
+          <Box alignContent="center" justifyContent="center" display="flex" sx={{ mt: 1, mb: 1 }}>
+            <StyledTextField
+              id="article-title"
+              label="Title"
+              variant="outlined"
+              fullWidth
+              value={articleTitle ? articleTitle : ' '}
+              onChange={handleTitleChange}
+            />
+          </Box>
+          <Box display="flex" flexGrow={1} flexDirection="column">
+            <Slate
+              style={{
+                height: '100%',
+              }}
+              editor={editor}
+              value={initialValue}
+              onChange={() => {
+                if (
+                  article &&
+                  JSON.stringify(article.content) != JSON.stringify(editor.children) &&
+                  article.id == articleId
+                ) {
+                  setArticleChanged()
+                }
+                if (onEditorChange) onEditorChange(editor.children)
+                const { selection } = editor
+                if (selection) {
+                  setCurrentSelection(Object.assign({}, selection))
+                }
+              }}
+            >
+              <Editable
+                style={{
+                  height: '100%',
+                }}
+                renderLeaf={renderLeaf}
+                renderElement={renderElement}
+                onKeyDown={onKeyDown}
+              />
+            </Slate>
+          </Box>
         </Box>
-
-        <Box alignContent="center" justifyContent="center" display="flex" sx={{ mt: 1, mb: 1 }}>
-          <StyledTextField
-            id="article-title"
-            label="Title"
-            variant="outlined"
-            fullWidth
-            value={articleTitle ? articleTitle : ' '}
-            onChange={handleTitleChange}
-          />
-        </Box>
-        <Slate
-          editor={editor}
-          value={initialValue}
-          onChange={() => {
-            if (
-              article &&
-              JSON.stringify(article.content) != JSON.stringify(editor.children) &&
-              article.id == articleId
-            ) {
-              setArticleChanged()
-            }
-            if (onEditorChange) onEditorChange(editor.children)
-            const { selection } = editor
-            if (selection) {
-              setCurrentSelection(Object.assign({}, selection))
-            }
-          }}
-        >
-          <Editable renderLeaf={renderLeaf} renderElement={renderElement} onKeyDown={onKeyDown} />
-        </Slate>
-      </Box>
+      </Paper>
     </>
   )
 }
@@ -340,4 +254,12 @@ ArticleEditor.propTypes = {
   articleId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   selectArticle: PropTypes.func,
   inspectKeyword: PropTypes.func,
+  elevation: PropTypes.number,
+  editor: PropTypes.object,
+  setArticleRefMenuOpen: PropTypes.func.isRequired,
+  setKeywordRefMenuOpen: PropTypes.func.isRequired,
+  setArticleRefMenuPosition: PropTypes.func.isRequired,
+  setKeywordRefMenuPosition: PropTypes.func.isRequired,
+  setCurrentSelection: PropTypes.func.isRequired,
+  saveArticle: PropTypes.func.isRequired,
 }

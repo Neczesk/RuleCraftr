@@ -72,7 +72,7 @@ function Root() {
       </Drawer>
       <CssBaseline />
       <Box>
-        <AppBar position="sticky">
+        <AppBar position="sticky" color="primary">
           <Toolbar variant="dense">
             <IconButton component={RouterLink} to="/home" color="inherit">
               <HomeOutlinedIcon />

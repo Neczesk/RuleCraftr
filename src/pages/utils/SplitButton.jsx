@@ -44,18 +44,18 @@ function SplitButton(props) {
         {menuItems}
       </Menu>
       <Box display="flex" flexDirection="row" width="100%">
-        <ButtonGroup ref={buttonGroupRef} variant="outlined">
+        <ButtonGroup ref={buttonGroupRef} variant="contained">
           <Button
             ref={mainActionRef}
             sx={{ padding: 1 }}
             fullWidth
             size="small"
-            color="primary"
+            color={props.color}
             onClick={props.mainAction ? props.mainAction : () => console.log('main action missing')}
           >
             {props.mainActionLabel ? props.mainActionLabel : 'Main Action Missing'}
           </Button>
-          <Button size="small" color="primary" onClick={() => setAnchorEl(mainActionRef.current)}>
+          <Button size="small" color={props.color} onClick={() => setAnchorEl(mainActionRef.current)}>
             <ArrowDropDownOutlinedIcon />
           </Button>
         </ButtonGroup>
@@ -67,5 +67,6 @@ SplitButton.propTypes = {
   functionalities: PropTypes.array,
   mainAction: PropTypes.func,
   mainActionLabel: PropTypes.string,
+  color: PropTypes.string,
 }
 export default SplitButton

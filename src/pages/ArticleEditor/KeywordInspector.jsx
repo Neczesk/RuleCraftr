@@ -12,10 +12,12 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Paper,
   TextField,
   Toolbar,
   Typography,
   styled,
+  useTheme,
 } from '@mui/material'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
@@ -31,7 +33,7 @@ const KeywordLabelTextField = styled(TextField)({
   },
 })
 
-function KeywordInspector({ keywordId, onSelectKeyword }) {
+function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
   const ruleset = useRulesetStore((state) => state.ruleset)
   const setRuleset = useRulesetStore((state) => state.setRuleset)
   const [keyword, setKeyword] = useState(null)
@@ -116,112 +118,132 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
     setRuleset(addKeyword(ruleset, newKeyword))
     selectKeyword(newKeyword.id)
   }
+  const theme = useTheme()
 
   return (
     <>
       <Box marginBottom={0} maxHeight="100%" height="100%" display="flex" flexDirection="column">
-        <Toolbar>
-          <Container>
-            <ButtonGroup>
-              <Button
-                disabled={selectedView === 2}
-                onClick={() => {
-                  selectKeyword(null)
-                  switch (selectedView) {
-                    case 1:
-                      setSelectedView(2)
-                      break
-                    case 0:
-                      setSelectedView(2)
-                      break
-                    case 2:
-                      break
-                  }
-                }}
-              >
-                Manage Keywords
-              </Button>
-            </ButtonGroup>
-          </Container>
-        </Toolbar>
-        <Box display={selectedView === 2 ? 'block' : 'none'}>
-          <KeywordTable
-            onAdd={createKeyword}
-            keywords={ruleset.keywords ? ruleset.keywords : null}
-            deleteKeyword={deleteKeyword}
-            onSelect={selectKeyword}
-          />
-        </Box>
-        <Box
-          display={selectedView === 0 ? 'block' : 'none'}
-          sx={{ paddingX: 1, overflowY: 'auto', overflowX: 'hidden' }}
+        <Paper
+          elevation={elevation}
+          sx={{
+            padding: 1,
+            borderBottomRightRadius: 0,
+            borderBottomLeftRadius: 0,
+            height: '100%',
+            backgroundColor: theme.palette.secondaryContainer.main,
+          }}
         >
-          {!editKeywordToggle ? (
-            <Grid container justifyContent="center" alignItems="center">
-              <Grid item alignContent="center">
-                <Typography variant="h5">{inspectorValue.keyword}</Typography>
+          <Toolbar>
+            <Container>
+              <ButtonGroup>
+                <Button
+                  sx={{
+                    color: 'white',
+                  }}
+                  variant="contained"
+                  color="secondary"
+                  disabled={selectedView === 2}
+                  onClick={() => {
+                    selectKeyword(null)
+                    switch (selectedView) {
+                      case 1:
+                        setSelectedView(2)
+                        break
+                      case 0:
+                        setSelectedView(2)
+                        break
+                      case 2:
+                        break
+                    }
+                  }}
+                >
+                  Manage Keywords
+                </Button>
+              </ButtonGroup>
+            </Container>
+          </Toolbar>
+          <Box display={selectedView === 2 ? 'block' : 'none'}>
+            <KeywordTable
+              onAdd={createKeyword}
+              keywords={ruleset.keywords ? ruleset.keywords : null}
+              deleteKeyword={deleteKeyword}
+              onSelect={selectKeyword}
+            />
+          </Box>
+          <Box
+            display={selectedView === 0 ? 'block' : 'none'}
+            sx={{ paddingX: 1, overflowY: 'auto', overflowX: 'hidden' }}
+          >
+            {!editKeywordToggle ? (
+              <Grid container justifyContent="center" alignItems="center">
+                <Grid item alignContent="center">
+                  <Typography variant="h5">{inspectorValue.keyword}</Typography>
+                </Grid>
+                <Grid item>
+                  <IconButton onClick={toggleKeywordEdit}>
+                    <ModeEditOutlineOutlinedIcon color="secondary" />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <IconButton onClick={toggleKeywordEdit}>
-                  <ModeEditOutlineOutlinedIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
-          ) : (
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <KeywordLabelTextField
-                autoFocus
-                label=""
-                value={inspectorValue.keyword}
+            ) : (
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <KeywordLabelTextField
+                  autoFocus
+                  color="secondary"
+                  label=""
+                  value={inspectorValue.keyword}
+                  onChange={(event) => {
+                    setInspectorValue({ ...inspectorValue, keyword: event.target.value })
+                    onKeywordUpdate({ ...inspectorValue, keyword: event.target.value })
+                  }}
+                  onKeyDown={handleKeyKeyword}
+                  onBlur={handleBlur}
+                  variant="standard"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => toggleKeywordEdit()}>
+                          <CheckOutlinedIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            )}
+            <Box mt={2}>
+              <TextField
+                color="secondary"
+                onKeyDown={handleKeyFields}
+                multiline
+                fullWidth
+                label="Short Definition"
+                value={inspectorValue.shortDefinition}
                 onChange={(event) => {
-                  setInspectorValue({ ...inspectorValue, keyword: event.target.value })
-                  onKeywordUpdate({ ...inspectorValue, keyword: event.target.value })
+                  setInspectorValue({ ...inspectorValue, shortDefinition: event.target.value })
+                  onKeywordUpdate({ ...inspectorValue, shortDefinition: event.target.value })
                 }}
-                onKeyDown={handleKeyKeyword}
-                onBlur={handleBlur}
                 variant="standard"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => toggleKeywordEdit()}>
-                        <CheckOutlinedIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+              />
+            </Box>
+            <Box mt={3}>
+              <TextField
+                color="secondary"
+                InputProps={{ sx: { pb: 0 } }}
+                onKeyDown={handleKeyFields}
+                fullWidth
+                multiline
+                variant="standard"
+                label="Long Definition"
+                value={inspectorValue.longDefinition}
+                onChange={(event) => {
+                  setInspectorValue({ ...inspectorValue, longDefinition: event.target.value })
+                  onKeywordUpdate({ ...inspectorValue, longDefinition: event.target.value })
                 }}
               />
             </Box>
-          )}
-          <Box mt={2}>
-            <TextField
-              onKeyDown={handleKeyFields}
-              multiline
-              fullWidth
-              label="Short Definition"
-              value={inspectorValue.shortDefinition}
-              onChange={(event) => {
-                setInspectorValue({ ...inspectorValue, shortDefinition: event.target.value })
-                onKeywordUpdate({ ...inspectorValue, shortDefinition: event.target.value })
-              }}
-              variant="standard"
-            />
           </Box>
-          <Box mt={3}>
-            <TextField
-              InputProps={{ sx: { pb: 0 } }}
-              onKeyDown={handleKeyFields}
-              fullWidth
-              multiline
-              variant="standard"
-              label="Long Definition"
-              value={inspectorValue.longDefinition}
-              onChange={(event) => {
-                setInspectorValue({ ...inspectorValue, longDefinition: event.target.value })
-                onKeywordUpdate({ ...inspectorValue, longDefinition: event.target.value })
-              }}
-            />
-          </Box>
-        </Box>
+        </Paper>
       </Box>
     </>
   )
@@ -229,5 +251,7 @@ function KeywordInspector({ keywordId, onSelectKeyword }) {
 KeywordInspector.propTypes = {
   keywordId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onSelectKeyword: PropTypes.func,
+  sx: PropTypes.object,
+  elevation: PropTypes.number,
 }
 export default KeywordInspector

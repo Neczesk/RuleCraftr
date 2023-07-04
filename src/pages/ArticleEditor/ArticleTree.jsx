@@ -2,14 +2,15 @@ import PropTypes from 'prop-types'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useEffect, useState } from 'react'
-import { TreeView, TreeItem } from '@mui/lab'
+import { TreeView } from '@mui/lab'
 import useRulesetStore from '../../stores/rulesetStore'
-import { Menu, MenuItem, Toolbar } from '@mui/material'
+import { Menu, MenuItem, Paper, Toolbar, useTheme } from '@mui/material'
 import { findArticleInRuleset, addArticle, removeArticle } from '../../data/rulesets'
 import { createArticle } from '../../data/articles'
 import SplitButton from '../utils/SplitButton'
+import ThemedTreeItem from './utils/ThemedTreeItem'
 
-function ArticleTree({ onArticleSelect, selectedNode }) {
+function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
   const ruleset = useRulesetStore((state) => state.ruleset)
   const setRuleset = useRulesetStore((state) => state.setRuleset)
   const onAddChild = (parentId, sort = 9999) => {
@@ -22,21 +23,25 @@ function ArticleTree({ onArticleSelect, selectedNode }) {
     setRuleset(removeArticle(articleId, ruleset))
   }
 
+  const theme = useTheme()
+
   const renderArticle = (article) => {
     if (!article.deleted) {
       return (
-        <TreeItem
+        <ThemedTreeItem
+          key={article?.id}
+          color="red"
+          bgColor={theme.palette.secondaryContainer.dark}
           onContextMenu={(event) => {
             event.preventDefault()
             event.stopPropagation()
             handleContextMenuOpen(event, article.id)
           }}
-          key={article.id ? article.id : -1}
-          nodeId={article.id ? article.id.toString() : '-1'}
+          articleId={article?.id}
           label={article.title + (article.synched ? '' : '*')}
         >
           {article.childrenArticles?.length ? article.childrenArticles.map((article) => renderArticle(article)) : null}
-        </TreeItem>
+        </ThemedTreeItem>
       )
     } else return null
   }
@@ -101,30 +106,44 @@ function ArticleTree({ onArticleSelect, selectedNode }) {
 
   return (
     <>
-      <Toolbar disableGutters>
-        <SplitButton
-          mainAction={() => {
-            const sortedRoots = ruleset.articles.sort((a, b) => a.sort - b.sort)
-            const highestCurrentSort = sortedRoots.length ? sortedRoots[sortedRoots.length - 1].sort : 1
-            const newSort = highestCurrentSort + 1
-            onAddChild(null, newSort)
-          }}
-          mainActionLabel="Add Root Article"
-          functionalities={functionalities}
-        />
-      </Toolbar>
-      <TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpanded={['root']}
-        defaultExpandIcon={<ChevronRightIcon />}
-        sx={{ overflow: 'auto' }}
-        onNodeSelect={(event, id) => {
-          onArticleSelect(id)
+      <Paper
+        sx={{
+          borderBottomRightRadius: 0,
+          borderBottomLeftRadius: 0,
+          padding: 1,
+          margin: 0,
+          height: '100%',
+          backgroundColor: theme.palette.secondaryContainer.main,
         }}
-        selected={selectedNode}
+        elevation={elevation}
       >
-        {ruleset.articles ? ruleset.articles.map((article) => renderArticle(article)) : null}
-      </TreeView>
+        <Toolbar disableGutters>
+          <SplitButton
+            color="secondary"
+            mainAction={() => {
+              const sortedRoots = ruleset.articles.sort((a, b) => a.sort - b.sort)
+              const highestCurrentSort = sortedRoots.length ? sortedRoots[sortedRoots.length - 1].sort : 1
+              const newSort = highestCurrentSort + 1
+              onAddChild(null, newSort)
+            }}
+            mainActionLabel="Add Root Article"
+            functionalities={functionalities}
+          />
+        </Toolbar>
+        <TreeView
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpanded={['root']}
+          defaultExpandIcon={<ChevronRightIcon />}
+          sx={{ overflow: 'auto' }}
+          onNodeSelect={(event, id) => {
+            onArticleSelect(id)
+          }}
+          selected={selectedNode}
+        >
+          {ruleset.articles ? ruleset.articles.map((article) => renderArticle(article)) : null}
+        </TreeView>
+      </Paper>
+
       <Menu
         anchorReference="anchorPosition"
         anchorPosition={menuAnchorPosition}
@@ -182,6 +201,7 @@ function ArticleTree({ onArticleSelect, selectedNode }) {
 ArticleTree.propTypes = {
   onArticleSelect: PropTypes.func,
   selectedNode: PropTypes.array,
+  elevation: PropTypes.number,
 }
 
 export default ArticleTree
