@@ -38,7 +38,7 @@ function UserToolbarInterface(props) {
             closeMenu()
             const success = await props.onLogout()
 
-            if (success) navigate('/home')
+            if (success) navigate('/login')
           }}
         >
           Switch User

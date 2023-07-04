@@ -12,5 +12,8 @@ export const GenstaffEditor = (editor) => {
         if (element.type === 'articleRef') return true
         return isVoid(element)
     }
+
     return editor
+
+    
 }

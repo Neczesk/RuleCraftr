@@ -19,6 +19,7 @@ import {
   DialogActions,
   FormControl,
   InputLabel,
+  Paper,
 } from '@mui/material'
 import useUserStore from '../../stores/userStore'
 import {
@@ -145,6 +146,7 @@ function RulesetManager() {
               {editingRulesetId === ruleset.id ? (
                 <TableCell>
                   <IconButton
+                    color="primary"
                     onClick={() => {
                       setMetadataEditedValue({
                         ...metadataEditedValue,
@@ -163,6 +165,7 @@ function RulesetManager() {
                 <Tooltip title="Edit Ruleset Metadata">
                   <span>
                     <IconButton
+                      color={editingRulesetId ? 'success' : 'primary'}
                       disabled={
                         user?.id !== ruleset.user_id ||
                         (!!editingRulesetId && editingRulesetId !== ruleset.id) ||
@@ -192,6 +195,7 @@ function RulesetManager() {
                 <Tooltip title="Launch Editor">
                   <span>
                     <IconButton
+                      color="primary"
                       onClick={() => startEditingRuleset(ruleset.id)}
                       disabled={user?.id !== ruleset.user_id || !!editingRulesetId}
                     >
@@ -202,6 +206,7 @@ function RulesetManager() {
                 <Tooltip title="Delete ruleset (CAUTION: Cannot be undone yet!">
                   <span>
                     <IconButton
+                      color="inherit"
                       onClick={() => deleteRuleset(ruleset.id)}
                       disabled={user?.id !== ruleset.user_id || !!editingRulesetId}
                     >
@@ -320,6 +325,7 @@ function RulesetManager() {
         </DialogContent>
         <DialogActions>
           <Button
+            color="error"
             onClick={() => {
               setMetadataEditedValue({
                 rn_name: '',
@@ -332,6 +338,7 @@ function RulesetManager() {
             Cancel
           </Button>
           <Button
+            color="success"
             disabled={!validateMetadata()}
             onClick={() => {
               const newRulesetData = { ...metadataEditedValue, user_id: user.id }
@@ -349,24 +356,26 @@ function RulesetManager() {
         </DialogActions>
       </Dialog>
       <Container sx={{ padding: 2 }}>
-        <Typography variant="h4" align="center">
-          Ruleset Manager
-        </Typography>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Ruleset Name</TableCell>
-                <TableCell align="left">Description</TableCell>
-                <TableCell align="left">Created By</TableCell>
-                <TableCell align="left">Public?</TableCell>
-                <TableCell align="left">Created on</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>{rows}</TableBody>
-          </Table>
-        </TableContainer>
+        <Paper>
+          <Typography variant="h4" align="center">
+            Ruleset Manager
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Ruleset Name</TableCell>
+                  <TableCell align="left">Description</TableCell>
+                  <TableCell align="left">Created By</TableCell>
+                  <TableCell align="left">Public?</TableCell>
+                  <TableCell align="left">Created on</TableCell>
+                  <TableCell align="right">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{rows}</TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
       </Container>
     </>
   )

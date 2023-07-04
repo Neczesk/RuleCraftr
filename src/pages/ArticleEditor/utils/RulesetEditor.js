@@ -134,6 +134,7 @@ const RulesetEditor = {
       Editor.removeMark(editor, "italic")
     } else {
       Editor.addMark(editor, 'italic', true)
+
     }
   },
 

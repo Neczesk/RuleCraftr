@@ -160,23 +160,13 @@ export default function ArticleEditor({
     if (articleId) {
       const newArticle = findArticleInRuleset(articleId, ruleset.articles)
       if (newArticle) {
-        editor.children = newArticle?.content
-        editor.onChange()
         setArticle(newArticle)
         setArticleTitle(newArticle.title)
       }
     } else {
-      // Sets the content and title of the article back to the initial value.
-      // Since the slate editor is an uncontrolled component it has to be done using the
-      // library's built in functions instead of simply replacing it
       setArticleTitle('No Article Selected')
-      Transforms.deselect(editor)
-      editor.children.map(() => {
-        Transforms.delete(editor, { at: [0] })
-      })
-      Transforms.insertNodes(editor, initialValue, { at: [0] })
     }
-  }, [articleId, ruleset.articles, editor, initialValue])
+  }, [articleId, ruleset.articles, initialValue])
 
   const [articleTitle, setArticleTitle] = useState('No Article Selected')
   const handleTitleChange = (event) => {
@@ -195,6 +185,7 @@ export default function ArticleEditor({
           borderRight: '1px solid #BBBBBB',
           display: 'flex',
           flexDirection: 'column',
+          paddingX: 5,
         }}
         elevation={elevation}
       >

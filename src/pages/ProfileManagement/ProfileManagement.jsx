@@ -279,7 +279,7 @@ function ProfileManagement() {
               </Grid>
               <Grid item xs={4} display="flex" flexDirection="row">
                 <Button
-                  sx={{ color: editingUsername ? 'green' : null }}
+                  color={editingUsername ? 'success' : 'primary'}
                   disabled={editingUsername && username === user.username}
                   fullWidth
                   onClick={() => {
@@ -290,7 +290,12 @@ function ProfileManagement() {
                   {editingUsername ? 'Accept' : 'Change Username'}
                 </Button>
                 {editingUsername ? (
-                  <IconButton onClick={() => setEditingUsername(!editingUsername)}>
+                  <IconButton
+                    onClick={() => {
+                      setUsername(user.username)
+                      setEditingUsername(!editingUsername)
+                    }}
+                  >
                     <CloseIcon />
                   </IconButton>
                 ) : null}
@@ -306,7 +311,7 @@ function ProfileManagement() {
                 </Button>
               </Grid>
             </Grid>
-            <Button onClick={() => setDeleteAccountOpen(true)} sx={{ backgroundColor: 'red', color: 'white' }}>
+            <Button variant="contained" onClick={() => setDeleteAccountOpen(true)} color="error">
               Delete Account
             </Button>
           </Box>

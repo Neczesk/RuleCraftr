@@ -44,7 +44,7 @@ function SplitButton(props) {
         {menuItems}
       </Menu>
       <Box display="flex" flexDirection="row" width="100%">
-        <ButtonGroup ref={buttonGroupRef} variant="contained">
+        <ButtonGroup ref={buttonGroupRef} variant="contained" color={props.color}>
           <Button
             ref={mainActionRef}
             sx={{ padding: 1 }}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
+import { useState, useEffect, useCallback, useRef, useLayoutEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Grid from '@mui/material/Grid'
 import { Box } from '@mui/material'
@@ -20,6 +20,7 @@ import { createEditor, Transforms } from 'slate'
 
 import { saveRuleset } from '../../data/rulesets'
 import EditorToolbar from './utils/EditorToolbar'
+import { useTheme } from '@mui/material'
 
 function EditorPage() {
   const ruleset = useRulesetStore((state) => state.ruleset)
@@ -29,12 +30,15 @@ function EditorPage() {
   const params = useParams()
   const rulesetId = params.id
 
-  const initialValue = [
-    {
-      type: 'paragraph',
-      children: [{ text: 'No article selected' }],
-    },
-  ]
+  const initialValue = useMemo(
+    () => [
+      {
+        type: 'paragraph',
+        children: [{ text: 'No article selected' }],
+      },
+    ],
+    []
+  )
   useEffect(() => {
     setCurrentArticle(null)
     setSelectedKeyword(null)
@@ -89,29 +93,23 @@ function EditorPage() {
 
   const [articleRefMenuOpen, setArticleRefMenuOpen] = useState(false)
   const [articleRefMenuPosition, setArticleRefMenuPosition] = useState({ top: 0, left: 0 })
-  const handleArticleRefMenuClose = useCallback(
-    (id) => {
-      if (id) RulesetEditor.insertArticleRef(editor, id)
-      setArticleRefMenuOpen(false)
-      setTimeout(() => {
-        ReactEditor.focus(editor)
-      }, 0)
-    },
-    [editor]
-  )
+  const handleArticleRefMenuClose = (id) => {
+    if (id) RulesetEditor.insertArticleRef(editor, id)
+    setArticleRefMenuOpen(false)
+    setTimeout(() => {
+      ReactEditor.focus(editor)
+    }, 0)
+  }
 
   const [keywordRefMenuOpen, setKeywordRefMenuOpen] = useState(false)
   const [keywordRefMenuPosition, setKeywordRefMenuPosition] = useState({ top: 0, left: 0 })
-  const handleKeywordRefMenuClose = useCallback(
-    (id) => {
-      if (id) RulesetEditor.insertKeywordRef(editor, id)
-      setKeywordRefMenuOpen(false)
-      setTimeout(() => {
-        ReactEditor.focus(editor)
-      }, 0)
-    },
-    [editor]
-  )
+  const handleKeywordRefMenuClose = (id) => {
+    if (id) RulesetEditor.insertKeywordRef(editor, id)
+    setKeywordRefMenuOpen(false)
+    setTimeout(() => {
+      ReactEditor.focus(editor)
+    }, 0)
+  }
 
   const [currentSelection, setCurrentSelection] = useState(null)
   const changeSelection = (newSelection) => {
@@ -136,6 +134,25 @@ function EditorPage() {
     if (editor.selection) Transforms.select(editor, selection)
   }, [editor, ruleset, setRuleset])
 
+  useEffect(() => {
+    if (currentArticle) {
+      const newArticle = findArticleInRuleset(currentArticle, ruleset.articles)
+      if (newArticle) {
+        editor.children = newArticle?.content
+        editor.onChange()
+      }
+    } else {
+      // Sets the content and title of the article back to the initial value.
+      // Since the slate editor is an uncontrolled component it has to be done using the
+      // library's built in functions instead of simply replacing it
+      Transforms.deselect(editor)
+      editor.children.map(() => {
+        Transforms.delete(editor, { at: [0] })
+      })
+      Transforms.insertNodes(editor, initialValue, { at: [0] })
+    }
+  }, [currentArticle, ruleset.articles, editor, initialValue])
+
   const toolbarRef = useRef(null)
   const boxRef = useRef(null)
   const [editorHeight, setEditorHeight] = useState(0)
@@ -146,6 +163,7 @@ function EditorPage() {
     if (toolbarRef.current) setEditorHeight(boxHeight - toolbarHeight - 1)
   }, [toolbarRef])
 
+  const theme = useTheme()
   // const colWidth = { xs: 12, sm: 6, md: 4, lg: 3 }
   return (
     <>
@@ -210,6 +228,8 @@ function EditorPage() {
               xl={8}
               sx={{
                 height: '100%',
+                backgroundColor: theme.palette.secondaryContainer.main,
+                pt: 2,
               }}
               zIndex="2"
             >

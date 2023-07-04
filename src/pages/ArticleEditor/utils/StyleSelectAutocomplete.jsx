@@ -1,10 +1,11 @@
-import { Autocomplete, TextField, InputAdornment } from '@mui/material'
+import { Autocomplete, TextField, InputAdornment, Stack, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 
 import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined'
 
 function StyleSelectAutocomplete(props) {
+  const { possibleStyles, currentStyle, onChange, ...others } = props
   const mapStyleToLabel = (style) => {
     let label
     switch (style) {
@@ -37,42 +38,45 @@ function StyleSelectAutocomplete(props) {
     }
     return label
   }
-  const options = props.possibleStyles.map((style) => {
+  const options = possibleStyles.map((style) => {
     return { label: mapStyleToLabel(style), style: style }
   })
   options.push({ label: 'No Selection', style: 'No Selection' })
-  const [value, setValue] = useState({ label: mapStyleToLabel(props.currentStyle), style: props.currentStyle })
-  useEffect(
-    () => setValue({ label: mapStyleToLabel(props.currentStyle), style: props.currentStyle }),
-    [props.currentStyle]
-  )
+  const [value, setValue] = useState({ label: mapStyleToLabel(currentStyle), style: currentStyle })
+  useEffect(() => setValue({ label: mapStyleToLabel(currentStyle), style: currentStyle }), [currentStyle])
   return (
-    <Autocomplete
-      disableClearable
-      sx={{ width: 225 }}
-      options={options}
-      value={value}
-      isOptionEqualToValue={(option, value) => {
-        return option.style === value.style
-      }}
-      onChange={(event, value) => {
-        props.onChange(value.style)
-        setValue(value)
-      }}
-      renderInput={(params) => (
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <StyleOutlinedIcon />
-              </InputAdornment>
-            ),
-          }}
-          {...params}
-          label="Style"
-        />
-      )}
-    ></Autocomplete>
+    <Stack direction="row" spacing={1} sx={{ display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" sx={{}}>
+        Style:{' '}
+      </Typography>
+      <Autocomplete
+        {...others}
+        disableClearable
+        sx={{ width: 225 }}
+        options={options}
+        value={value}
+        isOptionEqualToValue={(option, value) => {
+          return option.style === value.style
+        }}
+        onChange={(event, value) => {
+          onChange(value.style)
+          setValue(value)
+        }}
+        renderInput={(params) => (
+          <TextField
+            variant="standard"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <StyleOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+            {...params}
+          />
+        )}
+      ></Autocomplete>
+    </Stack>
   )
 }
 StyleSelectAutocomplete.propTypes = {
