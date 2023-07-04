@@ -26,7 +26,6 @@ const StyledTextField = styled(TextField)({
 })
 
 export default function ArticleEditor({
-  onEditorChange,
   initialValue,
   articleId,
   selectArticle,
@@ -225,10 +224,9 @@ export default function ArticleEditor({
                 ) {
                   setArticleChanged()
                 }
-                if (onEditorChange) onEditorChange(editor.children)
                 const { selection } = editor
                 if (selection) {
-                  setCurrentSelection(Object.assign({}, selection))
+                  setCurrentSelection(selection)
                 }
               }}
             >

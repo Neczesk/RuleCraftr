@@ -4,54 +4,60 @@ import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined'
 import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined'
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
-import { Button, ButtonGroup, Box, Toolbar, Stack, Paper } from '@mui/material'
+import { EditorToolbarButton, ButtonGroup, Box, Toolbar, Stack, Paper, useTheme } from '@mui/material'
 import StyleSelectAutocomplete from './StyleSelectAutocomplete'
 import { PropTypes } from 'prop-types'
 import { ReactEditor } from 'slate-react'
 import RulesetEditor from './RulesetEditor'
 import useRulesetStore from '../../../stores/rulesetStore'
+import { forwardRef } from 'react'
 
-function EditorToolbar(props) {
+const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
   const ruleset = useRulesetStore((state) => state.ruleset)
+  const theme = useTheme()
   return (
-    <Box sx={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 99, mb: 0 }}>
+    <Box ref={ref} sx={{ backgroundColor: 'white', zIndex: 99, mb: 0 }}>
       <Toolbar elevation={props.elevation} disableGutters sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%', pb: 1, pt: 2 }} elevation={props.elevation}>
+        <Paper
+          sx={{ width: '100%', padding: 1.5, backgroundColor: theme.palette.primaryContainer.main }}
+          elevation={props.elevation}
+        >
           <Stack direction="row">
             <ButtonGroup variant="outlined">
-              <Button color="primary" onClick={props.saveArticle} disabled={ruleset?.synced}>
+              <EditorToolbarButton onClick={props.saveArticle} disabled={ruleset?.synced}>
                 <SaveOutlinedIcon />
-              </Button>
-              <Button
+              </EditorToolbarButton>
+              <EditorToolbarButton
+                size="small"
                 onClick={() => {
                   RulesetEditor.toggleBoldMark(props.editor)
                   ReactEditor.focus(props.editor)
                 }}
               >
                 <FormatBoldOutlinedIcon />
-              </Button>
-              <Button
+              </EditorToolbarButton>
+              <EditorToolbarButton
                 onClick={() => {
                   RulesetEditor.toggleItalicMark(props.editor)
                   ReactEditor.focus(props.editor)
                 }}
               >
                 <FormatItalicOutlinedIcon />
-              </Button>
-              <Button
+              </EditorToolbarButton>
+              <EditorToolbarButton
                 onClick={() => {
                   RulesetEditor.toggleUnderlineMark(props.editor)
                   ReactEditor.focus(props.editor)
                 }}
               >
                 <FormatUnderlinedOutlinedIcon />
-              </Button>
-              <Button onClick={props.openArticleRefMenu} startIcon={<ArticleOutlinedIcon />}>
+              </EditorToolbarButton>
+              <EditorToolbarButton onClick={props.openArticleRefMenu} startIcon={<ArticleOutlinedIcon />}>
                 Reference
-              </Button>
-              <Button onClick={props.openKeywordRefMenu} startIcon={<KeyOutlinedIcon />}>
+              </EditorToolbarButton>
+              <EditorToolbarButton onClick={props.openKeywordRefMenu} startIcon={<KeyOutlinedIcon />}>
                 Reference
-              </Button>
+              </EditorToolbarButton>
             </ButtonGroup>
             <StyleSelectAutocomplete
               possibleStyles={['code', 'paragraph', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']}
@@ -63,7 +69,8 @@ function EditorToolbar(props) {
       </Toolbar>
     </Box>
   )
-}
+})
+
 EditorToolbar.propTypes = {
   handleStyleChange: PropTypes.func.isRequired,
   currentNodeStyle: PropTypes.string.isRequired,

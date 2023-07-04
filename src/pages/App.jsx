@@ -60,6 +60,10 @@ function App() {
       primaryContainer: {
         main: '#F9F0F2',
       },
+      background: {
+        default: '#F8F8F8',
+        paper: '#FFFFFF',
+      },
       secondaryContainer: {
         main: '#FFFFEB',
         dark: '#F2F2E1',

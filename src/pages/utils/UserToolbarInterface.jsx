@@ -27,6 +27,7 @@ function UserToolbarInterface(props) {
     if (user) {
       navigate('/user/' + user.id.toString() + '/profile')
     }
+    closeMenu()
   }
   return (
     <>
