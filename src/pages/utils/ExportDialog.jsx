@@ -11,14 +11,19 @@ import {
 import { PropTypes } from 'prop-types';
 import useRulesetStore from '../../stores/rulesetStore';
 import { findArticleInRuleset } from '../../data/rulesets';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function ExportDialog(props) {
   const { type, articleId, onClose, ...others } = props;
   const ruleset = useRulesetStore((state) => state.ruleset);
   const article = findArticleInRuleset(articleId, ruleset.articles);
   const [exportReady, setExportReady] = useState(false);
-
+  useEffect(() => {
+    if (type)
+      setTimeout(() => {
+        setExportReady(true);
+      }, 5000);
+  }, [type]);
   let dialogTitle = 'Exporting ';
   if (type === 'article') dialogTitle += 'Article ' + article ? article.title : '';
   if (type === 'ruleset') dialogTitle += 'Ruleset ' + ruleset.rn_name;
