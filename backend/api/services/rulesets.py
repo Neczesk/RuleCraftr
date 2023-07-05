@@ -1,4 +1,6 @@
 from ..dao import rulesets as rulesets
+from ..dao import articles as articles_dao
+from ..dao import keywords as keyword_dao
 
 
 def create_ruleset(ruleset_data):
@@ -6,6 +8,13 @@ def create_ruleset(ruleset_data):
 
 
 def delete_ruleset(id):
+    # Need to delete articles and keywords first until soft delete is implemented
+    # Find all articles belonging to any of these rulesets and delete them
+    larticles = articles_dao.get_list_of_articles_in_rulesets([id])
+    articles_dao.delete_articles(a["id"] for a in larticles)
+    # Find all keywords belonging to any of these rulesets and delete them
+    lkeywords = keyword_dao.get_list_of_keywords_in_rulesets([id])
+    keyword_dao.delete_keywords(k["id"] for k in lkeywords)
     return rulesets.delete_ruleset(id)
 
 

@@ -62,7 +62,7 @@ export function addKeyword(ruleset, newKeyword) {
 export function removeArticle(articleId, ruleset){
     const newRuleset = Object.assign({}, ruleset)
     const article = findArticleInRuleset(articleId, newRuleset.articles)
-    if (!article) return
+    if (!article) return ruleset
     deleteArticle(article)
     newRuleset.synced = false
     return sortRuleset(newRuleset)

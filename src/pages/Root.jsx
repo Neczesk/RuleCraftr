@@ -12,95 +12,92 @@ import {
   Typography,
   Menu,
   MenuItem,
-} from '@mui/material'
-import ListOutlinedIcon from '@mui/icons-material/ListOutlined'
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
-import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
-import UserToolbarInterface from './utils/UserToolbarInterface'
-import { Link as RouterLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { useState, useEffect, useContext } from 'react'
-import useRulesetStore from '../stores/rulesetStore'
-import useUserStore from '../stores/userStore'
-import { logoutUser, updateUser } from '../data/users'
-import { useSnackbar } from 'notistack'
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
-import { ColorModeContext } from './App'
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
-import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined'
+} from '@mui/material';
+import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import UserToolbarInterface from './utils/UserToolbarInterface';
+import { Link as RouterLink, Outlet, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import useRulesetStore from '../stores/rulesetStore';
+import useUserStore from '../stores/userStore';
+import { logoutUser, updateUser } from '../data/users';
+import { useSnackbar } from 'notistack';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import { ColorModeContext } from './App';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 
 function Root() {
-  const ruleset = useRulesetStore((state) => state.ruleset)
-  const clearRuleset = useRulesetStore((state) => state.clearRuleset)
-  const user = useUserStore((state) => state.user)
-  const setUser = useUserStore((state) => state.setUser)
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen)
-  const { enqueueSnackbar } = useSnackbar()
+  const ruleset = useRulesetStore((state) => state.ruleset);
+  const clearRuleset = useRulesetStore((state) => state.clearRuleset);
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogout = async (path) => {
     try {
-      const response = await logoutUser()
+      const response = await logoutUser();
       if (Object.keys(response).includes('Failure')) {
-        enqueueSnackbar(response.Failure, { variant: 'error' })
-        return false
+        enqueueSnackbar(response.Failure, { variant: 'error' });
+        return false;
       } else {
-        enqueueSnackbar(response.Success, { variant: 'success' })
-        setUser(null)
-        navigate(path)
+        enqueueSnackbar(response.Success, { variant: 'success' });
+        setUser(null);
+        navigate(path);
       }
-      return true
+      return true;
     } catch (error) {
       // You can handle any errors here
-      console.error(error)
+      console.error(error);
     }
-  }
-  const location = useLocation()
-  useEffect(() => {
-    clearRuleset()
-  }, [location, clearRuleset])
-  const colorModeContext = useContext(ColorModeContext)
+  };
+
+  const colorModeContext = useContext(ColorModeContext);
 
   useEffect(() => {
-    if (!user) return
-    const { theme_preference } = user
-    if (colorModeContext.themeName !== theme_preference) colorModeContext.setColorTheme(theme_preference)
-  }, [user, colorModeContext])
+    if (!user) return;
+    const { theme_preference } = user;
+    if (colorModeContext.themeName !== theme_preference) colorModeContext.setColorTheme(theme_preference);
+  }, [user, colorModeContext]);
 
   useEffect(() => {
-    if (!user) return
-    const { prefer_dark_mode } = user
+    if (!user) return;
+    const { prefer_dark_mode } = user;
     if (prefer_dark_mode) {
-      if (colorModeContext.colorMode === 'light') colorModeContext.toggleColorMode()
+      if (colorModeContext.colorMode === 'light') colorModeContext.toggleColorMode();
     } else {
-      if (colorModeContext.colorMode === 'dark') colorModeContext.toggleColorMode()
+      if (colorModeContext.colorMode === 'dark') colorModeContext.toggleColorMode();
     }
-  }, [user, colorModeContext])
+  }, [user, colorModeContext]);
 
   const setUserColorMode = async () => {
     if (colorModeContext) {
       if (user) {
-        const newUser = await updateUser(user.id, { prefer_dark_mode: !user.prefer_dark_mode })
-        await setUser(newUser)
+        const newUser = await updateUser(user.id, { prefer_dark_mode: !user.prefer_dark_mode });
+        await setUser(newUser);
       } else {
-        colorModeContext.toggleColorMode()
+        colorModeContext.toggleColorMode();
       }
     }
-  }
+  };
 
   const setUserTheme = async (newTheme) => {
     if (colorModeContext) {
       if (user) {
-        const newUser = await updateUser(user.id, { theme_preference: newTheme })
-        await setUser(newUser)
+        const newUser = await updateUser(user.id, { theme_preference: newTheme });
+        await setUser(newUser);
       } else {
-        colorModeContext.setColorTheme(newTheme)
+        colorModeContext.setColorTheme(newTheme);
       }
     }
-  }
+  };
 
-  const [themeMenuAnchorEl, setThemeMenuAnchorEl] = useState(null)
+  const [themeMenuAnchorEl, setThemeMenuAnchorEl] = useState(null);
   return (
     <>
       <Menu
@@ -118,14 +115,14 @@ function Root() {
       >
         <MenuItem
           onClick={() => {
-            setUserTheme('cherry')
+            setUserTheme('cherry');
           }}
         >
           Cherry
         </MenuItem>
         <MenuItem
           onClick={() => {
-            setUserTheme('vapor')
+            setUserTheme('vapor');
           }}
         >
           Vaporwave
@@ -136,8 +133,8 @@ function Root() {
           <ListItemButton
             component={RouterLink}
             onClick={() => {
-              toggleDrawer()
-              clearRuleset()
+              toggleDrawer();
+              clearRuleset();
             }}
             to={user ? 'user/' + user.id.toString() + '/rulesets' : ''}
           >
@@ -190,6 +187,6 @@ function Root() {
         </div>
       </Box>
     </>
-  )
+  );
 }
-export default Root
+export default Root;
