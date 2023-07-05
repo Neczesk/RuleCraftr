@@ -1,4 +1,5 @@
 import sqlalchemy
+import os
 
 from ..dao import Session
 from api.models.models import Users
@@ -24,7 +25,8 @@ def generate_new_user(userdata: dict):
         username=userdata["username"],
         passhash=userdata["passhash"],
         email=userdata["email"],
-        version=userdata["last_version_used"]
+        last_version_used=(userdata["last_version_used"]
+                           if "last_version_used" in userdata else os.getenv("VITE_VERSION"))
     )
 
 
