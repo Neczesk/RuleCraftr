@@ -12,46 +12,46 @@ import {
   Paper,
   TextField,
   Typography,
-} from '@mui/material'
-import useUserStore from '../../stores/userStore'
-import { useState } from 'react'
-import CloseIcon from '@mui/icons-material/Close'
-import { changePassword, changeUsername, deleteUserAccount, getUser } from '../../data/users'
-import { useNavigate } from 'react-router'
-import { get_password_suggestion, validate_password_strength } from '../../data/passwords'
-import { useSnackbar } from 'notistack'
+} from '@mui/material';
+import useUserStore from '../../stores/userStore';
+import { useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { changePassword, changeUsername, deleteUserAccount, getUser } from '../../data/users';
+import { useNavigate } from 'react-router';
+import { get_password_suggestion, validate_password_strength } from '../../data/passwords';
+import { useSnackbar } from 'notistack';
 
 function ProfileManagement() {
-  const user = useUserStore((state) => state.user)
-  const setUser = useUserStore((state) => state.setUser)
-  const [username, setUsername] = useState(user ? user.username : '')
-  const password = '*********'
-  const [editingUsername, setEditingUsername] = useState(false)
-  const [confirmUsernameDialogOpen, setConfirmUsernameDialogOpen] = useState(false)
-  const navigate = useNavigate()
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const [username, setUsername] = useState(user ? user.username : '');
+  const password = '*********';
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [confirmUsernameDialogOpen, setConfirmUsernameDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const toggleConfirmUsernameDialog = () => {
-    setConfirmPassword('')
-    setUsername(user.username)
-    setConfirmUsernameDialogOpen(!confirmUsernameDialogOpen)
-  }
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [changePasswordDialogOpen, setPasswordChangeDialogOpen] = useState(false)
+    setConfirmPassword('');
+    setUsername(user.username);
+    setConfirmUsernameDialogOpen(!confirmUsernameDialogOpen);
+  };
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changePasswordDialogOpen, setPasswordChangeDialogOpen] = useState(false);
   const togglePasswordChangeDialogOpen = () => {
-    setPasswordChangeDialogOpen(!changePasswordDialogOpen)
-  }
+    setPasswordChangeDialogOpen(!changePasswordDialogOpen);
+  };
   const [changePasswordDialogValue, setChangePasswordDialogValue] = useState({
     originalPassword: '',
     newPassword1: '',
     newPassword2: '',
-  })
+  });
   const validateChangePasswordValue = () => {
-    return changePasswordDialogValue.originalPassword !== '' && changePasswordDialogValue.newPassword1 !== ''
-  }
+    return changePasswordDialogValue.originalPassword !== '' && changePasswordDialogValue.newPassword1 !== '';
+  };
   const validateChangePasswordMatch = () => {
-    return changePasswordDialogValue.newPassword1 === changePasswordDialogValue.newPassword2
-  }
-  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
-  const { enqueueSnackbar } = useSnackbar()
+    return changePasswordDialogValue.newPassword1 === changePasswordDialogValue.newPassword2;
+  };
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   return (
     <>
       <Dialog open={deleteAccountOpen} onClose={() => setDeleteAccountOpen(false)}>
@@ -74,16 +74,18 @@ function ProfileManagement() {
             onClick={() => {
               deleteUserAccount(user.id, { password: confirmPassword })
                 .then((response) => {
-                  if (Object.keys(response).includes('Success')) setUser(null)
-                  return response
+                  if (Object.keys(response).includes('Success')) setUser(null);
+                  navigate('/home');
+                  return response;
                 })
                 .then((response) => {
-                  if (Object.keys(response).includes('Failure')) enqueueSnackbar(response.Failure, { variant: 'error' })
+                  if (Object.keys(response).includes('Failure'))
+                    enqueueSnackbar(response.Failure, { variant: 'error' });
                   else {
-                    navigate('/home')
-                    enqueueSnackbar(response.Success, { variant: 'info' })
+                    navigate('/home');
+                    enqueueSnackbar(response.Success, { variant: 'info' });
                   }
-                })
+                });
             }}
             sx={{ backgroundColor: 'red', color: 'white' }}
           >
@@ -91,8 +93,8 @@ function ProfileManagement() {
           </Button>
           <Button
             onClick={() => {
-              setConfirmPassword('')
-              setDeleteAccountOpen(false)
+              setConfirmPassword('');
+              setDeleteAccountOpen(false);
             }}
           >
             Cancel
@@ -120,18 +122,18 @@ function ProfileManagement() {
                 password: confirmPassword,
               })
                 .then((response) => {
-                  return !Object.keys(response).includes('Failure') ? getUser(user.id) : response
+                  return !Object.keys(response).includes('Failure') ? getUser(user.id) : response;
                 })
                 .then((value) => {
                   if (Object.keys(value).includes('Failure')) {
-                    enqueueSnackbar(value.Failure, { variant: 'error' })
+                    enqueueSnackbar(value.Failure, { variant: 'error' });
                   } else {
-                    enqueueSnackbar('Username successfully changed', { variant: 'success' })
-                    setUsername(value.username)
-                    setUser(value)
+                    enqueueSnackbar('Username successfully changed', { variant: 'success' });
+                    setUsername(value.username);
+                    setUser(value);
                   }
-                })
-              toggleConfirmUsernameDialog()
+                });
+              toggleConfirmUsernameDialog();
             }}
             disabled={confirmPassword === ''}
           >
@@ -179,18 +181,18 @@ function ProfileManagement() {
               }}
               variant="determinate"
               color={(() => {
-                if (changePasswordDialogValue.newPassword1 === '') return 'inherit'
+                if (changePasswordDialogValue.newPassword1 === '') return 'inherit';
                 switch (validate_password_strength(changePasswordDialogValue.newPassword1, user)) {
                   case 0:
-                    return 'primary'
+                    return 'primary';
                   case 1:
-                    return 'primary'
+                    return 'primary';
                   case 2:
-                    return 'secondary'
+                    return 'secondary';
                   case 3:
-                    return 'secondary'
+                    return 'secondary';
                   case 4:
-                    return 'secondary'
+                    return 'secondary';
                 }
               })()}
               value={(() => validate_password_strength(changePasswordDialogValue.newPassword1, user) * 25)()}
@@ -217,17 +219,17 @@ function ProfileManagement() {
             onClick={() => {
               changePassword(changePasswordDialogValue, user.id).then((response) => {
                 if (Object.keys(response).includes('Failure')) {
-                  enqueueSnackbar(response.Failure, { variant: 'error' })
+                  enqueueSnackbar(response.Failure, { variant: 'error' });
                 } else if (Object.keys(response).includes('Success')) {
-                  enqueueSnackbar(response.Success, { variant: 'success' })
-                  setPasswordChangeDialogOpen(false)
+                  enqueueSnackbar(response.Success, { variant: 'success' });
+                  setPasswordChangeDialogOpen(false);
                 }
-              })
+              });
               setChangePasswordDialogValue({
                 originalPassword: '',
                 newPassword1: '',
                 newPassword2: '',
-              })
+              });
             }}
             disabled={
               !validateChangePasswordValue() ||
@@ -243,8 +245,8 @@ function ProfileManagement() {
                 originalPassword: '',
                 newPassword1: '',
                 newPassword2: '',
-              })
-              togglePasswordChangeDialogOpen()
+              });
+              togglePasswordChangeDialogOpen();
             }}
           >
             Cancel
@@ -283,8 +285,8 @@ function ProfileManagement() {
                   disabled={editingUsername && username === user.username}
                   fullWidth
                   onClick={() => {
-                    if (editingUsername) setConfirmUsernameDialogOpen(true)
-                    setEditingUsername(!editingUsername)
+                    if (editingUsername) setConfirmUsernameDialogOpen(true);
+                    setEditingUsername(!editingUsername);
                   }}
                 >
                   {editingUsername ? 'Accept' : 'Change Username'}
@@ -292,8 +294,8 @@ function ProfileManagement() {
                 {editingUsername ? (
                   <IconButton
                     onClick={() => {
-                      setUsername(user.username)
-                      setEditingUsername(!editingUsername)
+                      setUsername(user.username);
+                      setEditingUsername(!editingUsername);
                     }}
                   >
                     <CloseIcon />
@@ -318,6 +320,6 @@ function ProfileManagement() {
         </Paper>
       </Container>
     </>
-  )
+  );
 }
-export default ProfileManagement
+export default ProfileManagement;
