@@ -93,3 +93,9 @@ export function deleteArticle(article) {
         article.childrenArticles.forEach((article) => deleteArticle(article))
     }
 }
+
+export function serializeArticle(article){
+    const j = JSON.stringify(article)
+    const blob = new Blob([j], {type: 'text/json'})
+    return URL.createObjectURL(blob)
+}

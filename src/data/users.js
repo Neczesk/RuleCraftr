@@ -9,6 +9,7 @@ export async function logoutUser(){
 }
 
 export async function createAccount(formData){
+    
     return await signupUser(formData)
 }
 

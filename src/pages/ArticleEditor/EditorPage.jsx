@@ -1,28 +1,25 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
+import { unstable_useBlocker as useBlocker, useParams, useLocation } from 'react-router';
+
+import { createEditor, Transforms } from 'slate';
+import { withReact, ReactEditor } from 'slate-react';
+import { GenstaffEditor } from './utils/GenstaffEditor';
+import RulesetEditor from './utils/RulesetEditor';
 
 import Grid from '@mui/material/Grid';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
+
+import { findArticleInRuleset, findKeywordInRuleset, getRuleset, saveRuleset } from '../../data/rulesets';
+import useRulesetStore from '../../stores/rulesetStore';
+import EditorToolbar from './utils/EditorToolbar';
 import ArticleEditor from './ArticleEditor';
 import ArticleTree from './ArticleTree';
-import useRulesetStore from '../../stores/rulesetStore';
 import KeywordInspector from './KeywordInspector';
-import { findArticleInRuleset, findKeywordInRuleset, getRuleset } from '../../data/rulesets';
-import { useParams } from 'react-router';
-import { unstable_useBlocker as useBlocker } from 'react-router';
 import ConfirmNavigationDialogue from './utils/ConfirmNavigationDialogue';
 import KeywordRefMenu from './KeywordRefMenu';
 import ArticleRefMenu from './ArticleRefMenu';
-import { withReact, ReactEditor } from 'slate-react';
-
-import RulesetEditor from './utils/RulesetEditor';
-import { GenstaffEditor } from './utils/GenstaffEditor';
-import { createEditor, Transforms } from 'slate';
-
-import { saveRuleset } from '../../data/rulesets';
-import EditorToolbar from './utils/EditorToolbar';
-import { useTheme } from '@mui/material';
+import ExportDialog from '../utils/ExportDialog';
 
 function EditorPage() {
   const ruleset = useRulesetStore((state) => state.ruleset);
@@ -176,9 +173,20 @@ function EditorPage() {
   }, [toolbarRef]);
 
   const theme = useTheme();
+
+  const [exportType, setExportType] = useState(null);
+  const handleExport = (type) => {
+    if ((type === 'article' && currentArticle) || type === 'ruleset') setExportType(type);
+  };
   // const colWidth = { xs: 12, sm: 6, md: 4, lg: 3 }
   return (
     <>
+      <ExportDialog
+        articleId={currentArticle}
+        type={exportType}
+        open={Boolean(exportType)}
+        onClose={() => setExportType(null)}
+      />
       <KeywordRefMenu
         anchorPosition={keywordRefMenuPosition}
         open={keywordRefMenuOpen}
@@ -201,6 +209,8 @@ function EditorPage() {
         overflow="none"
       >
         <EditorToolbar
+          handleExport={handleExport}
+          articleId={currentArticle}
           ref={toolbarRef}
           elevation={1}
           currentNodeStyle={currentNodeStyle}

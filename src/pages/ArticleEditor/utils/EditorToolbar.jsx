@@ -1,40 +1,52 @@
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'
-import FormatBoldOutlinedIcon from '@mui/icons-material/FormatBoldOutlined'
-import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined'
-import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined'
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
-import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
-import { Box, Toolbar, Paper, useTheme, Tabs, Tab, Grid } from '@mui/material'
-import StyleSelectAutocomplete from './StyleSelectAutocomplete'
-import { PropTypes } from 'prop-types'
-import { ReactEditor } from 'slate-react'
-import RulesetEditor from './RulesetEditor'
-import useRulesetStore from '../../../stores/rulesetStore'
-import { forwardRef, useCallback, useContext, useEffect, useState } from 'react'
-import EditorToolbarButton from './EditorToolbarButton'
-import { Editor } from 'slate'
-import { ColorModeContext } from '../../App'
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import FormatBoldOutlinedIcon from '@mui/icons-material/FormatBoldOutlined';
+import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined';
+import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
+import { Box, Toolbar, Paper, useTheme, Tabs, Tab, Grid } from '@mui/material';
+import StyleSelectAutocomplete from './StyleSelectAutocomplete';
+import { PropTypes } from 'prop-types';
+import { ReactEditor } from 'slate-react';
+import RulesetEditor from './RulesetEditor';
+import useRulesetStore from '../../../stores/rulesetStore';
+import { forwardRef, useCallback, useContext, useEffect, useState } from 'react';
+import EditorToolbarButton from './EditorToolbarButton';
+import { Editor } from 'slate';
+import { ColorModeContext } from '../../App';
+import SplitButton from '../../utils/SplitButton';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
-  const ruleset = useRulesetStore((state) => state.ruleset)
-  const theme = useTheme()
-  const { editor } = props
-  const [italicsActive, setItalicsActive] = useState(false)
-  const [underlineActive, setUnderlineActive] = useState(false)
-  const [boldActive, setBoldActive] = useState(false)
+  const ruleset = useRulesetStore((state) => state.ruleset);
+  const theme = useTheme();
+  const { editor } = props;
+  const [italicsActive, setItalicsActive] = useState(false);
+  const [underlineActive, setUnderlineActive] = useState(false);
+  const [boldActive, setBoldActive] = useState(false);
   const fetchMarks = useCallback(() => {
-    if (!Editor.marks(editor)) return []
-    return Object.keys(Editor.marks(editor))
-  }, [editor])
+    if (!Editor.marks(editor)) return [];
+    return Object.keys(Editor.marks(editor));
+  }, [editor]);
   useEffect(() => {
-    const marks = fetchMarks()
-    console.log('updated marks')
-    setItalicsActive(marks.includes('italic'))
-    setUnderlineActive(marks.includes('underline'))
-    setBoldActive(marks.includes('bold'))
-  }, [editor.selection, fetchMarks])
+    const marks = fetchMarks();
+    setItalicsActive(marks.includes('italic'));
+    setUnderlineActive(marks.includes('underline'));
+    setBoldActive(marks.includes('bold'));
+  }, [editor.selection, fetchMarks]);
 
-  const colorModeContext = useContext(ColorModeContext)
+  const colorModeContext = useContext(ColorModeContext);
+  const exportFunctionalities = [
+    {
+      label: 'Export Ruleset',
+      action: () => handleExport('ruleset'),
+      icon: <FileDownloadIcon />,
+    },
+  ];
+
+  const handleExport = (type) => {
+    props.handleExport(type);
+  };
 
   return (
     <Box ref={ref} sx={{ backgroundColor: 'white', zIndex: 99, mb: 0 }}>
@@ -66,9 +78,9 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   active={boldActive}
                   type="icon"
                   onClick={() => {
-                    setBoldActive(!boldActive)
-                    RulesetEditor.toggleBoldMark(editor)
-                    ReactEditor.focus(editor)
+                    setBoldActive(!boldActive);
+                    RulesetEditor.toggleBoldMark(editor);
+                    ReactEditor.focus(editor);
                   }}
                 >
                   <FormatBoldOutlinedIcon fontSize="small" />
@@ -79,9 +91,9 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   active={italicsActive}
                   type="icon"
                   onClick={() => {
-                    setItalicsActive(!italicsActive)
-                    RulesetEditor.toggleItalicMark(editor)
-                    ReactEditor.focus(editor)
+                    setItalicsActive(!italicsActive);
+                    RulesetEditor.toggleItalicMark(editor);
+                    ReactEditor.focus(editor);
                   }}
                 >
                   <FormatItalicOutlinedIcon fontSize="small" />
@@ -92,9 +104,9 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   active={underlineActive}
                   type="icon"
                   onClick={() => {
-                    setUnderlineActive(!underlineActive)
-                    RulesetEditor.toggleUnderlineMark(editor)
-                    ReactEditor.focus(editor)
+                    setUnderlineActive(!underlineActive);
+                    RulesetEditor.toggleUnderlineMark(editor);
+                    ReactEditor.focus(editor);
                   }}
                 >
                   <FormatUnderlinedOutlinedIcon fontSize="small" />
@@ -115,7 +127,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                 </EditorToolbarButton>
               </Grid>
             </Grid>
-            <Grid item container xs={8}>
+            <Grid item container xs={8} spacing={2}>
               <Grid item>
                 <StyleSelectAutocomplete
                   size="small"
@@ -124,13 +136,25 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   onChange={props.handleStyleChange}
                 />
               </Grid>
+              <Grid item>
+                <SplitButton
+                  mainAction={() => {
+                    handleExport('article');
+                  }}
+                  mainActionLabel="Export Article"
+                  functionalities={exportFunctionalities}
+                  color="inherit"
+                  variant="text"
+                  icon={<FileDownloadIcon />}
+                />
+              </Grid>
             </Grid>
           </Grid>
         </Paper>
       </Toolbar>
     </Box>
-  )
-})
+  );
+});
 
 EditorToolbar.propTypes = {
   handleStyleChange: PropTypes.func.isRequired,
@@ -140,5 +164,6 @@ EditorToolbar.propTypes = {
   editor: PropTypes.object.isRequired,
   saveArticle: PropTypes.func.isRequired,
   elevation: PropTypes.number,
-}
-export default EditorToolbar
+  handleExport: PropTypes.func,
+};
+export default EditorToolbar;

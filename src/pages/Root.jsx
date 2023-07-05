@@ -27,6 +27,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import { ColorModeContext } from './App';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 function Root() {
   const ruleset = useRulesetStore((state) => state.ruleset);
@@ -56,7 +57,6 @@ function Root() {
       console.error(error);
     }
   };
-
   const colorModeContext = useContext(ColorModeContext);
 
   useEffect(() => {
@@ -130,6 +130,12 @@ function Root() {
       </Menu>
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
         <List>
+          <ListItemButton onClick={toggleDrawer}>
+            <ListItemIcon>
+              <CloseIcon />
+            </ListItemIcon>
+            <ListItemText primary="Close this menu" />
+          </ListItemButton>
           <ListItemButton
             component={RouterLink}
             onClick={() => {
@@ -160,7 +166,7 @@ function Root() {
         </List>
       </Drawer>
       <CssBaseline />
-      <Box>
+      <Box height="100vh" display="flex" flexDirection="column">
         <AppBar position="sticky" color="primary">
           <Toolbar variant="dense">
             <IconButton component={RouterLink} to="/home" color="inherit">
@@ -182,9 +188,9 @@ function Root() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div>
+        <Box display="flex" flexDirection="column" flexGrow={1}>
           <Outlet />
-        </div>
+        </Box>
       </Box>
     </>
   );
