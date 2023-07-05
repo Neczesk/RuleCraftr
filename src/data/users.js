@@ -1,4 +1,4 @@
-import {changepassword, changeusername, delete_user, get_user, loginUser as netLoginUser, logoutUser as netLogoutUser, signupUser} from '../network/users'
+import {changepassword, changeusername, delete_user, get_user, loginUser as netLoginUser, logoutUser as netLogoutUser, signupUser, update_user} from '../network/users'
 
 export async function loginUser(data) {
     return await netLoginUser(data)
@@ -26,4 +26,8 @@ export async function getUser(user_id){
 
 export async function deleteUserAccount(user_id, data){
     return await delete_user(user_id, data)
+}
+
+export async function updateUser(user_id, data){
+    return await update_user(user_id, data)
 }

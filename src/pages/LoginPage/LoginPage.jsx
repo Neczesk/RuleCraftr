@@ -87,7 +87,9 @@ function LoginPage() {
       return newUser
     } else {
       setUser(newUser)
-      return newUser
+      enqueueSnackbar('Successfully logged in', { variant: 'success' })
+      const path = '../user/' + newUser.id.toString() + '/rulesets'
+      navigate(path)
     }
   }
 
@@ -99,7 +101,9 @@ function LoginPage() {
       return newUser
     } else {
       setUser(newUser)
-      return newUser
+      enqueueSnackbar('Successfully Created Account', { variant: 'success' })
+      const path = '../user/' + newUser.id.toString() + '/rulesets'
+      navigate(path)
     }
   }
 
@@ -108,24 +112,10 @@ function LoginPage() {
       event.preventDefault()
       switch (currentTab) {
         case 0:
-          if (validateLogin())
-            login({ username, password }).then((user) => {
-              if (!Object.keys(user).includes('Failure')) {
-                enqueueSnackbar('Successfully logged in', { variant: 'success' })
-                const path = '../user/' + user.id.toString() + '/rulesets'
-                navigate(path)
-              }
-            })
+          if (validateLogin()) login({ username, password })
           break
         case 1:
-          if (validateAccountCreate())
-            signup(prepareCreateAccountForm()).then((user) => {
-              if (!Object.keys(user).includes('Failure')) {
-                enqueueSnackbar('Successfully Created Account', { variant: 'success' })
-                const path = '../user/' + user.id.toString() + '/rulesets'
-                navigate(path)
-              }
-            })
+          if (validateAccountCreate()) signup(prepareCreateAccountForm())
       }
     }
   }
@@ -221,13 +211,7 @@ function LoginPage() {
       <CardActions>
         <Button
           onClick={() => {
-            signup(prepareCreateAccountForm()).then((user) => {
-              if (!Object.keys(user).includes('Failure')) {
-                enqueueSnackbar('Successfully Created Account', { variant: 'success' })
-                const path = '../user/' + user.id.toString() + '/rulesets'
-                navigate(path)
-              }
-            })
+            signup(prepareCreateAccountForm())
           }}
           disabled={!validateAccountCreate() || shouldDisplayPasswordMatchError()}
           variant="contained"
@@ -272,13 +256,7 @@ function LoginPage() {
       <CardActions>
         <Button
           onClick={() => {
-            login({ username, password }).then((user) => {
-              if (!Object.keys(user).includes('Failure')) {
-                enqueueSnackbar('Successfully logged in', { variant: 'success' })
-                const path = '../user/' + user.id.toString() + '/rulesets'
-                navigate(path)
-              }
-            })
+            login({ username, password })
           }}
           variant="contained"
           disabled={!validateLogin()}

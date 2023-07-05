@@ -130,16 +130,13 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
             borderBottomRightRadius: 0,
             borderBottomLeftRadius: 0,
             height: '100%',
-            backgroundColor: theme.palette.secondaryContainer.main,
+            backgroundColor: theme.palette.primaryContainer.main,
           }}
         >
           <Toolbar>
             <Container>
-              <ButtonGroup>
+              <ButtonGroup color="secondary">
                 <Button
-                  sx={{
-                    color: 'white',
-                  }}
                   variant="contained"
                   color="secondary"
                   disabled={selectedView === 2}

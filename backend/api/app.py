@@ -58,14 +58,17 @@ def login():
             "id": userdata['id'],
             "email": userdata['email'],
             "activated": userdata['is_activated'],
-            "admin": userdata['is_admin']
+            "admin": userdata['is_admin'],
+            "last_version_used": userdata["last_version_used"],
+            "prefer_dark_mode": userdata["prefer_dark_mode"],
+            "theme_preference": userdata["theme_preference"]
         }
         return standard_response(responsedata, 200)
     elif request.method == 'OPTIONS':
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, POST")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -97,7 +100,7 @@ def signup():
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, POST")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -116,7 +119,7 @@ def logout():
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, POST")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -137,7 +140,7 @@ def change_password(id: int):
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, PUT")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -158,7 +161,7 @@ def delete_account(id: int):
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, DELETE")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -179,27 +182,44 @@ def change_username(id: int):
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, PUT")
         response.headers.add("access-control-allow-headers", "Content-type")
         return response
 
 
-@app.route("/api/user/<int:id>", methods=["GET"], strict_slashes=True)
+@app.route("/api/user/<int:id>", methods=["GET", 'PUT', 'OPTIONS'], strict_slashes=True)
 @login_required
 def get_user(id: int):
-    if id == current_user.id:
-        body = users.get_user(id)
-        return standard_response(body, 200)
-    else:
-        return standard_response({"Failure": "Not allowed to request a user other than yourself"}, 403)
+    if request.method == 'GET':
+        if id == current_user.id:
+            body = users.get_user(id)
+            return standard_response(body, 200)
+        else:
+            return standard_response({"Failure": "Not allowed to request a user other than yourself"}, 403)
+    elif request.method == 'PUT':
+        if id == current_user.id:
+            userdata = request.get_json()
+            body = users.update_user_meta(id, userdata)
+            return standard_response(body, 200)
+        else:
+            return standard_response({"Failure": "Not allowed to edit another user"}, 403)
+    elif request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add('access-control-allow-credentials', 'true')
+        response.headers.add("access-control-allow-origin",
+                             'http://localhost:5173')
+        response.headers.add(
+            "access-control-allow-methods", "OPTIONS, PUT, GET")
+        response.headers.add("access-control-allow-headers", "Content-type")
+        return response
 
 
 def standard_response(body, code):
     response = make_response(body, code)
     response.headers.add("access-control-allow-origin",
-                         'http://localhost:80')
+                         'http://localhost:5173')
     response.headers.add("access-control-allow-credentials", "true")
     return response
 
@@ -221,7 +241,7 @@ def get_ruleset(id: int):
         response.headers.add('access-control-allow-credentials', 'true')
 
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "OPTIONS, DELETE, GET")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -242,7 +262,7 @@ def get_rulesets():
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "POST, OPTIONS, PUT, DELETE, GET")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -298,7 +318,7 @@ def create_article():
         response = make_response()
         response.headers.add('access-control-allow-credentials', 'true')
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add(
             "access-control-allow-methods", "POST, OPTIONS, PUT, DELETE")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -348,7 +368,7 @@ def create_keyword():
         response.headers.add('access-control-allow-credentials', 'true')
 
         response.headers.add("access-control-allow-origin",
-                             'http://localhost:80')
+                             'http://localhost:5173')
         response.headers.add("access-control-allow-methods",
                              "POST, OPTIONS, PUT, DELETE")
         response.headers.add("access-control-allow-headers", "Content-type")
@@ -369,3 +389,8 @@ def create_keyword():
             return standard_response(body, 200)
         else:
             return standard_response({"Failure": "Not allowed to delete keywords of a ruleset that doesn't belong to you"}, 403)
+
+
+@app.route("/api/version", methods=['GET'])
+def get_version():
+    return standard_response(os.getenv('VITE_VERSION'), 200)

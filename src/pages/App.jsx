@@ -6,9 +6,33 @@ import RulesetManager from './RulesetManager/RulesetManager'
 import LoginPage from './LoginPage/LoginPage'
 import ProfileManagement from './ProfileManagement/ProfileManagement'
 import Root from './Root'
-import { ThemeProvider, createTheme } from '@mui/material'
+import { ThemeProvider, createTheme, useMediaQuery } from '@mui/material'
+import { useMemo, useState, createContext, useEffect } from 'react'
+import { getDesignTokens } from './utils/themes'
+import useUserStore from '../stores/userStore'
+import { getCurrentVersion } from '../data/version'
+import { updateUser } from '../data/users'
+import NewVersionDialog from './utils/NewVersionDialog'
+
+export const ColorModeContext = createContext({ toggleColorMode: () => {} })
 
 function App() {
+  const user = useUserStore((state) => state.user)
+  const setUser = useUserStore((state) => state.setUser)
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  const [currentVersion, setCurrentVersion] = useState('No current version')
+  const [newVersionDialogOpen, setNewVersionDialogOpen] = useState(false)
+  const closeNewVersionDialogue = () => {
+    if (user) {
+      setUser({
+        ...user,
+        last_version_used: currentVersion,
+      })
+      updateUser(user.id, { last_version_used: currentVersion })
+    }
+    setNewVersionDialogOpen(false)
+  }
+
   const RedirectToHome = () => {
     return <Navigate to="/home" />
   }
@@ -46,41 +70,46 @@ function App() {
     },
   ])
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#B30024',
+  const [mode, setMode] = useState(prefersDarkMode ? 'dark' : 'light')
+  const [themeName, setThemeName] = useState(import.meta.env.VITE_DEFAULT_THEME)
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))
       },
-      secondary: {
-        main: '#5C5C00',
+      setColorTheme: (name) => {
+        setThemeName(name)
       },
-      tertiary: {
-        main: '#385B70',
-      },
-      primaryContainer: {
-        main: '#F9F0F2',
-      },
-      background: {
-        default: '#F8F8F8',
-        paper: '#FFFFFF',
-      },
-      secondaryContainer: {
-        main: '#FFFFEB',
-        dark: '#F2F2E1',
-      },
-      tertiaryContainer: {
-        main: '#F2FBFF',
-      },
-    },
-  })
+      colorMode: mode,
+      themeName: themeName,
+    }),
+    [mode, themeName]
+  )
+  const theme = useMemo(() => createTheme(getDesignTokens(mode, themeName)), [mode, themeName])
 
   const composedTheme = createTheme(theme, {})
 
+  useEffect(() => {
+    if (!user) return
+    const { last_version_used } = user
+    getCurrentVersion().then((version) => {
+      setCurrentVersion(version)
+      if (last_version_used != version || !last_version_used) setNewVersionDialogOpen(true)
+    })
+  }, [user, currentVersion])
+
   return (
     <>
-      <ThemeProvider theme={composedTheme}>
-        <RouterProvider router={router}></RouterProvider>
-      </ThemeProvider>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={composedTheme}>
+          <NewVersionDialog
+            open={newVersionDialogOpen}
+            onClose={closeNewVersionDialogue}
+            currentVersion={currentVersion}
+          />
+          <RouterProvider router={router}></RouterProvider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
     </>
   )
 }

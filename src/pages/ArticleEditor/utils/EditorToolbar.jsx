@@ -10,9 +10,10 @@ import { PropTypes } from 'prop-types'
 import { ReactEditor } from 'slate-react'
 import RulesetEditor from './RulesetEditor'
 import useRulesetStore from '../../../stores/rulesetStore'
-import { forwardRef, useCallback, useEffect, useState } from 'react'
+import { forwardRef, useCallback, useContext, useEffect, useState } from 'react'
 import EditorToolbarButton from './EditorToolbarButton'
 import { Editor } from 'slate'
+import { ColorModeContext } from '../../App'
 
 const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
   const ruleset = useRulesetStore((state) => state.ruleset)
@@ -32,11 +33,22 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
     setUnderlineActive(marks.includes('underline'))
     setBoldActive(marks.includes('bold'))
   }, [editor.selection, fetchMarks])
+
+  const colorModeContext = useContext(ColorModeContext)
+
   return (
     <Box ref={ref} sx={{ backgroundColor: 'white', zIndex: 99, mb: 0 }}>
       <Toolbar elevation={props.elevation} disableGutters sx={{ width: '100%' }}>
         <Paper
-          sx={{ width: '100%', padding: 1.5, backgroundColor: theme.palette.primaryContainer.main }}
+          sx={{
+            borderRadius: 0,
+            width: '100%',
+            padding: 1.5,
+            backgroundColor:
+              colorModeContext.colorMode === 'dark'
+                ? theme.palette.primaryContainer.light
+                : theme.palette.primaryContainer.dark,
+          }}
           elevation={props.elevation}
         >
           <Tabs value={0} sx={{ padding: 0, margin: 0, minHeight: 0 }}>

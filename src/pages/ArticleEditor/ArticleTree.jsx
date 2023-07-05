@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { TreeView } from '@mui/lab'
 import useRulesetStore from '../../stores/rulesetStore'
 import { Menu, MenuItem, Paper, Toolbar, useTheme } from '@mui/material'
@@ -9,6 +9,7 @@ import { findArticleInRuleset, addArticle, removeArticle } from '../../data/rule
 import { createArticle } from '../../data/articles'
 import SplitButton from '../utils/SplitButton'
 import ThemedTreeItem from './utils/ThemedTreeItem'
+import { ColorModeContext } from '../App'
 
 function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
   const ruleset = useRulesetStore((state) => state.ruleset)
@@ -24,14 +25,19 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
   }
 
   const theme = useTheme()
+  const colorModeContext = useContext(ColorModeContext)
 
   const renderArticle = (article) => {
     if (!article.deleted) {
       return (
         <ThemedTreeItem
           key={article?.id}
-          color="red"
-          bgColor={theme.palette.secondaryContainer.dark}
+          color={colorModeContext.colorMode === 'dark' ? theme.palette.common.white : theme.palette.common.black}
+          bgColor={
+            colorModeContext.colorMode === 'dark'
+              ? theme.palette.primaryContainer.light
+              : theme.palette.primaryContainer.dark
+          }
           onContextMenu={(event) => {
             event.preventDefault()
             event.stopPropagation()
@@ -113,7 +119,7 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
           padding: 1,
           margin: 0,
           height: '100%',
-          backgroundColor: theme.palette.secondaryContainer.main,
+          backgroundColor: theme.palette.primaryContainer.main,
         }}
         elevation={elevation}
       >

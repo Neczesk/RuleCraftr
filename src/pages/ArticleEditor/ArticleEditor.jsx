@@ -9,7 +9,7 @@ import { Slate, Editable } from 'slate-react'
 import RulesetEditor from './utils/RulesetEditor'
 import { ArticleLink, CodeElement, DefaultElement, HeaderElement, KeywordLink, Leaf } from './utils/elementComponents'
 // Material Dependencies
-import { Box, TextField, styled, Paper } from '@mui/material'
+import { Box, TextField, styled, Paper, useTheme } from '@mui/material'
 
 // Local modules
 import useRulesetStore from '../../stores/rulesetStore'
@@ -174,6 +174,8 @@ export default function ArticleEditor({
     setArticleTitle(event.target.value)
   }
 
+  const theme = useTheme()
+
   return (
     <>
       <Paper
@@ -181,8 +183,9 @@ export default function ArticleEditor({
           borderRadius: 0,
           height: '100%',
           overflowY: 'auto',
-          borderLeft: '1px solid #BBBBBB',
-          borderRight: '1px solid #BBBBBB',
+          borderLeft: `1px solid ${theme.palette.paperBorder.main}`,
+          borderRight: `1px solid ${theme.palette.paperBorder.main}`,
+          borderTop: `1px solid ${theme.palette.paperBorder.main}`,
           display: 'flex',
           flexDirection: 'column',
           paddingX: 5,

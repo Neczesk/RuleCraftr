@@ -131,3 +131,21 @@ export async function delete_user(user_id, data){
         }
     }
 }
+
+export async function update_user(user_id, data){
+    const url = import.meta.env.VITE_API_URL + "user/" + user_id.toString()
+    let response
+    try {
+        response = await instance.put(url, data )
+        return response.data
+    } catch (e) {
+        if (Object.keys(e.response?.data).includes('Failure')){
+            return e.response.data;
+        }
+        else {
+            return {
+                Failure: 'Unknown error occured'
+            };
+        }
+    }
+}

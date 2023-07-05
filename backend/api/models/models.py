@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKeyConstraint, Integer, JSON, PrimaryKeyConstraint, Table, Text, UniqueConstraint, text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKeyConstraint, Integer, JSON, PrimaryKeyConstraint, String, Table, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -26,6 +26,9 @@ class Users(Base):
     email = Column(Text)
     is_admin = Column(Boolean, server_default=text('false'))
     is_activated = Column(Boolean, server_default=text('true'))
+    last_version_used = Column(String)
+    prefer_dark_mode = Column(Boolean)
+    theme_preference = Column(Text, server_default=text("'cherry'::text"))
 
     invite_codes = relationship('InviteCodes', back_populates='users')
     rulesets = relationship('Rulesets', back_populates='user')

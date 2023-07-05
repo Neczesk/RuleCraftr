@@ -228,7 +228,7 @@ function EditorPage() {
               xl={8}
               sx={{
                 height: '100%',
-                backgroundColor: theme.palette.secondaryContainer.main,
+                backgroundColor: theme.palette.primaryContainer.main,
                 pt: 2,
               }}
               zIndex="2"

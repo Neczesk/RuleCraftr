@@ -121,3 +121,7 @@ def delete_account(user: api.models.user.User, password):
     if not delete_status:
         return {"Failure": "Failed to delete user from database"}, 500
     return {"Success": "User account deleted"}, 200
+
+
+def update_user_meta(id, data):
+    return users.update_user_meta(id, data)

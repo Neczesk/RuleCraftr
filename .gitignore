@@ -10,7 +10,7 @@ __pycache__/
 .yarnrc.yml
 certbot/conf/accounts/
 certbot/
-
+db/migrations/tern.conf
 # Distribution / packaging
 .Python
 build/

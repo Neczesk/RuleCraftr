@@ -24,6 +24,7 @@ export const KeywordLink = (props) => {
   return (
     <Tooltip arrow title={keyword ? keyword.shortDefinition : 'KEYWORD MISSING'}>
       <Button
+        color="secondary"
         style={{ display: 'inline-block' }}
         variant="text"
         onClick={handleClick}
@@ -50,7 +51,16 @@ export const ArticleLink = (props) => {
     props.selectArticle(props.element.id)
   }
   return (
-    <Button style={{ display: 'inline-block' }} variant="text" onClick={handleClick} {...props.attributes}>
+    <Button
+      color="primary"
+      style={{ display: 'inline-block' }}
+      variant="text"
+      onClick={handleClick}
+      {...props.attributes}
+      sx={{
+        padding: 0,
+      }}
+    >
       {props.children}
       {article ? article.title : 'Article Missing'}
     </Button>

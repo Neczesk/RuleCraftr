@@ -277,7 +277,7 @@ function ProfileManagement() {
                   sx={{ pb: 2 }}
                 />
               </Grid>
-              <Grid item xs={4} display="flex" flexDirection="row">
+              <Grid item xs={4} display="flex" flexDirection="row" sx={{ pb: 2 }}>
                 <Button
                   color={editingUsername ? 'success' : 'primary'}
                   disabled={editingUsername && username === user.username}
@@ -305,7 +305,7 @@ function ProfileManagement() {
               <Grid item xs={8}>
                 <TextField disabled value={password} type="password" label="password" fullWidth sx={{ pb: 2 }} />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={4} display="flex" flexDirection="row" sx={{ pb: 2 }}>
                 <Button onClick={togglePasswordChangeDialogOpen} fullWidth>
                   Change Password
                 </Button>
