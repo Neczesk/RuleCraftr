@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types'
-import useRulesetStore from '../../stores/rulesetStore'
-import { useEffect, useState } from 'react'
-import * as dataKeywords from '../../data/keywords'
-import { findKeywordInRuleset, updateKeyword, saveRuleset, removeKeyword, addKeyword } from '../../data/rulesets'
+import PropTypes from 'prop-types';
+import useRulesetStore from '../../stores/rulesetStore';
+import { useEffect, useState } from 'react';
+import * as dataKeywords from '../../data/keywords';
+import { findKeywordInRuleset, updateKeyword, saveRuleset, removeKeyword, addKeyword } from '../../data/rulesets';
 
 import {
   Box,
@@ -18,10 +18,10 @@ import {
   Typography,
   styled,
   useTheme,
-} from '@mui/material'
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
-import KeywordTable from './utils/KeywordTable'
+} from '@mui/material';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import KeywordTable from './utils/KeywordTable';
 
 const KeywordLabelTextField = styled(TextField)({
   '& .MuiInputBase-input': {
@@ -31,109 +31,110 @@ const KeywordLabelTextField = styled(TextField)({
   '& .MuiInputLabel-root': {
     fontSize: '22px', // Set the font size you need
   },
-})
+});
 
-function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
-  const ruleset = useRulesetStore((state) => state.ruleset)
-  const setRuleset = useRulesetStore((state) => state.setRuleset)
-  const [keyword, setKeyword] = useState(null)
-  const [selectedView, setSelectedView] = useState(0)
+function KeywordInspector({ keywordId, onSelectKeyword, elevation, sx }) {
+  const ruleset = useRulesetStore((state) => state.ruleset);
+  const setRuleset = useRulesetStore((state) => state.setRuleset);
+  const [keyword, setKeyword] = useState(null);
+  const [selectedView, setSelectedView] = useState(0);
   const [inspectorValue, setInspectorValue] = useState({
     keyword: ' ',
     shortDefinition: ' ',
     longDefinition: ' ',
-  })
+  });
   useEffect(() => {
-    const newKeyword = findKeywordInRuleset(keywordId, ruleset)
-    setSelectedView(0)
+    const newKeyword = findKeywordInRuleset(keywordId, ruleset);
+    setSelectedView(0);
     if (keywordId) {
-      setKeyword(newKeyword)
+      setKeyword(newKeyword);
     } else {
       setInspectorValue({
         keyword: '',
         shortDefinition: '',
         longDefinition: '',
-      })
-      setSelectedView(2)
+      });
+      setSelectedView(2);
     }
     if (newKeyword) {
       setInspectorValue({
         keyword: newKeyword.keyword,
         longDefinition: newKeyword.longDefinition ? newKeyword.longDefinition : '',
         shortDefinition: newKeyword.shortDefinition ? newKeyword.shortDefinition : '',
-      })
+      });
     }
-  }, [keywordId, ruleset, keyword])
+  }, [keywordId, ruleset, keyword]);
 
   // Manipulating the state of the Keyword Inspector itself
-  const [editKeywordToggle, setEditKeywordToggle] = useState(false)
+  const [editKeywordToggle, setEditKeywordToggle] = useState(false);
   const toggleKeywordEdit = () => {
-    setEditKeywordToggle(!editKeywordToggle)
-  }
+    setEditKeywordToggle(!editKeywordToggle);
+  };
 
   const handleKeyFields = (event) => {
     if (event.key === 's' && event.ctrlKey) {
-      event.preventDefault()
-      save()
+      event.preventDefault();
+      save();
     }
-  }
+  };
 
   const handleKeyKeyword = (event) => {
     if (event.key === 'Enter') {
-      event.preventDefault()
-      toggleKeywordEdit()
+      event.preventDefault();
+      toggleKeywordEdit();
     }
     if (event.key === 's' && event.ctrlKey) {
-      event.preventDefault()
-      toggleKeywordEdit()
-      save()
+      event.preventDefault();
+      toggleKeywordEdit();
+      save();
     }
-  }
+  };
 
   const save = () => {
-    saveRuleset(ruleset).then((newRuleset) => setRuleset(newRuleset))
-  }
+    saveRuleset(ruleset).then((newRuleset) => setRuleset(newRuleset));
+  };
 
   const handleBlur = () => {
-    toggleKeywordEdit()
+    toggleKeywordEdit();
     // Add your custom behavior here
-  }
+  };
 
   // These functions are used to manipulate the keywords of the active ruleset
 
   const onKeywordUpdate = (newData) => {
-    setRuleset(updateKeyword({ ...newData, id: keyword.id }, ruleset))
-  }
+    setRuleset(updateKeyword({ ...newData, id: keyword.id }, ruleset));
+  };
 
   const selectKeyword = (id) => {
-    onSelectKeyword(id)
-  }
+    onSelectKeyword(id);
+  };
 
   const deleteKeyword = (id) => {
-    setRuleset(removeKeyword(id, ruleset))
-  }
+    setRuleset(removeKeyword(id, ruleset));
+  };
 
   const createKeyword = (newData) => {
-    const newKeyword = dataKeywords.createKeyword(ruleset.id, newData)
-    setRuleset(addKeyword(ruleset, newKeyword))
-    selectKeyword(newKeyword.id)
-  }
-  const theme = useTheme()
+    const newKeyword = dataKeywords.createKeyword(ruleset.id, newData);
+    setRuleset(addKeyword(ruleset, newKeyword));
+    selectKeyword(newKeyword.id);
+  };
+  const theme = useTheme();
 
   return (
     <>
-      <Box marginBottom={0} maxHeight="100%" height="100%" display="flex" flexDirection="column">
+      <Box marginBottom={0} sx={sx} flexDirection="column">
         <Paper
           elevation={elevation}
           sx={{
             padding: 1,
+            pt: 0,
             borderBottomRightRadius: 0,
             borderBottomLeftRadius: 0,
             height: '100%',
             backgroundColor: theme.palette.primaryContainer.main,
           }}
         >
-          <Toolbar>
+          <Toolbar variant="dense" sx={{ pb: 1 }}>
             <Container>
               <ButtonGroup color="secondary">
                 <Button
@@ -141,16 +142,16 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
                   color="secondary"
                   disabled={selectedView === 2}
                   onClick={() => {
-                    selectKeyword(null)
+                    selectKeyword(null);
                     switch (selectedView) {
                       case 1:
-                        setSelectedView(2)
-                        break
+                        setSelectedView(2);
+                        break;
                       case 0:
-                        setSelectedView(2)
-                        break
+                        setSelectedView(2);
+                        break;
                       case 2:
-                        break
+                        break;
                     }
                   }}
                 >
@@ -190,8 +191,8 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
                   label=""
                   value={inspectorValue.keyword}
                   onChange={(event) => {
-                    setInspectorValue({ ...inspectorValue, keyword: event.target.value })
-                    onKeywordUpdate({ ...inspectorValue, keyword: event.target.value })
+                    setInspectorValue({ ...inspectorValue, keyword: event.target.value });
+                    onKeywordUpdate({ ...inspectorValue, keyword: event.target.value });
                   }}
                   onKeyDown={handleKeyKeyword}
                   onBlur={handleBlur}
@@ -217,8 +218,8 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
                 label="Short Definition"
                 value={inspectorValue.shortDefinition}
                 onChange={(event) => {
-                  setInspectorValue({ ...inspectorValue, shortDefinition: event.target.value })
-                  onKeywordUpdate({ ...inspectorValue, shortDefinition: event.target.value })
+                  setInspectorValue({ ...inspectorValue, shortDefinition: event.target.value });
+                  onKeywordUpdate({ ...inspectorValue, shortDefinition: event.target.value });
                 }}
                 variant="standard"
               />
@@ -234,8 +235,8 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
                 label="Long Definition"
                 value={inspectorValue.longDefinition}
                 onChange={(event) => {
-                  setInspectorValue({ ...inspectorValue, longDefinition: event.target.value })
-                  onKeywordUpdate({ ...inspectorValue, longDefinition: event.target.value })
+                  setInspectorValue({ ...inspectorValue, longDefinition: event.target.value });
+                  onKeywordUpdate({ ...inspectorValue, longDefinition: event.target.value });
                 }}
               />
             </Box>
@@ -243,12 +244,12 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation }) {
         </Paper>
       </Box>
     </>
-  )
+  );
 }
 KeywordInspector.propTypes = {
   keywordId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onSelectKeyword: PropTypes.func,
   sx: PropTypes.object,
   elevation: PropTypes.number,
-}
-export default KeywordInspector
+};
+export default KeywordInspector;

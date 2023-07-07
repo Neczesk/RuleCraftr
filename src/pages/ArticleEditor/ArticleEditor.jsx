@@ -1,19 +1,19 @@
 // Import React dependencies.
-import { useCallback, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { useCallback, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 //Slate Dependencies
-import { Transforms } from 'slate'
-import { Slate, Editable } from 'slate-react'
+import { Transforms } from 'slate';
+import { Slate, Editable } from 'slate-react';
 // Custome slate dependencies
-import RulesetEditor from './utils/RulesetEditor'
-import { ArticleLink, CodeElement, DefaultElement, HeaderElement, KeywordLink, Leaf } from './utils/elementComponents'
+import RulesetEditor from './utils/RulesetEditor';
+import { ArticleLink, CodeElement, DefaultElement, HeaderElement, KeywordLink, Leaf } from './utils/elementComponents';
 // Material Dependencies
-import { Box, TextField, styled, Paper, useTheme } from '@mui/material'
+import { Box, TextField, styled, Paper, useTheme } from '@mui/material';
 
 // Local modules
-import useRulesetStore from '../../stores/rulesetStore'
-import { findArticleInRuleset, updateArticle } from '../../data/rulesets'
+import useRulesetStore from '../../stores/rulesetStore';
+import { findArticleInRuleset, updateArticle } from '../../data/rulesets';
 
 const StyledTextField = styled(TextField)({
   '& .MuiInputBase-input': {
@@ -23,7 +23,7 @@ const StyledTextField = styled(TextField)({
   '& .MuiInputLabel-root': {
     fontSize: '22px', // Set the font size you need
   },
-})
+});
 
 export default function ArticleEditor({
   initialValue,
@@ -39,142 +39,142 @@ export default function ArticleEditor({
   setCurrentSelection,
   saveArticle,
 }) {
-  const ruleset = useRulesetStore((state) => state.ruleset)
-  const setRuleset = useRulesetStore((state) => state.setRuleset)
-  const [article, setArticle] = useState(null)
+  const ruleset = useRulesetStore((state) => state.ruleset);
+  const setRuleset = useRulesetStore((state) => state.setRuleset);
+  const [article, setArticle] = useState(null);
 
   const setArticleChanged = () => {
-    setRuleset(updateArticle(articleId, ruleset, editor.children, null))
-  }
+    setRuleset(updateArticle(articleId, ruleset, editor.children, null));
+  };
 
   /* eslint-disable react/prop-types */
   const renderElement = useCallback(
     (props) => {
       const handleArticleSelect = (id) => {
-        Transforms.deselect(editor)
-        selectArticle(id)
-      }
+        Transforms.deselect(editor);
+        selectArticle(id);
+      };
       if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(props.element.type)) {
-        return <HeaderElement htype={props.element.type} {...props} />
+        return <HeaderElement htype={props.element.type} {...props} />;
       } else {
         switch (props.element.type) {
           case 'code':
-            return <CodeElement {...props} />
+            return <CodeElement {...props} />;
           case 'keyword':
-            return <KeywordLink selectKeyword={inspectKeyword} {...props} />
+            return <KeywordLink selectKeyword={inspectKeyword} {...props} />;
           case 'articleRef':
-            return <ArticleLink selectArticle={handleArticleSelect} {...props} />
+            return <ArticleLink selectArticle={handleArticleSelect} {...props} />;
           default:
-            return <DefaultElement {...props} />
+            return <DefaultElement {...props} />;
         }
       }
     },
     [editor, selectArticle, inspectKeyword]
-  )
+  );
   /* eslint-enable react/prop-types */
 
   const renderLeaf = useCallback((props) => {
-    return <Leaf {...props} />
-  }, [])
+    return <Leaf {...props} />;
+  }, []);
 
   const onKeyDown = (event) => {
     if (event.key === '.' && event.ctrlKey) {
-      event.preventDefault()
+      event.preventDefault();
     }
     if ([1, 2, 3, 4, 5, 6].includes(Number(event.key)) && event.ctrlKey) {
-      let htype
+      let htype;
       switch (event.key) {
         case '1':
-          htype = 'h1'
-          break
+          htype = 'h1';
+          break;
         case '2':
-          htype = 'h2'
-          break
+          htype = 'h2';
+          break;
         case '3':
-          htype = 'h3'
-          break
+          htype = 'h3';
+          break;
         case '4':
-          htype = 'h4'
-          break
+          htype = 'h4';
+          break;
         case '5':
-          htype = 'h5'
-          break
+          htype = 'h5';
+          break;
         case '6':
-          htype = 'h6'
-          break
+          htype = 'h6';
+          break;
       }
-      event.preventDefault()
-      RulesetEditor.changeStyle(editor, htype)
+      event.preventDefault();
+      RulesetEditor.changeStyle(editor, htype);
     }
     if (event.key === '`' && event.ctrlKey) {
-      event.preventDefault()
-      RulesetEditor.changeStyle(editor, 'code')
+      event.preventDefault();
+      RulesetEditor.changeStyle(editor, 'code');
     }
     if (event.key === 'p' && event.ctrlKey) {
-      event.preventDefault()
-      RulesetEditor.changeStyle(editor, 'paragraph')
+      event.preventDefault();
+      RulesetEditor.changeStyle(editor, 'paragraph');
     }
     if (event.key === 'u' && event.ctrlKey) {
-      event.preventDefault()
-      RulesetEditor.toggleUnderlineMark(editor)
+      event.preventDefault();
+      RulesetEditor.toggleUnderlineMark(editor);
     }
     if (event.key === 'b' && event.ctrlKey) {
-      event.preventDefault()
-      RulesetEditor.toggleBoldMark(editor)
+      event.preventDefault();
+      RulesetEditor.toggleBoldMark(editor);
     }
     if (event.key === 'i' && event.ctrlKey) {
-      event.preventDefault()
-      RulesetEditor.toggleItalicMark(editor)
+      event.preventDefault();
+      RulesetEditor.toggleItalicMark(editor);
     }
     if (event.key === 'a' && event.ctrlKey) {
-      event.preventDefault()
-      const nativeSelection = window.getSelection()
+      event.preventDefault();
+      const nativeSelection = window.getSelection();
       if (nativeSelection?.rangeCount) {
-        setArticleRefMenuOpen(true)
-        const range = nativeSelection.getRangeAt(0)
-        const rect = range.getBoundingClientRect()
-        setArticleRefMenuPosition({ left: rect.left, top: rect.bottom })
+        setArticleRefMenuOpen(true);
+        const range = nativeSelection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setArticleRefMenuPosition({ left: rect.left, top: rect.bottom });
       }
     }
     if (event.key === 'k' && event.ctrlKey) {
-      event.preventDefault()
-      const nativeSelection = window.getSelection()
+      event.preventDefault();
+      const nativeSelection = window.getSelection();
       if (nativeSelection?.rangeCount) {
-        setKeywordRefMenuOpen(true)
-        const range = nativeSelection.getRangeAt(0)
-        const rect = range.getBoundingClientRect()
-        setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom })
+        setKeywordRefMenuOpen(true);
+        const range = nativeSelection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom });
       }
     }
     if (event.key === 's' && event.ctrlKey) {
-      event.preventDefault()
-      saveArticle()
+      event.preventDefault();
+      saveArticle();
     }
-  }
+  };
 
   useEffect(() => {
-    Transforms.deselect(editor)
-  }, [articleId, editor])
+    Transforms.deselect(editor);
+  }, [articleId, editor]);
 
   useEffect(() => {
     if (articleId) {
-      const newArticle = findArticleInRuleset(articleId, ruleset.articles)
+      const newArticle = findArticleInRuleset(articleId, ruleset.articles);
       if (newArticle) {
-        setArticle(newArticle)
-        setArticleTitle(newArticle.title)
+        setArticle(newArticle);
+        setArticleTitle(newArticle.title);
       }
     } else {
-      setArticleTitle('No Article Selected')
+      setArticleTitle('No Article Selected');
     }
-  }, [articleId, ruleset.articles, initialValue])
+  }, [articleId, ruleset.articles, initialValue]);
 
-  const [articleTitle, setArticleTitle] = useState('No Article Selected')
+  const [articleTitle, setArticleTitle] = useState('No Article Selected');
   const handleTitleChange = (event) => {
-    setRuleset(updateArticle(articleId, ruleset, null, event.target.value))
-    setArticleTitle(event.target.value)
-  }
+    setRuleset(updateArticle(articleId, ruleset, null, event.target.value));
+    setArticleTitle(event.target.value);
+  };
 
-  const theme = useTheme()
+  const theme = useTheme();
 
   return (
     <>
@@ -216,17 +216,18 @@ export default function ArticleEditor({
                   JSON.stringify(article.content) != JSON.stringify(editor.children) &&
                   article.id == articleId
                 ) {
-                  setArticleChanged()
+                  setArticleChanged();
                 }
-                const { selection } = editor
+                const { selection } = editor;
                 if (selection) {
-                  setCurrentSelection(selection)
+                  setCurrentSelection(selection);
                 }
               }}
             >
               <Editable
                 style={{
                   height: '100%',
+                  wordBreak: 'break-all',
                 }}
                 renderLeaf={renderLeaf}
                 renderElement={renderElement}
@@ -237,7 +238,7 @@ export default function ArticleEditor({
         </Box>
       </Paper>
     </>
-  )
+  );
 }
 
 ArticleEditor.propTypes = {
@@ -254,4 +255,4 @@ ArticleEditor.propTypes = {
   setKeywordRefMenuPosition: PropTypes.func.isRequired,
   setCurrentSelection: PropTypes.func.isRequired,
   saveArticle: PropTypes.func.isRequired,
-}
+};

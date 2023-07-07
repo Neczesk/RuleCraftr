@@ -11,7 +11,7 @@ import SplitButton from '../utils/SplitButton';
 import ThemedTreeItem from './utils/ThemedTreeItem';
 import { ColorModeContext } from '../App';
 
-function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
+function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
   const onAddChild = (parentId, sort = 9999) => {
@@ -118,16 +118,18 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
     <>
       <Paper
         sx={{
+          ...sx,
           borderBottomRightRadius: 0,
           borderBottomLeftRadius: 0,
           padding: 1,
+          pt: 0,
           margin: 0,
           height: '100%',
           backgroundColor: theme.palette.primaryContainer.main,
         }}
         elevation={elevation}
       >
-        <Toolbar disableGutters>
+        <Toolbar disableGutters variant="dense" sx={{ pb: 1 }}>
           <SplitButton
             color="secondary"
             mainAction={() => {
@@ -212,6 +214,7 @@ ArticleTree.propTypes = {
   onArticleSelect: PropTypes.func,
   selectedNode: PropTypes.array,
   elevation: PropTypes.number,
+  sx: PropTypes.object,
 };
 
 export default ArticleTree;

@@ -8,7 +8,7 @@ import { GenstaffEditor } from './utils/GenstaffEditor';
 import RulesetEditor from './utils/RulesetEditor';
 
 import Grid from '@mui/material/Grid';
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme, IconButton } from '@mui/material';
 
 import { findArticleInRuleset, findKeywordInRuleset, getRuleset, saveRuleset } from '../../data/rulesets';
 import useRulesetStore from '../../stores/rulesetStore';
@@ -20,6 +20,7 @@ import ConfirmNavigationDialogue from './utils/ConfirmNavigationDialogue';
 import KeywordRefMenu from './KeywordRefMenu';
 import ArticleRefMenu from './ArticleRefMenu';
 import ExportDialog from '../utils/ExportDialog';
+import MenuOpenOutlinedIcon from '@mui/icons-material/MenuOpenOutlined';
 
 function EditorPage() {
   const ruleset = useRulesetStore((state) => state.ruleset);
@@ -178,7 +179,8 @@ function EditorPage() {
   const handleExport = (type) => {
     if ((type === 'article' && currentArticle) || type === 'ruleset') setExportType(type);
   };
-  // const colWidth = { xs: 12, sm: 6, md: 4, lg: 3 }
+  const [keywordPanelOpen, setKeywordPanelOpen] = useState(false);
+  const [articleTreeOpen, setArticleTreeOpen] = useState(false);
   return (
     <>
       <ExportDialog
@@ -231,24 +233,53 @@ function EditorPage() {
         />
         <Box height={editorHeight} maxHeight={editorHeight}>
           <Grid
+            columns={36}
             container
             sx={{
               overflow: 'none',
               height: '100%',
             }}
           >
-            <Grid item xs={2}>
+            <Grid
+              sx={{ overflowX: 'auto', height: '100%', maxHeight: '100%', display: 'flex', flexDirection: 'column' }}
+              item
+              xs={articleTreeOpen ? 7 : 1}
+              lg={articleTreeOpen ? 6 : 1}
+              xl={articleTreeOpen ? 5 : 1}
+            >
+              <Box display="flex" flexDirection="row">
+                <IconButton
+                  color="secondary"
+                  onClick={() => setArticleTreeOpen(!articleTreeOpen)}
+                  sx={{ maxWidth: '100%', boxSizing: 'border-box', display: articleTreeOpen ? 'none' : 'flex', pb: 0 }}
+                >
+                  <MenuOpenOutlinedIcon fontSize="large" style={{ transform: 'scaleX(-1)' }} />
+                </IconButton>
+                <Box flexGrow={1}></Box>
+                <IconButton
+                  color="secondary"
+                  sx={{ maxWidth: '100%', boxSizing: 'border-box', display: articleTreeOpen ? 'flex' : 'none', pb: 0 }}
+                  onClick={() => setArticleTreeOpen(!articleTreeOpen)}
+                >
+                  <MenuOpenOutlinedIcon fontSize="large" />
+                </IconButton>
+              </Box>
               <ArticleTree
+                sx={{
+                  display: articleTreeOpen ? 'flex' : 'none',
+                  flexGrow: 1,
+                  flexDirection: 'column',
+                  overflowY: 'hidden',
+                }}
                 onArticleSelect={selectArticle}
                 elevation={0}
                 selectedNode={currentArticle ? [currentArticle.toString()] : [null]}
               />
             </Grid>
+
             <Grid
               item
-              xs={6}
-              lg={7}
-              xl={8}
+              xs
               sx={{
                 height: '100%',
                 backgroundColor: theme.palette.primaryContainer.main,
@@ -271,8 +302,50 @@ function EditorPage() {
                 saveArticle={saveArticle}
               />
             </Grid>
-            <Grid item xs={4} lg={3} xl={2} sx={{ height: '100%' }}>
-              <KeywordInspector keywordId={selectedKeyword} onSelectKeyword={selectKeyword} elevation={0} />
+            <Grid
+              item
+              xs={keywordPanelOpen ? 11 : 1}
+              lg={keywordPanelOpen ? 10 : 1}
+              xl={keywordPanelOpen ? 9 : 1}
+              sx={{ height: '100%', maxHeight: '100%' }}
+            >
+              <Box display="flex" flexDirection="row">
+                <IconButton
+                  color="secondary"
+                  onClick={() => setKeywordPanelOpen(!keywordPanelOpen)}
+                  sx={{
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
+                    display: keywordPanelOpen ? 'flex' : 'none',
+                    pb: 0,
+                  }}
+                >
+                  <MenuOpenOutlinedIcon fontSize="large" style={{ transform: 'scaleX(-1)' }} />
+                </IconButton>
+                <Box flexGrow={1}></Box>
+                <IconButton
+                  color="secondary"
+                  sx={{
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
+                    display: keywordPanelOpen ? 'none' : 'flex',
+                    pb: 0,
+                  }}
+                  onClick={() => setKeywordPanelOpen(!keywordPanelOpen)}
+                >
+                  <MenuOpenOutlinedIcon fontSize="large" />
+                </IconButton>
+              </Box>
+
+              <KeywordInspector
+                sx={{
+                  display: keywordPanelOpen ? 'flex' : 'none',
+                  flexGrow: 1,
+                }}
+                keywordId={selectedKeyword}
+                onSelectKeyword={selectKeyword}
+                elevation={0}
+              />
             </Grid>
           </Grid>
         </Box>
