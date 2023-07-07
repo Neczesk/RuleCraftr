@@ -25,23 +25,29 @@ function Home() {
             Creating your user account (Use the invite code you received from me if you have one, otherwise you{"'"}re
             not getting in yet)
           </li>
-          <li>Creating, deleting, renaming, and editing your rulesets</li>
+          <li>Actual aesthetic design, including dark and light mode</li>
           <li>
             Within the ruleset editor, you can edit sections (called articles), organize them into a heirarchy, and edit
-            their contents.
+            their contents. Inside a ruleset you also have access to keywords, which you can create and reference
+            through articles.
           </li>
-          <li>You can also create and edit keywords, and reference them throughout your ruleset.</li>
+          <li>
+            Exporting a ruleset to html for easier reading. You can also export and view public rulesets in addition to
+            the ones you{"'"}ve created.
+          </li>
         </ul>
         <Typography variant="body" align="center">
           The following features are as of yet unavailable but are currently planned for the beta release:
         </Typography>
         <ul>
-          <li>Exporting your ruleset to html (once in html your own device should be capable of exporting to pdf)</li>
-          <li>Actual aesthetic design, including dark and light mode</li>
           <li>Better support for smaller screen widths, including possibly mobile devices (but no promises)</li>
           <li>
             Minimizing the article tree (the left panel) and the keyword inspector (right panel) to give you the maximum
             space for your editing
+          </li>
+          <li>Pagination and searching of the keywords in a ruleset</li>
+          <li>
+            Pagination and searching of the rulesets that you created and those of other users that are set public
           </li>
         </ul>
       </Paper>
