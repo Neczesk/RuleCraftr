@@ -215,6 +215,8 @@ export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
 
   let template = Handlebars.compile(rulesetPage);
   const stylesheets = getCSS(showDark, theme);
+  const rootCssBlob = new Blob([stylesheets.rootStyle], { type: 'text/css' });
+  const rootCssUrl = URL.createObjectURL(rootCssBlob);
   const articleCssBlob = new Blob([stylesheets.articleStyle], { type: 'text/css' });
   const articleCssUrl = URL.createObjectURL(articleCssBlob);
   const rulesetCssBlob = new Blob([stylesheets.rulesetStyle], { type: 'text/css' });
@@ -227,6 +229,7 @@ export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
         keywords: sortedKeywords,
         articleCssUrl: articleCssUrl,
         rulesetCssUrl: rulesetCssUrl,
+        rootCssUrl: rootCssUrl,
       }),
     ],
     {

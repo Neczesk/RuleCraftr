@@ -125,11 +125,16 @@ export async function serializeArticle(article, ruleset, showDark = false, theme
   Handlebars.registerHelper('inline-node', handlebarHelpers('inline-node', otherArticles, keywords));
   let template = Handlebars.compile(articlePage);
   const stylesheets = getCSS(showDark, theme);
+  const rootStyleCssBlob = new Blob([stylesheets.rootStyle], { type: 'text/css' });
+  const rootCssUrl = URL.createObjectURL(rootStyleCssBlob);
   const cssBlob = new Blob([stylesheets.articleStyle], { type: 'text/css' });
   const cssURL = URL.createObjectURL(cssBlob);
-  const blob = new Blob([template({ article: article, keywords: sortedKeywords, styleURL: cssURL })], {
-    type: 'text/html',
-  });
+  const blob = new Blob(
+    [template({ article: article, keywords: sortedKeywords, rootStyleUrl: rootCssUrl, styleURL: cssURL })],
+    {
+      type: 'text/html',
+    }
+  );
   return URL.createObjectURL(blob);
 }
 

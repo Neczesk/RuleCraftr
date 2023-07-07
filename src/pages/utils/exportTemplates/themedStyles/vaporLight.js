@@ -3,12 +3,6 @@ const vaporLight = `
     body {
       background-color: #E6ECF0;
       color: #212121;
-      margin: auto;
-      max-width: 960px;
-    }
-  
-    h4.table-of-contents-entry > a {
-      color: inherit;
     }
   
     a.article-link {
@@ -19,23 +13,8 @@ const vaporLight = `
       color: #E3256B;
     }
   
-    .article-title {
-        text-decoration: underline;
-    }
-  
-    .underlined {
-      text-decoration: underline;
-    }
   }
   @media print {
-    body {
-      margin: auto;
-      max-width: 960px;
-    }
-  
-    h4.table-of-contents-entry > a {
-      color: inherit;
-    }
   
     a.article-link {
       color: #a14979;
@@ -45,13 +24,6 @@ const vaporLight = `
       color: #582c18;
     }
   
-    .article-title {
-      text-align: center;
-    }
-  
-    .underlined {
-      text-decoration: underline;
-    }
   }
 `;
 export default vaporLight;
