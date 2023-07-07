@@ -1,9 +1,9 @@
-import { PropTypes } from 'prop-types'
-import { Dialog, DialogTitle, DialogContent, IconButton, Typography } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
+import { PropTypes } from 'prop-types';
+import { Dialog, DialogTitle, DialogContent, IconButton, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 function NewVersionDialog(props) {
-  const { currentVersion, onClose, ...others } = props
+  const { currentVersion, onClose, ...others } = props;
   return (
     <Dialog
       {...others}
@@ -32,43 +32,38 @@ function NewVersionDialog(props) {
           New Features:
         </Typography>
         <ul>
-          <li>Updated the app to use custom themes instead of the default theme from MUI</li>
-          <li>Added light and dark modes. You can switch these using the menu in the upper right corner.</li>
           <li>
-            Added option to set your preferred theme. This as well as dark mode preference are saved to your account and
-            should persist anywhere you log in.
+            Added exporting html versions of your rulesets. You can also view the html versions of public rulesets even
+            though you can{"'"}t edit them.
           </li>
-          <li>
-            If leaving the page would delete any unsaved work, you will be prompted to confirm that you want to leave
-            the page
-          </li>
-          <li>
-            Added this popup to communicate to users what has changed in the most recent update. When you close this, it
-            should not reappear until you login with a different account or a new version is deployed. If that is not
-            the case, please let me know!
-          </li>
+          <li>Rulesets will respect both your theme and your color mode preference when exporting.</li>
+          <li>Exported rulesets have a table of contents.</li>
+          <li>Added a close button to the hamburger navigation menu on the top right</li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           Bug Fixes:
         </Typography>
         <ul>
+          <li>A few miscellaneous bug fixes (Thank you Greg)</li>
           <li>
-            Buttons should now properly indicate if a text mark- such as bold or italic- will be added to text you type
+            Canny users may have been able to attempt editing a public ruleset even though the backend rejected the
+            changes. That should be harder now.
           </li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           What{"'"}s Next:
         </Typography>
         <ul>
-          <li>Exporting to HTML</li>
           <li>Allowing the two side panels to collapse</li>
+          <li>Pagination and searching of rulesets</li>
+          <li>Keyword inspector overhaul</li>
         </ul>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 NewVersionDialog.propTypes = {
   currentVersion: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-}
-export default NewVersionDialog
+};
+export default NewVersionDialog;
