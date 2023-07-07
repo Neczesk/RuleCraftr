@@ -126,6 +126,12 @@ def logout():
         return response
 
 
+@app.route("/api/all-users", methods=['GET'], strict_slashes=True)
+def get_all_users():
+    body = users.get_all_users()
+    return standard_response(body, 200)
+
+
 @app.route("/api/user/<int:id>/changepassword", methods=['PUT', 'OPTIONS'], strict_slashes=True)
 @login_required
 def change_password(id: int):
@@ -228,12 +234,14 @@ def standard_response(body, code):
 @login_required
 def get_ruleset(id: int):
     ruleset = rulesets.get_ruleset(id)
-    if (ruleset["user_id"] != current_user.id):
-        return standard_response({"Failure": "Can't access ruleset belonging to someone else"}, 403)
     if request.method == 'GET':
-        body = rulesets.get_ruleset(id)
+        if (ruleset["user_id"] != current_user.id and not ruleset["public"]):
+            return standard_response({"Failure": "Can't access a private ruleset belonging to someone else"}, 403)
+        body = ruleset
         return standard_response(body, 200)
     elif request.method == 'DELETE':
+        if (ruleset["user_id"] != current_user.id):
+            return standard_response({"Failure": "Can't delete ruleset belonging to someone else"}, 403)
         body = rulesets.delete_ruleset(id)
         return standard_response(body, 200)
     elif request.method == 'OPTIONS':

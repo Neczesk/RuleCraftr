@@ -86,6 +86,10 @@ def get_user_by_username(username):
     return users.get_user_by_username(username)
 
 
+def get_all_users():
+    return users.get_all_users()
+
+
 def load_user(id):
     userdata = users.get_user(id)
     user = api.models.user.User(jsondata=userdata)

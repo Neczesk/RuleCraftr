@@ -20,73 +20,118 @@ import {
   FormControl,
   InputLabel,
   Paper,
-} from '@mui/material'
-import useUserStore from '../../stores/userStore'
+} from '@mui/material';
+import useUserStore from '../../stores/userStore';
 import {
   createRuleset,
   getRulesetsForUser,
   updateRulesetMetadata,
   deleteRuleset as dataDeleteRuleset,
-} from '../../data/rulesets'
-import { useEffect, useState } from 'react'
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
-import FormatAlignLeftOutlinedIcon from '@mui/icons-material/FormatAlignLeftOutlined'
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined'
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined'
-import { useNavigate } from 'react-router'
-import { useSnackbar } from 'notistack'
+  getRuleset,
+} from '../../data/rulesets';
+import { useEffect, useState } from 'react';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import { useNavigate } from 'react-router';
+import { useSnackbar } from 'notistack';
+import ExportDialog from '../utils/ExportDialog';
+import { getAllUsers } from '../../data/articles';
 
 function RulesetManager() {
-  const user = useUserStore((state) => state.user)
-  const [rulesets, setRulesets] = useState(null)
+  const { enqueueSnackbar } = useSnackbar();
+  const [allUsers, setAllUsers] = useState(null);
+  useEffect(() => {
+    getAllUsers().then((retrievedUsers) => {
+      if (Object.keys(retrievedUsers).includes('Failure')) {
+        enqueueSnackbar(retrievedUsers.Failure, { variant: 'error' });
+      } else {
+        setAllUsers(retrievedUsers);
+      }
+    });
+  }, [enqueueSnackbar]);
+  const user = useUserStore((state) => state.user);
+  const [rulesets, setRulesets] = useState(null);
   useEffect(() => {
     if (user) {
-      getRulesetsForUser(user.id).then((value) => setRulesets(value))
+      getRulesetsForUser(user.id).then((value) => setRulesets(value));
     }
-  }, [user])
+  }, [user]);
   const updateRuleset = (rulesetData) => {
     updateRulesetMetadata([rulesetData])
       .then(() => getRulesetsForUser(user.id))
-      .then((value) => setRulesets(value))
-  }
-  const { enqueueSnackbar } = useSnackbar()
+      .then((value) => setRulesets(value));
+  };
   const createNewRuleset = (newRulesetData) => {
     createRuleset(newRulesetData).then((response) => {
       if (Object.keys(response).includes('Failure')) {
-        enqueueSnackbar(response.Failure, { variant: 'error' })
+        enqueueSnackbar(response.Failure, { variant: 'error' });
       } else {
         getRulesetsForUser(user.id)
           .then((value) => setRulesets(value))
-          .then(() => startEditingRuleset(response.id))
+          .then(() => startEditingRuleset(response.id));
       }
-    })
-  }
-  const deleteRuleset = (id) => {
-    dataDeleteRuleset(id)
-      .then(() => getRulesetsForUser(user.id))
-      .then((value) => setRulesets(value))
-  }
-  const [editingRulesetId, setEditingRulesetId] = useState(null)
+    });
+  };
+  const deleteRuleset = async (id) => {
+    try {
+      const deleteResponse = await dataDeleteRuleset(id);
+      if (deleteResponse && Object.keys(deleteResponse).includes('Failure')) {
+        enqueueSnackbar(deleteResponse.Failure, { variant: 'error' });
+      }
+      const rulesets = await getRulesetsForUser(user.id);
+      if (rulesets && Object.keys(rulesets).includes('Failure')) {
+        enqueueSnackbar(rulesets.Failure, { variant: 'error' });
+      } else {
+        setRulesets(rulesets);
+      }
+    } catch (error) {
+      console.log('error:', error);
+      enqueueSnackbar('Unexpected error occurred', { variant: 'error' });
+    }
+  };
+  const [editingRulesetId, setEditingRulesetId] = useState(null);
   const [metadataEditedValue, setMetadataEditedValue] = useState({
     rn_name: '',
     description: '',
     public: false,
-  })
+  });
   const validateMetadata = () => {
-    return metadataEditedValue.rn_name != '' && metadataEditedValue.description != ''
-  }
-  const navigate = useNavigate()
-  const startEditingRuleset = (id) => {
-    setMetadataEditedValue({
-      rn_name: '',
-      description: '',
-      public: false,
-    })
-    const destination = '/user/' + user.id.toString() + '/rulesets/' + id.toString() + '/editor'
-    navigate(destination)
-  }
+    return metadataEditedValue.rn_name != '' && metadataEditedValue.description != '';
+  };
+  const [exportType, setExportType] = useState(null);
+  const [viewingRuleset, setViewingRuleset] = useState(null);
+  const handleExport = async (rulesetId) => {
+    if (rulesetId) {
+      const ruleset = await getRuleset(rulesetId);
+      if (!!ruleset && Object.keys(ruleset).includes('Failure')) {
+        enqueueSnackbar(ruleset.Failure, { variant: 'error' });
+        return;
+      } else {
+        setViewingRuleset(ruleset);
+        setExportType('ruleset');
+      }
+    }
+  };
+
+  const navigate = useNavigate();
+  const startEditingRuleset = async (id) => {
+    const editingRuleset = await getRuleset(id);
+    if (editingRuleset.user_id != user.id) {
+      enqueueSnackbar("Cannot edit another user's rulesets", { variant: 'error' });
+    } else {
+      setMetadataEditedValue({
+        rn_name: '',
+        description: '',
+        public: false,
+      });
+      const destination = '/user/' + user.id.toString() + '/rulesets/' + id.toString() + '/editor';
+      navigate(destination);
+    }
+  };
   const rows = rulesets?.length
     ? rulesets
         .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
@@ -112,12 +157,17 @@ function RulesetManager() {
               ) : (
                 <TableCell component="th" scope="row">
                   <Button
-                    onClick={() => startEditingRuleset(ruleset.id)}
+                    onClick={
+                      user.id === ruleset.user_id
+                        ? () => startEditingRuleset(ruleset.id)
+                        : () => handleExport(ruleset.id)
+                    }
                     align="left"
                     variant="text"
                     size="small"
-                    disabled={user ? user.id !== ruleset.user_id : false}
+                    color={ruleset.user_id === user.id ? 'primary' : 'secondary'}
                     sx={{ textTransform: 'none', textAlign: 'left', padding: 0, overflow: 'hidden', minWidth: 0 }}
+                    endIcon={ruleset.user_id === user.id ? undefined : <AutoStoriesIcon />}
                   >
                     {ruleset.rn_name}
                   </Button>
@@ -142,16 +192,25 @@ function RulesetManager() {
               ) : (
                 <TableCell>{ruleset.description}</TableCell>
               )}
-              <TableCell>{ruleset.user_id}</TableCell>
+              <TableCell>
+                {(() => {
+                  if (allUsers) {
+                    const user = allUsers.find((user) => user.id === ruleset.user_id);
+                    return user ? user.username : ruleset.user_id;
+                  } else {
+                    return ruleset.user_id;
+                  }
+                })()}
+              </TableCell>
               {editingRulesetId === ruleset.id ? (
                 <TableCell>
                   <IconButton
-                    color="primary"
+                    color={ruleset.user_id === user.id ? 'primary' : 'secondary'}
                     onClick={() => {
                       setMetadataEditedValue({
                         ...metadataEditedValue,
                         public: !metadataEditedValue.public,
-                      })
+                      });
                     }}
                   >
                     {metadataEditedValue.public ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
@@ -174,17 +233,17 @@ function RulesetManager() {
                       onClick={() => {
                         if (editingRulesetId) {
                           if (validateMetadata()) {
-                            updateRuleset({ ...metadataEditedValue, id: ruleset.id })
-                            setMetadataEditedValue({ rn_name: '', description: '', public: false })
-                            setEditingRulesetId(null)
+                            updateRuleset({ ...metadataEditedValue, id: ruleset.id });
+                            setMetadataEditedValue({ rn_name: '', description: '', public: false });
+                            setEditingRulesetId(null);
                           }
                         } else {
                           setMetadataEditedValue({
                             rn_name: ruleset.rn_name,
                             description: ruleset.description,
                             public: ruleset.public,
-                          })
-                          setEditingRulesetId(ruleset.id)
+                          });
+                          setEditingRulesetId(ruleset.id);
                         }
                       }}
                     >
@@ -192,38 +251,35 @@ function RulesetManager() {
                     </IconButton>
                   </span>
                 </Tooltip>
-                <Tooltip title="Launch Editor">
+                <Tooltip title="View Export">
                   <span>
                     <IconButton
-                      color="primary"
-                      onClick={() => startEditingRuleset(ruleset.id)}
-                      disabled={user?.id !== ruleset.user_id || !!editingRulesetId}
+                      color={ruleset.user_id === user.id ? 'primary' : 'secondary'}
+                      onClick={() => handleExport(ruleset.id)}
+                      disabled={!!editingRulesetId}
                     >
-                      <FormatAlignLeftOutlinedIcon />
+                      <AutoStoriesIcon />
                     </IconButton>
                   </span>
                 </Tooltip>
                 <Tooltip title="Delete ruleset (CAUTION: Cannot be undone yet!">
                   <span>
-                    <IconButton
-                      color="inherit"
-                      onClick={() => deleteRuleset(ruleset.id)}
-                      disabled={user?.id !== ruleset.user_id || !!editingRulesetId}
-                    >
+                    <IconButton color="inherit" onClick={() => deleteRuleset(ruleset.id)} disabled={false}>
+                      {/* user?.id !== ruleset.user_id || (!!editingRulesetId) */}
                       <DeleteOutlineOutlinedIcon />
                     </IconButton>
                   </span>
                 </Tooltip>
               </TableCell>
             </TableRow>
-          )
+          );
         })
-    : []
+    : [];
 
-  const [newRulesetDialogOpen, setNewRulesetDialogOpen] = useState(false)
+  const [newRulesetDialogOpen, setNewRulesetDialogOpen] = useState(false);
   const toggleNewRulesetDialog = () => {
-    setNewRulesetDialogOpen(!newRulesetDialogOpen)
-  }
+    setNewRulesetDialogOpen(!newRulesetDialogOpen);
+  };
 
   if (Array.isArray(rows)) {
     rows.unshift(
@@ -245,10 +301,16 @@ function RulesetManager() {
         <TableCell />
         <TableCell />
       </TableRow>
-    )
+    );
   }
   return (
     <>
+      <ExportDialog
+        ruleset={viewingRuleset}
+        type={exportType}
+        open={Boolean(exportType)}
+        onClose={() => setExportType(null)}
+      />
       <Dialog open={newRulesetDialogOpen} onClose={toggleNewRulesetDialog} sx={{ minWidth: '600px' }}>
         <DialogTitle>Create new ruleset</DialogTitle>
         <DialogContent>
@@ -312,9 +374,9 @@ function RulesetManager() {
                 size="small"
                 value={metadataEditedValue.public}
                 onChange={(event) => {
-                  console.log(event.target.value)
-                  setMetadataEditedValue({ ...metadataEditedValue, public: Boolean(event.target.value) })
-                  console.log(metadataEditedValue)
+                  console.log(event.target.value);
+                  setMetadataEditedValue({ ...metadataEditedValue, public: Boolean(event.target.value) });
+                  console.log(metadataEditedValue);
                 }}
               >
                 <option value={true}>True</option>
@@ -331,8 +393,8 @@ function RulesetManager() {
                 rn_name: '',
                 description: '',
                 public: false,
-              })
-              toggleNewRulesetDialog()
+              });
+              toggleNewRulesetDialog();
             }}
           >
             Cancel
@@ -341,14 +403,14 @@ function RulesetManager() {
             color="success"
             disabled={!validateMetadata()}
             onClick={() => {
-              const newRulesetData = { ...metadataEditedValue, user_id: user.id }
-              createNewRuleset(newRulesetData)
+              const newRulesetData = { ...metadataEditedValue, user_id: user.id };
+              createNewRuleset(newRulesetData);
               setMetadataEditedValue({
                 rn_name: '',
                 description: '',
                 public: false,
-              })
-              toggleNewRulesetDialog()
+              });
+              toggleNewRulesetDialog();
             }}
           >
             Submit
@@ -378,6 +440,6 @@ function RulesetManager() {
         </Paper>
       </Container>
     </>
-  )
+  );
 }
-export default RulesetManager
+export default RulesetManager;

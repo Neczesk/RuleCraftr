@@ -51,6 +51,12 @@ def get_user_by_username(username: str):
         return user_to_dict(found_user)
 
 
+def get_all_users():
+    with Session() as session:
+        result = session.execute(sqlalchemy.select(Users.username, Users.id))
+        return [{"username": r.username, "id": r.id} for r in result]
+
+
 def get_user(id: int):
     with Session() as session:
         stmt = sqlalchemy.select(Users).where(Users.id == int(id))

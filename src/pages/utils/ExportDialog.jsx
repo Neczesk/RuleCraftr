@@ -9,26 +9,60 @@ import {
   LinearProgress,
 } from '@mui/material';
 import { PropTypes } from 'prop-types';
-import useRulesetStore from '../../stores/rulesetStore';
-import { findArticleInRuleset } from '../../data/rulesets';
-import { useEffect, useState } from 'react';
+import { findArticleInRuleset, serializeRuleset } from '../../data/rulesets';
+import { useContext, useEffect, useState } from 'react';
+import { articleContentToJsonUrl, serializeArticle } from '../../data/articles';
+import { ColorModeContext } from '../App';
 
 function ExportDialog(props) {
-  const { type, articleId, onClose, ...others } = props;
-  const ruleset = useRulesetStore((state) => state.ruleset);
-  const article = findArticleInRuleset(articleId, ruleset.articles);
+  const colorModeContext = useContext(ColorModeContext);
+  const { type, articleId, onClose, ruleset, ...others } = props;
+  const article = articleId ? findArticleInRuleset(articleId, ruleset.articles) : null;
   const [exportReady, setExportReady] = useState(false);
+  const [exportUrl, setExportUrl] = useState(null);
+  const [jsonUrl, setJsonUrl] = useState(null);
   useEffect(() => {
-    if (type)
-      setTimeout(() => {
-        setExportReady(true);
-      }, 5000);
+    if (ruleset) {
+      if (type === 'article' && article) {
+        serializeArticle(
+          article,
+          ruleset,
+          colorModeContext ? colorModeContext.colorMode === 'dark' : false,
+          colorModeContext ? colorModeContext.themeName : 'cherry'
+        ).then((url) => {
+          setExportReady(true);
+          setExportUrl(url);
+        });
+        articleContentToJsonUrl(article).then((url) => {
+          setJsonUrl(url);
+        });
+      } else if (type === 'ruleset') {
+        serializeRuleset(
+          ruleset,
+          colorModeContext ? colorModeContext.colorMode === 'dark' : false,
+          colorModeContext ? colorModeContext.themeName : 'cherry'
+        ).then((url) => {
+          setExportReady(true);
+          setExportUrl(url);
+        });
+      }
+    }
+  }, [type, article, ruleset, colorModeContext]);
+  useEffect(() => {
+    setExportReady(false);
   }, [type]);
+
+  const handleClose = () => {
+    if (exportUrl) URL.revokeObjectURL(exportUrl);
+    if (jsonUrl) URL.revokeObjectURL(jsonUrl);
+    onClose();
+  };
+
   let dialogTitle = 'Exporting ';
   if (type === 'article') dialogTitle += 'Article ' + article ? article.title : '';
   if (type === 'ruleset') dialogTitle += 'Ruleset ' + ruleset.rn_name;
   return (
-    <Dialog onClose={onClose} {...others}>
+    <Dialog keepMounted={false} onClose={handleClose} {...others}>
       <DialogTitle>{dialogTitle}</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -42,14 +76,17 @@ function ExportDialog(props) {
             ></LinearProgress>
           </Grid>
           <Grid item>
-            <Button variant="contained" disabled={!exportReady}>
+            <Button variant="contained" target="_blank" disabled={!exportReady} href={exportUrl}>
               Open
             </Button>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button href={jsonUrl} target="_blank" color="error">
+          JSON
+        </Button>
+        <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   );
@@ -58,5 +95,6 @@ ExportDialog.propTypes = {
   type: PropTypes.string,
   articleId: PropTypes.string,
   onClose: PropTypes.func,
+  ruleset: PropTypes.object,
 };
 export default ExportDialog;

@@ -46,7 +46,9 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation }) {
           articleId={article?.id}
           label={article.title + (article.synched ? '' : '*')}
         >
-          {article.childrenArticles?.length ? article.childrenArticles.map((article) => renderArticle(article)) : null}
+          {article.childrenArticles?.length && !article.childrenArticles.every((article) => article.deleted)
+            ? article.childrenArticles.map((article) => renderArticle(article))
+            : null}
         </ThemedTreeItem>
       );
     } else return null;

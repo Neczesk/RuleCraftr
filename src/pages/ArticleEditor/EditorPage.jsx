@@ -183,6 +183,7 @@ function EditorPage() {
     <>
       <ExportDialog
         articleId={currentArticle}
+        ruleset={ruleset}
         type={exportType}
         open={Boolean(exportType)}
         onClose={() => setExportType(null)}
