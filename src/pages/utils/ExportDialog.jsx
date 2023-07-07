@@ -11,7 +11,7 @@ import {
 import { PropTypes } from 'prop-types';
 import { findArticleInRuleset, serializeRuleset } from '../../data/rulesets';
 import { useContext, useEffect, useState } from 'react';
-import { articleContentToJsonUrl, serializeArticle } from '../../data/articles';
+import { serializeArticle } from '../../data/articles';
 import { ColorModeContext } from '../App';
 
 function ExportDialog(props) {
@@ -20,7 +20,6 @@ function ExportDialog(props) {
   const article = articleId ? findArticleInRuleset(articleId, ruleset.articles) : null;
   const [exportReady, setExportReady] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
-  const [jsonUrl, setJsonUrl] = useState(null);
   useEffect(() => {
     if (ruleset) {
       if (type === 'article' && article) {
@@ -32,9 +31,6 @@ function ExportDialog(props) {
         ).then((url) => {
           setExportReady(true);
           setExportUrl(url);
-        });
-        articleContentToJsonUrl(article).then((url) => {
-          setJsonUrl(url);
         });
       } else if (type === 'ruleset') {
         serializeRuleset(
@@ -54,7 +50,6 @@ function ExportDialog(props) {
 
   const handleClose = () => {
     if (exportUrl) URL.revokeObjectURL(exportUrl);
-    if (jsonUrl) URL.revokeObjectURL(jsonUrl);
     onClose();
   };
 
@@ -83,9 +78,6 @@ function ExportDialog(props) {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button href={jsonUrl} target="_blank" color="error">
-          JSON
-        </Button>
         <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
