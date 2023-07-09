@@ -102,7 +102,9 @@ class Keywords(Base):
     ruleset = Column(Integer, nullable=False)
     created_date = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
     id = Column(UUID, server_default=text('gen_random_uuid()'))
-    long_definition = Column(Text)
+    last_modified = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
     short_definition = Column(Text)
+    tag = Column(Text)
+    long_definition = Column(JSON, server_default=text('\'[{"type":"paragraph","children":[{"text":"Start typing here..."}]}]\'::json'))
 
     rulesets = relationship('Rulesets', back_populates='keywords')

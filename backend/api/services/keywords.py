@@ -21,6 +21,10 @@ def delete_keywords(keywordData):
     return keywords.delete_keywords(keywordData)
 
 
+def get_tags_in_ruleset(ruleset_id: int):
+    return keywords.get_tags_in_ruleset(ruleset_id)
+
+
 def validate_get_keywords(keyword_data, user_id):
     status = False
     are_all_rulesets_same = True

@@ -1,45 +1,44 @@
-import { Editor, Transforms, Element } from "slate";
-import { ReactEditor } from "slate-react";
+import { Editor, Transforms, Element } from 'slate';
+import { ReactEditor } from 'slate-react';
 
 const RulesetEditor = {
-
   changeStyle(editor, newStyle) {
-    const currentStyle = RulesetEditor.getCurrentElementType(editor)
+    const currentStyle = RulesetEditor.getCurrentElementType(editor);
     if (currentStyle === newStyle) {
-      RulesetEditor.setParagraphBlock(editor)
-      return
+      RulesetEditor.setParagraphBlock(editor);
+      return;
     }
-    if (currentStyle !== 'paragraph' ) {
-      RulesetEditor.setParagraphBlock(editor)
+    if (currentStyle !== 'paragraph') {
+      RulesetEditor.setParagraphBlock(editor);
     }
     if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(newStyle)) {
-      RulesetEditor.toggleHeaderBlock(editor, newStyle)
+      RulesetEditor.toggleHeaderBlock(editor, newStyle);
     } else {
-      switch (newStyle){
+      switch (newStyle) {
         case 'code':
-          RulesetEditor.toggleCodeBlock(editor)
-          break
+          RulesetEditor.toggleCodeBlock(editor);
+          break;
         default:
-          break
+          break;
       }
     }
   },
 
   getCurrentElementType(editor) {
-    let activeElement
-    const {selection} = editor
+    let activeElement;
+    const { selection } = editor;
 
     if (selection) {
       const [nodeEntry] = Editor.nodes(editor, {
         at: selection,
-        match: n => Editor.isBlock(editor, n) && Element.isElement(n)
-      })
+        match: (n) => Editor.isBlock(editor, n) && Element.isElement(n),
+      });
       if (nodeEntry) {
-        const [node] = nodeEntry
-        activeElement = node
+        const [node] = nodeEntry;
+        activeElement = node;
       }
     }
-    return activeElement?.type
+    return activeElement?.type;
   },
 
   isBoldMarkActive(editor) {
@@ -54,58 +53,58 @@ const RulesetEditor = {
 
   isItalicMarkActive(editor) {
     const marks = Editor.marks(editor);
-    return marks ? marks.italic === true : false
+    return marks ? marks.italic === true : false;
   },
 
   isCodeBlockActive(editor) {
     const [match] = Editor.nodes(editor, {
-      match: (n) => n.type === "code",
+      match: (n) => n.type === 'code',
     });
     return !!match;
   },
 
   isHeaderBlockActive(editor) {
     const [match] = Editor.nodes(editor, {
-      match: (n) => ["h1", "h2", "h3", "h4", "h5", "h6"].includes(n.type),
+      match: (n) => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(n.type),
     });
-    return !!match
+    return !!match;
   },
 
   insertArticleRef(editor, id) {
-    if (!editor.selection) return
+    if (!editor.selection) return;
     const articleRef = {
       type: 'articleRef',
       id: id,
-      children: [{text: ''}],
-    }
-    Transforms.insertNodes(editor, articleRef, {at: editor.selection, select:true})
-    const pointAfter = Editor.after(editor, editor.selection.focus)
+      children: [{ text: '' }],
+    };
+    Transforms.insertNodes(editor, articleRef, { at: editor.selection, select: true });
+    const pointAfter = Editor.after(editor, editor.selection.focus);
     if (pointAfter) {
-      Transforms.select(editor, pointAfter)
-      ReactEditor.focus(editor)
+      Transforms.select(editor, pointAfter);
+      ReactEditor.focus(editor);
     }
   },
 
   insertKeywordRef(editor, id) {
-    if (!editor.selection) return
+    if (!editor.selection) return;
 
     const keyword = {
       type: 'keyword',
       id: id,
-      children: [{text: ''}]
-    }
-    Transforms.insertNodes(editor, keyword, {at:editor.selection, select: true})
-    const pointAfter = Editor.after(editor, editor.selection.focus)
+      children: [{ text: '' }],
+    };
+    Transforms.insertNodes(editor, keyword, { at: editor.selection, select: true });
+    const pointAfter = Editor.after(editor, editor.selection.focus);
     if (pointAfter) {
-      Transforms.select(editor, pointAfter)
+      Transforms.select(editor, pointAfter);
     }
   },
 
   toggleHeaderBlock(editor, newStyle) {
-    const isActive = RulesetEditor.isHeaderBlockActive(editor)
+    const isActive = RulesetEditor.isHeaderBlockActive(editor);
     Transforms.setNodes(
       editor,
-      { type: isActive ? "paragraph" : newStyle },
+      { type: isActive ? 'paragraph' : newStyle },
       { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) }
     );
   },
@@ -113,28 +112,27 @@ const RulesetEditor = {
   toggleBoldMark(editor) {
     const isActive = RulesetEditor.isBoldMarkActive(editor);
     if (isActive) {
-      Editor.removeMark(editor, "bold");
+      Editor.removeMark(editor, 'bold');
     } else {
-      Editor.addMark(editor, "bold", true);
+      Editor.addMark(editor, 'bold', true);
     }
   },
 
   toggleUnderlineMark(editor) {
     const isActive = RulesetEditor.isUnderlineMarkActive(editor);
     if (isActive) {
-      Editor.removeMark(editor, "underline");
+      Editor.removeMark(editor, 'underline');
     } else {
-      Editor.addMark(editor, "underline", true);
+      Editor.addMark(editor, 'underline', true);
     }
   },
 
   toggleItalicMark(editor) {
-    const isActive = RulesetEditor.isItalicMarkActive(editor)
+    const isActive = RulesetEditor.isItalicMarkActive(editor);
     if (isActive) {
-      Editor.removeMark(editor, "italic")
+      Editor.removeMark(editor, 'italic');
     } else {
-      Editor.addMark(editor, 'italic', true)
-
+      Editor.addMark(editor, 'italic', true);
     }
   },
 
@@ -142,7 +140,7 @@ const RulesetEditor = {
     const isActive = RulesetEditor.isCodeBlockActive(editor);
     Transforms.setNodes(
       editor,
-      { type: isActive ? "paragraph" : "code" },
+      { type: isActive ? 'paragraph' : 'code' },
       { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) }
     );
   },
@@ -150,9 +148,18 @@ const RulesetEditor = {
   setParagraphBlock(editor) {
     Transforms.setNodes(
       editor,
-      { type: "paragraph" },
+      { type: 'paragraph' },
       { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) }
     );
+  },
+
+  replaceContents(editor, newData) {
+    const point = { path: [0, 0], offset: 0 };
+    editor.selection = { anchor: point, focus: point };
+    // We're directly setting the new children to replace all content
+    editor.children = newData;
+    // After inserting the node, normalize the editor to ensure it's in a valid state
+    Editor.normalize(editor, { force: true });
   },
 };
 

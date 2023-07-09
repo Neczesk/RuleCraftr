@@ -91,9 +91,14 @@ function EditorPage() {
     }
   }, [blocker, saved]);
 
+  const [articleMenuEditor, setArticleMenuEditor] = useState(null);
   const [articleRefMenuOpen, setArticleRefMenuOpen] = useState(false);
+  const openArticleRefMenu = (value, editor) => {
+    setArticleRefMenuOpen(value);
+    setArticleMenuEditor(editor);
+  };
   const [articleRefMenuPosition, setArticleRefMenuPosition] = useState({ top: 0, left: 0 });
-  const handleArticleRefMenuClose = (id) => {
+  const handleArticleRefMenuClose = (id, editor) => {
     if (id) RulesetEditor.insertArticleRef(editor, id);
     setArticleRefMenuOpen(false);
     setTimeout(() => {
@@ -101,9 +106,14 @@ function EditorPage() {
     }, 0);
   };
 
+  const [keywordMenuEditor, setKeywordMenuEditor] = useState(null);
   const [keywordRefMenuOpen, setKeywordRefMenuOpen] = useState(false);
+  const openKeywordRefMenu = (value, editor) => {
+    setKeywordRefMenuOpen(value);
+    setKeywordMenuEditor(editor);
+  };
   const [keywordRefMenuPosition, setKeywordRefMenuPosition] = useState({ top: 0, left: 0 });
-  const handleKeywordRefMenuClose = (id) => {
+  const handleKeywordRefMenuClose = (id, editor) => {
     if (id) RulesetEditor.insertKeywordRef(editor, id);
     setKeywordRefMenuOpen(false);
     setTimeout(() => {
@@ -194,13 +204,13 @@ function EditorPage() {
         anchorPosition={keywordRefMenuPosition}
         open={keywordRefMenuOpen}
         onClose={handleKeywordRefMenuClose}
-        editor={editor}
+        editor={keywordMenuEditor}
       />
       <ArticleRefMenu
         anchorPosition={articleRefMenuPosition}
         open={articleRefMenuOpen}
         onClose={handleArticleRefMenuClose}
-        editor={editor}
+        editor={articleMenuEditor}
       />
       <ConfirmNavigationDialogue blocker={blocker} />{' '}
       <Box
@@ -294,8 +304,8 @@ function EditorPage() {
                 inspectKeyword={selectKeyword}
                 elevation={6}
                 editor={editor}
-                setKeywordRefMenuOpen={setKeywordRefMenuOpen}
-                setArticleRefMenuOpen={setArticleRefMenuOpen}
+                setKeywordRefMenuOpen={openKeywordRefMenu}
+                setArticleRefMenuOpen={openArticleRefMenu}
                 setArticleRefMenuPosition={setArticleRefMenuPosition}
                 setKeywordRefMenuPosition={setKeywordRefMenuPosition}
                 setCurrentSelection={changeSelection}
@@ -345,6 +355,12 @@ function EditorPage() {
                 keywordId={selectedKeyword}
                 onSelectKeyword={selectKeyword}
                 elevation={0}
+                setKeywordRefMenuOpen={openKeywordRefMenu}
+                setArticleRefMenuOpen={openArticleRefMenu}
+                setArticleRefMenuPosition={setArticleRefMenuPosition}
+                setKeywordRefMenuPosition={setKeywordRefMenuPosition}
+                selectArticle={selectArticle}
+                saveArticle={saveArticle}
               />
             </Grid>
           </Grid>

@@ -13,6 +13,8 @@ def keyword_to_dict(keyword: Keywords):
         "shortDefinition": keyword.short_definition,
         "created_date": keyword.created_date,
         "ruleset": keyword.ruleset,
+        "last_modified": keyword.last_modified,
+        "tag": keyword.tag
     }
 
 
@@ -22,7 +24,8 @@ def generate_new_keyword(keywordData: dict):
         keyword=keywordData["keyword"],
         short_definition=keywordData["short_definition"],
         long_definition=keywordData["long_definition"],
-        ruleset=keywordData["ruleset"]
+        ruleset=keywordData["ruleset"],
+        tag=keywordData["tag"]
     )
 
 
@@ -39,6 +42,13 @@ def get_list_of_keywords(listIds: list[int]):
         stmt = sqlalchemy.select(Keywords).where(Keywords.id.in_(listIds))
         result = session.scalars(stmt)
         return [keyword_to_dict(k) for k in result]
+
+
+def get_tags_in_ruleset(ruleset_id: int):
+    with Session() as session:
+        stmt = sqlalchemy.select(Keywords.tag).where(
+            Keywords.ruleset == ruleset_id).distinct()
+        return session.execute(stmt).scalars().all()
 
 
 def get_keywords_for_ruleset(id):

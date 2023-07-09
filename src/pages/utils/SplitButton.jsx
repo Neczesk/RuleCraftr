@@ -48,11 +48,10 @@ function SplitButton(props) {
       <Box display="flex" flexDirection="row" width="100%" {...others}>
         <ButtonGroup ref={buttonGroupRef} variant={variant ? variant : 'contained'} color={color}>
           <Button
+            sx={{ paddingX: 0 }}
             startIcon={icon ? icon : null}
             ref={mainActionRef}
-            sx={{ padding: 1 }}
             fullWidth
-            size="small"
             color={color}
             onClick={mainAction ? mainAction : () => console.log('main action missing')}
           >

@@ -2033,10 +2033,10 @@ side-channel@^1.0.4:
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
 
-slate-react@^0.94.2:
-  version "0.94.2"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.94.2.tgz#3fc70f0212f42a1c417012d7a911f0ec9f6b11fe"
-  integrity sha512-4wDSuTuGBkdQ609CS55uc2Yhfa5but21usBgAtCVhPJQazL85kzN2vUUYTmGb7d/mpP9tdnJiVPopIyhqlRJ8Q==
+slate-react@^0.97.1:
+  version "0.97.1"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.97.1.tgz#688b06ea7a26b8d94d8e29a7b8106087f17c8428"
+  integrity sha512-+1LMIVusBwduzBOsoX0u6ah7qgpOIlVOdbVpUrowSc5uZTXViBvAQnvSD6edOjtRUI62IFtPSvDAoHRm+E55+g==
   dependencies:
     "@juggle/resize-observer" "^3.4.0"
     "@types/is-hotkey" "^0.1.1"

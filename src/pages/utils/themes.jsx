@@ -1,22 +1,22 @@
 export const getDesignTokens = (mode, themeName) => {
-  let theme
+  let theme;
   switch (themeName) {
     case 'cherry':
-      theme = cherryTheme(mode)
-      break
+      theme = cherryTheme(mode);
+      break;
     case 'vapor':
-      theme = vaporwaveTheme(mode)
-      break
+      theme = vaporwaveTheme(mode);
+      break;
     default:
-      theme = cherryTheme(mode)
+      theme = cherryTheme(mode);
   }
   return {
     palette: {
       mode,
       ...theme,
     },
-  }
-}
+  };
+};
 
 const cherryTheme = (mode) =>
   mode === 'light'
@@ -38,7 +38,8 @@ const cherryTheme = (mode) =>
         },
         secondaryContainer: {
           main: '#FFFFEB',
-          dark: '#F2F2E1',
+          dark: '#EDE0D3',
+          light: '#F5D6BF',
         },
         paperBorder: {
           main: '#BBBBBB',
@@ -63,11 +64,12 @@ const cherryTheme = (mode) =>
         secondaryContainer: {
           main: '#101710',
           dark: '#F2F2E1',
+          light: '#403A2B',
         },
         paperBorder: {
           main: '#777777',
         },
-      }
+      };
 
 const vaporwaveTheme = (mode) =>
   mode === 'light'
@@ -88,8 +90,9 @@ const vaporwaveTheme = (mode) =>
           paper: '#FFFFFF',
         },
         secondaryContainer: {
-          main: '#FFFFEB',
-          dark: '#F2F2E1',
+          main: '#E0D1D1',
+          light: '#FFEDED',
+          dark: '#F5D7D7',
         },
         paperBorder: {
           main: '#BBBBBB',
@@ -112,10 +115,11 @@ const vaporwaveTheme = (mode) =>
           paper: '#141414',
         },
         secondaryContainer: {
-          main: '#101710',
-          dark: '#F2F2E1',
+          main: '#E0D1D1',
+          light: '#733D4A',
+          dark: '#400D14',
         },
         paperBorder: {
           main: '#777777',
         },
-      }
+      };

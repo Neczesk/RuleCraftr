@@ -18,6 +18,7 @@ import rulesetPage from '../pages/utils/exportTemplates/rulesetPage';
 import { sortKeywords } from './keywords';
 import tocEntry from '../pages/utils/exportTemplates/tocEntry';
 import { getCSS } from './exports';
+import keywordContentTemplate from '../pages/utils/exportTemplates/keywordContent.Template';
 
 export async function createRuleset(newRulesetData) {
   return await insertRuleset(newRulesetData);
@@ -206,6 +207,7 @@ export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
   Handlebars.registerPartial('article-content', articleContentTemplate);
   Handlebars.registerPartial('block-content', blockContentTemplate);
   Handlebars.registerPartial('toc-entry', tocEntry);
+  Handlebars.registerPartial('keyword-content', keywordContentTemplate);
   Handlebars.registerHelper('is-not-space', (text) => {
     if (text != ' ') return true;
   });

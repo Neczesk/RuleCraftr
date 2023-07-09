@@ -25,9 +25,7 @@ const rulesetPage = `
     {{#if keywords}}
     <h2 class="section-heading" id="keyword-glossary-header">Keywords</h2>
         {{#each keywords}}
-            <h4 id="{{id}}" >{{keyword}}</h6>
-            <p class="keyword-short-description"><em>{{shortDefinition}}</em></p>
-            <p class="keyword-long-description">{{longDefinition}}</p>
+            {{> keyword-content keyword=this}}
         {{/each}}
     {{/if}}
     </body>

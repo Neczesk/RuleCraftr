@@ -7,7 +7,6 @@ import { findKeywordInRuleset, updateKeyword, saveRuleset, removeKeyword, addKey
 import {
   Box,
   Button,
-  ButtonGroup,
   Container,
   Grid,
   IconButton,
@@ -22,6 +21,7 @@ import {
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import KeywordTable from './utils/KeywordTable';
+import LongDefinitionEditor from './utils/longDefinitionEditor';
 
 const KeywordLabelTextField = styled(TextField)({
   '& .MuiInputBase-input': {
@@ -33,7 +33,18 @@ const KeywordLabelTextField = styled(TextField)({
   },
 });
 
-function KeywordInspector({ keywordId, onSelectKeyword, elevation, sx }) {
+function KeywordInspector({
+  keywordId,
+  onSelectKeyword,
+  elevation,
+  sx,
+  setKeywordRefMenuOpen,
+  setArticleRefMenuOpen,
+  setArticleRefMenuPosition,
+  setKeywordRefMenuPosition,
+  selectArticle,
+  saveArticle,
+}) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
   const [keyword, setKeyword] = useState(null);
@@ -134,30 +145,28 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation, sx }) {
             backgroundColor: theme.palette.primaryContainer.main,
           }}
         >
-          <Toolbar variant="dense" sx={{ pb: 1 }}>
+          <Toolbar variant="dense" sx={{}} disableGutters>
             <Container>
-              <ButtonGroup color="secondary">
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disabled={selectedView === 2}
-                  onClick={() => {
-                    selectKeyword(null);
-                    switch (selectedView) {
-                      case 1:
-                        setSelectedView(2);
-                        break;
-                      case 0:
-                        setSelectedView(2);
-                        break;
-                      case 2:
-                        break;
-                    }
-                  }}
-                >
-                  Manage Keywords
-                </Button>
-              </ButtonGroup>
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={selectedView === 2}
+                onClick={() => {
+                  selectKeyword(null);
+                  switch (selectedView) {
+                    case 1:
+                      setSelectedView(2);
+                      break;
+                    case 0:
+                      setSelectedView(2);
+                      break;
+                    case 2:
+                      break;
+                  }
+                }}
+              >
+                Manage Keywords
+              </Button>
             </Container>
           </Toolbar>
           <Box display={selectedView === 2 ? 'block' : 'none'}>
@@ -224,22 +233,22 @@ function KeywordInspector({ keywordId, onSelectKeyword, elevation, sx }) {
                 variant="standard"
               />
             </Box>
-            <Box mt={3}>
-              <TextField
-                color="secondary"
-                InputProps={{ sx: { pb: 0 } }}
-                onKeyDown={handleKeyFields}
-                fullWidth
-                multiline
-                variant="standard"
-                label="Long Definition"
-                value={inspectorValue.longDefinition}
-                onChange={(event) => {
-                  setInspectorValue({ ...inspectorValue, longDefinition: event.target.value });
-                  onKeywordUpdate({ ...inspectorValue, longDefinition: event.target.value });
-                }}
-              />
-            </Box>
+            <LongDefinitionEditor
+              sx={{ mt: 3 }}
+              setKeywordRefMenuOpen={setKeywordRefMenuOpen}
+              setArticleRefMenuOpen={setArticleRefMenuOpen}
+              setArticleRefMenuPosition={setArticleRefMenuPosition}
+              setKeywordRefMenuPosition={setKeywordRefMenuPosition}
+              selectArticle={selectArticle}
+              saveArticle={saveArticle}
+              color={theme.palette.secondary.main}
+              inspectKeyword={selectKeyword}
+              keyword={keyword}
+              onChange={(value) => {
+                setInspectorValue({ ...inspectorValue, longDefinition: value });
+                onKeywordUpdate({ ...inspectorValue, longDefinition: value });
+              }}
+            />
           </Box>
         </Paper>
       </Box>
@@ -251,5 +260,11 @@ KeywordInspector.propTypes = {
   onSelectKeyword: PropTypes.func,
   sx: PropTypes.object,
   elevation: PropTypes.number,
+  setKeywordRefMenuOpen: PropTypes.func.isRequired,
+  setArticleRefMenuOpen: PropTypes.func.isRequired,
+  setArticleRefMenuPosition: PropTypes.func.isRequired,
+  setKeywordRefMenuPosition: PropTypes.func.isRequired,
+  selectArticle: PropTypes.func.isRequired,
+  saveArticle: PropTypes.func.isRequired,
 };
 export default KeywordInspector;

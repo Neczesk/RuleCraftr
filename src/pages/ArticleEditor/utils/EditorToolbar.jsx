@@ -115,14 +115,18 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
               <Grid item xs={4}>
                 <EditorToolbarButton
                   color="inherit"
-                  onClick={props.openArticleRefMenu}
+                  onClick={() => props.openArticleRefMenu(true, editor)}
                   startIcon={<ArticleOutlinedIcon />}
                 >
                   Reference
                 </EditorToolbarButton>
               </Grid>
               <Grid item xs={4}>
-                <EditorToolbarButton color="inherit" onClick={props.openKeywordRefMenu} startIcon={<KeyOutlinedIcon />}>
+                <EditorToolbarButton
+                  color="inherit"
+                  onClick={() => props.openKeywordRefMenu(true, editor)}
+                  startIcon={<KeyOutlinedIcon />}
+                >
                   Reference
                 </EditorToolbarButton>
               </Grid>
