@@ -4,8 +4,8 @@ import { unstable_useBlocker as useBlocker, useParams, useLocation } from 'react
 
 import { createEditor, Transforms } from 'slate';
 import { withReact, ReactEditor } from 'slate-react';
-import { GenstaffEditor } from './utils/GenstaffEditor';
-import RulesetEditor from './utils/RulesetEditor';
+import { GenstaffEditor } from './SlateComponents/GenstaffEditor';
+import RulesetEditor from './SlateComponents/RulesetEditor';
 
 import Grid from '@mui/material/Grid';
 import { Box, useTheme, IconButton } from '@mui/material';
@@ -13,12 +13,12 @@ import { Box, useTheme, IconButton } from '@mui/material';
 import { findArticleInRuleset, findKeywordInRuleset, getRuleset, saveRuleset } from '../../data/rulesets';
 import useRulesetStore from '../../stores/rulesetStore';
 import EditorToolbar from './utils/EditorToolbar';
-import ArticleEditor from './ArticleEditor';
-import ArticleTree from './ArticleTree';
-import KeywordInspector from './KeywordInspector';
-import ConfirmNavigationDialogue from './utils/ConfirmNavigationDialogue';
-import KeywordRefMenu from './KeywordRefMenu';
-import ArticleRefMenu from './ArticleRefMenu';
+import ArticleEditor from './ArticleContentEditor/ArticleEditor';
+import ArticleTree from './ArticleTree/ArticleTree';
+import KeywordInspector from './KeywordInspector/KeywordInspector';
+import ConfirmNavigationDialogue from './Dialogues/ConfirmNavigationDialogue';
+import KeywordRefMenu from './Dialogues/KeywordRefMenu';
+import ArticleRefMenu from './Dialogues/ArticleRefMenu';
 import ExportDialog from '../utils/ExportDialog';
 import MenuOpenOutlinedIcon from '@mui/icons-material/MenuOpenOutlined';
 

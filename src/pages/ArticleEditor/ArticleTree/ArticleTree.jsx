@@ -3,13 +3,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useContext, useEffect, useState } from 'react';
 import { TreeView } from '@mui/lab';
-import useRulesetStore from '../../stores/rulesetStore';
+import useRulesetStore from '../../../stores/rulesetStore';
 import { Menu, MenuItem, Paper, Toolbar, useTheme } from '@mui/material';
-import { findArticleInRuleset, addArticle, removeArticle } from '../../data/rulesets';
-import { createArticle } from '../../data/articles';
-import SplitButton from '../utils/SplitButton';
-import ThemedTreeItem from './utils/ThemedTreeItem';
-import { ColorModeContext } from '../App';
+import { findArticleInRuleset, addArticle, removeArticle } from '../../../data/rulesets';
+import { createArticle } from '../../../data/articles';
+import SplitButton from '../../utils/SplitButton';
+import ThemedTreeItem from '../utils/ThemedTreeItem';
+import { ColorModeContext } from '../../App';
 
 function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   const ruleset = useRulesetStore((state) => state.ruleset);

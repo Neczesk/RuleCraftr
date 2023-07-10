@@ -10,9 +10,9 @@ import { Slate, Editable } from 'slate-react';
 import { Box, TextField, styled, Paper, useTheme } from '@mui/material';
 
 // Local modules
-import useRulesetStore from '../../stores/rulesetStore';
-import { findArticleInRuleset, updateArticle } from '../../data/rulesets';
-import { useGenstaff } from './utils/GenstaffEditor';
+import useRulesetStore from '../../../stores/rulesetStore';
+import { findArticleInRuleset, updateArticle } from '../../../data/rulesets';
+import { useGenstaff } from '../SlateComponents/GenstaffEditor';
 
 const StyledTextField = styled(TextField)({
   '& .MuiInputBase-input': {

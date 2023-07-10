@@ -2,8 +2,8 @@ import { useRef, useEffect } from 'react';
 
 import { PropTypes } from 'prop-types';
 import { Popover, Autocomplete, TextField } from '@mui/material';
-import useRulesetStore from '../../stores/rulesetStore';
-import { treeToArray } from '../../data/articles';
+import useRulesetStore from '../../../stores/rulesetStore';
+import { treeToArray } from '../../../data/articles';
 import { Transforms } from 'slate';
 
 const ArticleRefMenu = (props) => {

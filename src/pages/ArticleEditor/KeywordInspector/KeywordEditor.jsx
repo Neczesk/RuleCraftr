@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 import { findKeywordInRuleset, saveRuleset } from '../../../data/rulesets';
 import useRulesetStore from '../../../stores/rulesetStore';
 import TagSelect from './TagSelect';
-import LongDefinitionEditor from '../utils/longDefinitionEditor';
+import LongDefinitionEditor from './longDefinitionEditor';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 

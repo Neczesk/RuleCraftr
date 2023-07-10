@@ -22,7 +22,7 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import useRulesetStore from '../../../stores/rulesetStore';
 import { bulkUpdateKeywords } from '../../../data/rulesets';
 import { useSnackbar } from 'notistack';
-import TagSelect from '../KeywordInspector/TagSelect';
+import TagSelect from './TagSelect';
 
 function KeywordManager(props) {
   const { selectKeyword, createKeyword, deleteKeyword, addTag, updateKeyword } = props;

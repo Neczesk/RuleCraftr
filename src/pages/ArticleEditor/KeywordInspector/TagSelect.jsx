@@ -25,7 +25,7 @@ function TagSelect(props) {
     const newOptions = keyword
       ? tags.map((tag) => {
           if (tag) return { label: tag.toString(), value: tag };
-          else if (tag === null) return { label: 'No Tag', value: null };
+          else if (!tag) return { label: 'No Tag', value: null };
         })
       : [];
     if (newOptions && newOptions.length && !newOptions.some((option) => option.value === null))

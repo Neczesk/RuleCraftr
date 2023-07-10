@@ -8,7 +8,7 @@ import { Box, Toolbar, Paper, useTheme, Tabs, Tab, Grid } from '@mui/material';
 import StyleSelectAutocomplete from './StyleSelectAutocomplete';
 import { PropTypes } from 'prop-types';
 import { ReactEditor } from 'slate-react';
-import RulesetEditor from './RulesetEditor';
+import RulesetEditor from '../SlateComponents/RulesetEditor';
 import useRulesetStore from '../../../stores/rulesetStore';
 import { forwardRef, useCallback, useContext, useEffect, useState } from 'react';
 import EditorToolbarButton from './EditorToolbarButton';

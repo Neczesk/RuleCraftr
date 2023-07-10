@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types';
-import useRulesetStore from '../../stores/rulesetStore';
+import useRulesetStore from '../../../stores/rulesetStore';
 import { useState } from 'react';
-import * as dataKeywords from '../../data/keywords';
-import { updateKeyword, removeKeyword, addKeyword } from '../../data/rulesets';
+import * as dataKeywords from '../../../data/keywords';
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
 import { Box, Button, IconButton, Paper, Popover, Stack, TextField, Toolbar, useTheme } from '@mui/material';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import KeywordManager from './utils/KeywordManager';
+import KeywordManager from './KeywordManager';
 
-import KeywordEditor from './KeywordInspector/KeywordEditor';
+import KeywordEditor from './KeywordEditor';
 
 function KeywordInspector({
   keywordId,
@@ -24,11 +23,12 @@ function KeywordInspector({
   saveArticle,
 }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
-  const setRuleset = useRulesetStore((state) => state.setRuleset);
+  const setSingleKeyword = useRulesetStore((state) => state.setSingleKeyword);
+  const removeKeyword = useRulesetStore((state) => state.removeKeyword);
   const [selectedView, setSelectedView] = useState(0);
 
   const onKeywordUpdate = (newData) => {
-    setRuleset(updateKeyword({ ...newData }, ruleset));
+    setSingleKeyword(newData.id, newData);
   };
 
   const selectKeyword = (id) => {
@@ -36,14 +36,14 @@ function KeywordInspector({
   };
 
   const deleteKeyword = (id) => {
-    setRuleset(removeKeyword(id, ruleset));
+    removeKeyword(id);
     selectKeyword(null);
     setSelectedView(2);
   };
 
   const createKeyword = (newData, addingTag = false) => {
     const newKeyword = dataKeywords.createKeyword(ruleset.id, newData);
-    setRuleset(addKeyword(ruleset, newKeyword));
+    setSingleKeyword(newKeyword.id, newKeyword);
     if (!addingTag) {
       selectKeyword(newKeyword.id);
     }

@@ -1,4 +1,4 @@
-import useRulesetStore from '../../stores/rulesetStore';
+import useRulesetStore from '../../../stores/rulesetStore';
 
 import { useState, useEffect, useRef } from 'react';
 import { PropTypes } from 'prop-types';
@@ -14,8 +14,8 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { addKeyword } from '../../data/rulesets';
-import { createKeyword } from '../../data/keywords';
+import { addKeyword } from '../../../data/rulesets';
+import { createKeyword } from '../../../data/keywords';
 import { Transforms } from 'slate';
 
 const KeywordRefMenu = (props) => {
