@@ -33,30 +33,43 @@ function NewVersionDialog(props) {
         </Typography>
         <ul>
           <li>
-            Added exporting html versions of your rulesets. You can also view the html versions of public rulesets even
-            though you can{"'"}t edit them.
+            The two side panels (article tree and keyword manager) are now sliding panels that you can open or close
           </li>
-          <li>Rulesets will respect both your theme and your color mode preference when exporting.</li>
-          <li>Exported rulesets have a table of contents.</li>
-          <li>Added a close button to the hamburger navigation menu on the top right</li>
+          <li>
+            Keyword long definitions are now fully featured editors supporting the basic formatting marks as well as
+            referencing articles and other keywords.
+          </li>
+          <li>The formatted long definition should export correctly as well</li>
+          <li>The keyword interface has been completely overhauled.</li>
+          <li>
+            The keyword manager now lets you organize your keywords into tags, move keywords between tags, rename your
+            tags, delete keywords, delete tags, etc
+          </li>
+          <li>The Keyword manager also lets you search through your keywords and only show the relevant ones.</li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           Bug Fixes:
         </Typography>
         <ul>
-          <li>A few miscellaneous bug fixes (Thank you Greg)</li>
           <li>
-            Canny users may have been able to attempt editing a public ruleset even though the backend rejected the
-            changes. That should be harder now.
+            Extremely long words were breaking the export as well as the editor. While this is unlikely to come up in
+            practice, I{"'"}m still fixing it by breaking long words
+          </li>
+          <li>
+            If you had too many articles, it would cause the main page to grow beyond the editor. The article tree now
+            has an internal scroll for both this vertical case, and in the case of too deeply nested articles it should
+            scroll to the side as well.
           </li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           What{"'"}s Next:
         </Typography>
         <ul>
-          <li>Allowing the two side panels to collapse</li>
-          <li>Pagination and searching of rulesets</li>
-          <li>Keyword inspector overhaul</li>
+          <li>Alpha 4: Performance fixes for large ruleset with lots of articles and keywords</li>
+          <li>Beta 1: Ruleset Manager update, including searching, tagging, and pagination of rulesets</li>
+          <li>
+            Beta 2: Editor overhaul, including tables and lists and possibly images to be added to the article editor
+          </li>
         </ul>
       </DialogContent>
     </Dialog>

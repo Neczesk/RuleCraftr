@@ -104,15 +104,13 @@ function LongDefinitionEditor(props) {
   }, [editor.selection, fetchMarks]);
   const colorModeContext = useContext(ColorModeContext);
   const [currentContainerColor, setCurrentContainerColor] = useState(
-    colorModeContext.colorMode === 'light'
-      ? theme.palette.secondaryContainer.dark
-      : theme.palette.secondaryContainer.light
+    colorModeContext.colorMode === 'light' ? theme.palette.primaryContainer.dark : theme.palette.primaryContainer.light
   );
   useEffect(() => {
     setCurrentContainerColor(
       colorModeContext.colorMode === 'light'
-        ? theme.palette.secondaryContainer.dark
-        : theme.palette.secondaryContainer.light
+        ? theme.palette.primaryContainer.dark
+        : theme.palette.primaryContainer.light
     );
   }, [theme, colorModeContext]);
   return (
@@ -216,7 +214,7 @@ function LongDefinitionEditor(props) {
       >
         <Slate
           editor={editor}
-          value={initialValue}
+          initialValue={initialValue}
           onChange={() => {
             keyword.longDefinition = editor.children;
             const marks = fetchMarks();

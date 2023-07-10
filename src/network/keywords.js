@@ -11,6 +11,7 @@ export async function postKeywords(keywordData) {
     keyword: keyword.keyword,
     ruleset: keyword.ruleset,
     tag: keyword.tag,
+    dummy: keyword.dummy,
   }));
 
   const url = import.meta.env.VITE_API_URL + 'keywords';
@@ -32,6 +33,7 @@ export async function updateKeywords(keywordData) {
     short_definition: keyword.shortDefinition,
     keyword: keyword.keyword,
     tag: keyword.tag,
+    dummy: keyword.dummy,
   }));
 
   const url = import.meta.env.VITE_API_URL + 'keywords';

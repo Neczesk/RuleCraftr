@@ -14,7 +14,8 @@ def keyword_to_dict(keyword: Keywords):
         "created_date": keyword.created_date,
         "ruleset": keyword.ruleset,
         "last_modified": keyword.last_modified,
-        "tag": keyword.tag
+        "tag": keyword.tag,
+        "dummy": keyword.dummy
     }
 
 
@@ -25,7 +26,8 @@ def generate_new_keyword(keywordData: dict):
         short_definition=keywordData["short_definition"],
         long_definition=keywordData["long_definition"],
         ruleset=keywordData["ruleset"],
-        tag=keywordData["tag"]
+        tag=keywordData["tag"],
+        dummy=keywordData["dummy"]
     )
 
 

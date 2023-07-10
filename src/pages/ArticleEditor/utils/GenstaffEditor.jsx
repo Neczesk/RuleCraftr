@@ -129,6 +129,10 @@ export const useGenstaff = (
         setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom });
       }
     }
+    // if (event.key === 'Tab') {
+    //   event.preventDefault();
+    //   editor.insertText('\t');
+    // }
     if (event.key === 's' && event.ctrlKey) {
       event.preventDefault();
       saveArticle();

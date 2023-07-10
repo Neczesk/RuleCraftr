@@ -1,37 +1,15 @@
 import PropTypes from 'prop-types';
 import useRulesetStore from '../../stores/rulesetStore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as dataKeywords from '../../data/keywords';
-import { findKeywordInRuleset, updateKeyword, saveRuleset, removeKeyword, addKeyword } from '../../data/rulesets';
+import { updateKeyword, removeKeyword, addKeyword } from '../../data/rulesets';
+import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Paper,
-  TextField,
-  Toolbar,
-  Typography,
-  styled,
-  useTheme,
-} from '@mui/material';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import { Box, Button, IconButton, Paper, Popover, Stack, TextField, Toolbar, useTheme } from '@mui/material';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import KeywordTable from './utils/KeywordTable';
-import LongDefinitionEditor from './utils/longDefinitionEditor';
+import KeywordManager from './utils/KeywordManager';
 
-const KeywordLabelTextField = styled(TextField)({
-  '& .MuiInputBase-input': {
-    fontSize: '23px', // Set the font size you need
-    textAlign: 'center', // This is to center the text
-  },
-  '& .MuiInputLabel-root': {
-    fontSize: '22px', // Set the font size you need
-  },
-});
+import KeywordEditor from './KeywordInspector/KeywordEditor';
 
 function KeywordInspector({
   keywordId,
@@ -47,73 +25,10 @@ function KeywordInspector({
 }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
-  const [keyword, setKeyword] = useState(null);
   const [selectedView, setSelectedView] = useState(0);
-  const [inspectorValue, setInspectorValue] = useState({
-    keyword: ' ',
-    shortDefinition: ' ',
-    longDefinition: ' ',
-  });
-  useEffect(() => {
-    const newKeyword = findKeywordInRuleset(keywordId, ruleset);
-    setSelectedView(0);
-    if (keywordId) {
-      setKeyword(newKeyword);
-    } else {
-      setInspectorValue({
-        keyword: '',
-        shortDefinition: '',
-        longDefinition: '',
-      });
-      setSelectedView(2);
-    }
-    if (newKeyword) {
-      setInspectorValue({
-        keyword: newKeyword.keyword,
-        longDefinition: newKeyword.longDefinition ? newKeyword.longDefinition : '',
-        shortDefinition: newKeyword.shortDefinition ? newKeyword.shortDefinition : '',
-      });
-    }
-  }, [keywordId, ruleset, keyword]);
-
-  // Manipulating the state of the Keyword Inspector itself
-  const [editKeywordToggle, setEditKeywordToggle] = useState(false);
-  const toggleKeywordEdit = () => {
-    setEditKeywordToggle(!editKeywordToggle);
-  };
-
-  const handleKeyFields = (event) => {
-    if (event.key === 's' && event.ctrlKey) {
-      event.preventDefault();
-      save();
-    }
-  };
-
-  const handleKeyKeyword = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      toggleKeywordEdit();
-    }
-    if (event.key === 's' && event.ctrlKey) {
-      event.preventDefault();
-      toggleKeywordEdit();
-      save();
-    }
-  };
-
-  const save = () => {
-    saveRuleset(ruleset).then((newRuleset) => setRuleset(newRuleset));
-  };
-
-  const handleBlur = () => {
-    toggleKeywordEdit();
-    // Add your custom behavior here
-  };
-
-  // These functions are used to manipulate the keywords of the active ruleset
 
   const onKeywordUpdate = (newData) => {
-    setRuleset(updateKeyword({ ...newData, id: keyword.id }, ruleset));
+    setRuleset(updateKeyword({ ...newData }, ruleset));
   };
 
   const selectKeyword = (id) => {
@@ -122,17 +37,73 @@ function KeywordInspector({
 
   const deleteKeyword = (id) => {
     setRuleset(removeKeyword(id, ruleset));
+    selectKeyword(null);
+    setSelectedView(2);
   };
 
-  const createKeyword = (newData) => {
+  const createKeyword = (newData, addingTag = false) => {
     const newKeyword = dataKeywords.createKeyword(ruleset.id, newData);
     setRuleset(addKeyword(ruleset, newKeyword));
-    selectKeyword(newKeyword.id);
+    if (!addingTag) {
+      selectKeyword(newKeyword.id);
+    }
   };
   const theme = useTheme();
-
+  const addTag = (tag) => {
+    createKeyword(
+      {
+        tag: tag,
+        dummy: true,
+        keyword: 'dummy',
+        shortDefinition: 'This keyword is only to make sure that empty tags show up',
+      },
+      true
+    );
+  };
+  const [addTagPopoverRef, setAddTagPopoverRef] = useState(null);
+  const [addTagValue, setAddTagValue] = useState('');
   return (
     <>
+      <Popover
+        anchorEl={addTagPopoverRef}
+        open={!!addTagPopoverRef}
+        onClose={() => {
+          setAddTagPopoverRef(null);
+        }}
+      >
+        <TextField
+          autoFocus
+          type="text"
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                onClick={() => {
+                  addTag(addTagValue);
+                  setAddTagPopoverRef(null);
+                  setAddTagValue('');
+                }}
+                disabled={addTagValue === ''}
+                sx={{
+                  color: addTagValue !== '' ? theme.palette.success.main : null,
+                }}
+              >
+                <CheckOutlinedIcon />
+              </IconButton>
+            ),
+          }}
+          size="small"
+          value={addTagValue}
+          onChange={(event) => setAddTagValue(event.target.value)}
+          placeholder="New Tag Name"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              addTag(addTagValue);
+              setAddTagPopoverRef(null);
+              setAddTagValue('');
+            }
+          }}
+        />
+      </Popover>
       <Box marginBottom={0} sx={sx} flexDirection="column">
         <Paper
           elevation={elevation}
@@ -145,109 +116,83 @@ function KeywordInspector({
             backgroundColor: theme.palette.primaryContainer.main,
           }}
         >
-          <Toolbar variant="dense" sx={{}} disableGutters>
-            <Container>
-              <Button
-                variant="contained"
-                color="secondary"
-                disabled={selectedView === 2}
-                onClick={() => {
-                  selectKeyword(null);
-                  switch (selectedView) {
-                    case 1:
-                      setSelectedView(2);
-                      break;
-                    case 0:
-                      setSelectedView(2);
-                      break;
-                    case 2:
-                      break;
-                  }
-                }}
-              >
-                Manage Keywords
-              </Button>
-            </Container>
+          <Toolbar variant="dense" sx={{ mb: 1 }} disableGutters>
+            <Box
+              sx={{ backgroundColor: theme.palette.primaryContainer.main, width: '100%', height: '100%', padding: 1 }}
+            >
+              {selectedView === 0 ? (
+                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                  <IconButton
+                    style={{
+                      borderRadius: theme.shape.borderRadius,
+                      backgroundColor: theme.palette.secondary.main,
+                      color: theme.palette.getContrastText(theme.palette.secondary.main),
+                    }}
+                    sx={{ px: 0 }}
+                    size="small"
+                    variant="contained"
+                    color="secondary"
+                    disabled={selectedView === 2}
+                    onClick={() => {
+                      selectKeyword(null);
+                      switch (selectedView) {
+                        case 1:
+                          setSelectedView(2);
+                          break;
+                        case 0:
+                          setSelectedView(2);
+                          break;
+                        case 2:
+                          break;
+                      }
+                    }}
+                  >
+                    <ArrowBackIosNewOutlinedIcon fontSize="small" />
+                  </IconButton>
+                  <Box flexGrow={1} />
+                  <Button variant="contained" size="small" color="error" onClick={() => deleteKeyword(keywordId)}>
+                    Delete Keyword
+                  </Button>
+                </Stack>
+              ) : (
+                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={(event) => setAddTagPopoverRef(event.currentTarget)}
+                  >
+                    Add New Tag
+                  </Button>
+                </Stack>
+              )}
+            </Box>
           </Toolbar>
           <Box display={selectedView === 2 ? 'block' : 'none'}>
-            <KeywordTable
-              onAdd={createKeyword}
-              keywords={ruleset.keywords ? ruleset.keywords : null}
+            <KeywordManager
+              selectKeyword={selectKeyword}
+              createKeyword={createKeyword}
               deleteKeyword={deleteKeyword}
-              onSelect={selectKeyword}
+              updateKeyword={onKeywordUpdate}
+              addTag={addTag}
             />
           </Box>
           <Box
             display={selectedView === 0 ? 'block' : 'none'}
             sx={{ paddingX: 1, overflowY: 'auto', overflowX: 'hidden' }}
           >
-            {!editKeywordToggle ? (
-              <Grid container justifyContent="center" alignItems="center">
-                <Grid item alignContent="center">
-                  <Typography variant="h5">{inspectorValue.keyword}</Typography>
-                </Grid>
-                <Grid item>
-                  <IconButton onClick={toggleKeywordEdit}>
-                    <ModeEditOutlineOutlinedIcon color="secondary" />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            ) : (
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <KeywordLabelTextField
-                  autoFocus
-                  color="secondary"
-                  label=""
-                  value={inspectorValue.keyword}
-                  onChange={(event) => {
-                    setInspectorValue({ ...inspectorValue, keyword: event.target.value });
-                    onKeywordUpdate({ ...inspectorValue, keyword: event.target.value });
-                  }}
-                  onKeyDown={handleKeyKeyword}
-                  onBlur={handleBlur}
-                  variant="standard"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => toggleKeywordEdit()}>
-                          <CheckOutlinedIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
-            )}
-            <Box mt={2}>
-              <TextField
-                color="secondary"
-                onKeyDown={handleKeyFields}
-                multiline
-                fullWidth
-                label="Short Definition"
-                value={inspectorValue.shortDefinition}
-                onChange={(event) => {
-                  setInspectorValue({ ...inspectorValue, shortDefinition: event.target.value });
-                  onKeywordUpdate({ ...inspectorValue, shortDefinition: event.target.value });
-                }}
-                variant="standard"
-              />
-            </Box>
-            <LongDefinitionEditor
-              sx={{ mt: 3 }}
-              setKeywordRefMenuOpen={setKeywordRefMenuOpen}
+            <KeywordEditor
+              keywordId={keywordId}
               setArticleRefMenuOpen={setArticleRefMenuOpen}
               setArticleRefMenuPosition={setArticleRefMenuPosition}
+              setKeywordRefMenuOpen={setKeywordRefMenuOpen}
               setKeywordRefMenuPosition={setKeywordRefMenuPosition}
               selectArticle={selectArticle}
               saveArticle={saveArticle}
-              color={theme.palette.secondary.main}
-              inspectKeyword={selectKeyword}
-              keyword={keyword}
-              onChange={(value) => {
-                setInspectorValue({ ...inspectorValue, longDefinition: value });
-                onKeywordUpdate({ ...inspectorValue, longDefinition: value });
-              }}
+              setSelectedView={setSelectedView}
+              addTag={addTag}
+              selectKeyword={selectKeyword}
+              onKeywordUpdate={onKeywordUpdate}
             />
           </Box>
         </Paper>

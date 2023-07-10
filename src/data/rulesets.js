@@ -103,11 +103,31 @@ export function updateKeyword(keywordData, ruleset) {
   const newRuleset = Object.assign({}, ruleset);
   const keyword = findKeywordInRuleset(keywordData.id, newRuleset);
   if (keyword) {
-    keyword.keyword = keywordData.keyword;
-    keyword.shortDefinition = keywordData.shortDefinition;
-    keyword.longDefinition = keywordData.longDefinition;
+    keyword.keyword = keywordData.keyword ? keywordData.keyword : keyword.keyword;
+    keyword.shortDefinition = keywordData.shortDefinition ? keywordData.shortDefinition : keyword.shortDefinition;
+    keyword.longDefinition = keywordData.longDefinition ? keywordData.longDefinition : keyword.longDefinition;
+    keyword.tag = keywordData.tag !== undefined ? keywordData.tag : keyword.tag;
+    keyword.dummy = keywordData.dummy ? keywordData.dummy : keyword.dummy;
     keyword.synced = false;
   }
+  newRuleset.synced = false;
+  return newRuleset;
+}
+
+export function bulkUpdateKeywords(keywords, ruleset) {
+  if (!keywords || !keywords.length) return ruleset;
+  const newRuleset = Object.assign({}, ruleset);
+  keywords.map((keyword) => {
+    const newKeyword = findKeywordInRuleset(keyword.id, newRuleset);
+    if (newKeyword) {
+      newKeyword.keyword = keyword.keyword;
+      newKeyword.shortDefinition = keyword.shortDefinition;
+      newKeyword.longDefinition = keyword.longDefinition;
+      newKeyword.tag = keyword.tag;
+      newKeyword.dummy = keyword.dummy;
+      newKeyword.synced = false;
+    }
+  });
   newRuleset.synced = false;
   return newRuleset;
 }

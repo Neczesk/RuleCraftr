@@ -106,5 +106,6 @@ class Keywords(Base):
     short_definition = Column(Text)
     tag = Column(Text)
     long_definition = Column(JSON, server_default=text('\'[{"type":"paragraph","children":[{"text":"Start typing here..."}]}]\'::json'))
+    dummy = Column(Boolean, server_default=text('false'))
 
     rulesets = relationship('Rulesets', back_populates='keywords')

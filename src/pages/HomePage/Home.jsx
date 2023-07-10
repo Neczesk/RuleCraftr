@@ -25,11 +25,15 @@ function Home() {
             Creating your user account (Use the invite code you received from me if you have one, otherwise you{"'"}re
             not getting in yet)
           </li>
-          <li>Actual aesthetic design, including dark and light mode</li>
           <li>
             Within the ruleset editor, you can edit sections (called articles), organize them into a heirarchy, and edit
             their contents. Inside a ruleset you also have access to keywords, which you can create and reference
             through articles.
+          </li>
+          <li>
+            You can also organize your keywords into folders- for example, special rules and wargear- and search through
+            your keywords making it easier to find the one you want. Inside a keyword, you have full access to the
+            editor and keywords can reference other keywords or articles as necessary.
           </li>
           <li>
             Exporting a ruleset to html for easier reading. You can also export and view public rulesets in addition to
@@ -42,13 +46,9 @@ function Home() {
         <ul>
           <li>Better support for smaller screen widths, including possibly mobile devices (but no promises)</li>
           <li>
-            Minimizing the article tree (the left panel) and the keyword inspector (right panel) to give you the maximum
-            space for your editing
-          </li>
-          <li>Pagination and searching of the keywords in a ruleset</li>
-          <li>
             Pagination and searching of the rulesets that you created and those of other users that are set public
           </li>
+          <li>Tagging rulesets to help discover public rulesets that are of interest to you.</li>
         </ul>
       </Paper>
     </Container>

@@ -114,7 +114,7 @@ export default function ArticleEditor({
                 height: '100%',
               }}
               editor={editor}
-              value={initialValue}
+              initialValue={initialValue}
               onChange={() => {
                 if (
                   article &&
