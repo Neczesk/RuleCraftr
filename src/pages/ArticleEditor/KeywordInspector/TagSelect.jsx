@@ -31,6 +31,8 @@ function TagSelect(props) {
     if (newOptions && newOptions.length && !newOptions.some((option) => option.value === null))
       newOptions.unshift({ label: 'No Tag', value: null });
     setOptions(newOptions);
+    if (keyword && keyword.tag) setValue({ label: keyword.tag, value: keyword.tag });
+    else setValue({ label: 'No Tag', value: null });
   }, [keyword, tags]);
 
   const [value, setValue] = useState({ label: 'No Tag', value: null });
