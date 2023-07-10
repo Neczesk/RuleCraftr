@@ -78,6 +78,7 @@ function KeywordEditor(props) {
     if (event.key === 'Enter') {
       event.preventDefault();
       toggleKeywordEdit();
+      handleBlur();
     }
     if (event.key === 's' && event.ctrlKey) {
       event.preventDefault();
@@ -90,8 +91,7 @@ function KeywordEditor(props) {
   };
 
   const handleBlur = () => {
-    toggleKeywordEdit();
-    // Add your custom behavior here
+    onKeywordUpdate({ ...inspectorValue, id: keywordId });
   };
   return (
     <>
@@ -115,10 +115,12 @@ function KeywordEditor(props) {
             value={inspectorValue.keyword}
             onChange={(event) => {
               setInspectorValue({ ...inspectorValue, keyword: event.target.value });
-              onKeywordUpdate({ ...inspectorValue, keyword: event.target.value });
             }}
             onKeyDown={handleKeyKeyword}
-            onBlur={handleBlur}
+            onBlur={() => {
+              setEditKeywordToggle(false);
+              handleBlur();
+            }}
             variant="standard"
             InputProps={{
               endAdornment: (
@@ -140,6 +142,7 @@ function KeywordEditor(props) {
       />
       <Box mt={2}>
         <TextField
+          onBlur={handleBlur}
           color="secondary"
           onKeyDown={handleKeyFields}
           multiline
@@ -148,13 +151,13 @@ function KeywordEditor(props) {
           value={inspectorValue.shortDefinition}
           onChange={(event) => {
             setInspectorValue({ ...inspectorValue, shortDefinition: event.target.value });
-            onKeywordUpdate({ ...inspectorValue, shortDefinition: event.target.value });
           }}
           variant="standard"
         />
       </Box>
       <LongDefinitionEditor
         sx={{ mt: 3 }}
+        onBlur={handleBlur}
         setKeywordRefMenuOpen={setKeywordRefMenuOpen}
         setArticleRefMenuOpen={setArticleRefMenuOpen}
         setArticleRefMenuPosition={setArticleRefMenuPosition}
@@ -166,7 +169,6 @@ function KeywordEditor(props) {
         keyword={keyword}
         onChange={(value) => {
           setInspectorValue({ ...inspectorValue, longDefinition: value });
-          onKeywordUpdate({ ...inspectorValue, longDefinition: value });
         }}
       />
     </>
