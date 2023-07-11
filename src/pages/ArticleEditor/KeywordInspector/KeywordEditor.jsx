@@ -11,10 +11,8 @@ import { Box, Grid, IconButton, InputAdornment, TextField, Typography, styled, u
 
 function KeywordEditor(props) {
   const {
-    setKeywordRefMenuOpen,
-    setArticleRefMenuOpen,
-    setArticleRefMenuPosition,
-    setKeywordRefMenuPosition,
+    openKeywordRefMenu,
+    openArticleRefMenu,
     selectArticle,
     saveArticle,
     keywordId,
@@ -22,6 +20,7 @@ function KeywordEditor(props) {
     onKeywordUpdate,
     addTag,
     selectKeyword,
+    setCurrentSelection,
   } = props;
   const KeywordLabelTextField = styled(TextField)({
     '& .MuiInputBase-input': {
@@ -158,15 +157,14 @@ function KeywordEditor(props) {
       <LongDefinitionEditor
         sx={{ mt: 3 }}
         onBlur={handleBlur}
-        setKeywordRefMenuOpen={setKeywordRefMenuOpen}
-        setArticleRefMenuOpen={setArticleRefMenuOpen}
-        setArticleRefMenuPosition={setArticleRefMenuPosition}
-        setKeywordRefMenuPosition={setKeywordRefMenuPosition}
+        openArticleRefMenu={openArticleRefMenu}
+        openKeywordRefMenu={openKeywordRefMenu}
         selectArticle={selectArticle}
         saveArticle={saveArticle}
         color={theme.palette.secondary.main}
         inspectKeyword={selectKeyword}
         keyword={keyword}
+        setCurrentSelection={setCurrentSelection}
         onChange={(value) => {
           setInspectorValue({ ...inspectorValue, longDefinition: value });
         }}
@@ -175,10 +173,8 @@ function KeywordEditor(props) {
   );
 }
 KeywordEditor.propTypes = {
-  setKeywordRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuPosition: PropTypes.func.isRequired,
-  setKeywordRefMenuPosition: PropTypes.func.isRequired,
+  openArticleRefMenu: PropTypes.func.isRequired,
+  openKeywordRefMenu: PropTypes.func.isRequired,
   selectArticle: PropTypes.func.isRequired,
   saveArticle: PropTypes.func.isRequired,
   keywordId: PropTypes.string,
@@ -186,5 +182,6 @@ KeywordEditor.propTypes = {
   onKeywordUpdate: PropTypes.func.isRequired,
   addTag: PropTypes.func.isRequired,
   selectKeyword: PropTypes.func.isRequired,
+  setCurrentSelection: PropTypes.func.isRequired,
 };
 export default KeywordEditor;

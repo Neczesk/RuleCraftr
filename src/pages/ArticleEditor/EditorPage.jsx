@@ -26,6 +26,8 @@ function EditorPage() {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
   const clearRuleset = useRulesetStore((state) => state.clearRuleset);
+  const synced = useRulesetStore((state) => state.synced);
+  const setSynced = useRulesetStore((state) => state.setRulesetChanged);
   const [currentArticle, setCurrentArticle] = useState(null);
   const params = useParams();
   const rulesetId = params.id;
@@ -64,8 +66,8 @@ function EditorPage() {
 
   const [saved, setSaved] = useState(true);
   useEffect(() => {
-    setSaved(ruleset.synced);
-  }, [ruleset]);
+    setSaved(synced);
+  }, [synced]);
   const [editor] = useState(() => withReact(GenstaffEditor(createEditor())));
 
   useEffect(() => {
@@ -93,32 +95,67 @@ function EditorPage() {
 
   const [articleMenuEditor, setArticleMenuEditor] = useState(null);
   const [articleRefMenuOpen, setArticleRefMenuOpen] = useState(false);
-  const openArticleRefMenu = (value, editor) => {
-    setArticleRefMenuOpen(value);
-    setArticleMenuEditor(editor);
-  };
   const [articleRefMenuPosition, setArticleRefMenuPosition] = useState({ top: 0, left: 0 });
-  const handleArticleRefMenuClose = (id, editor) => {
-    if (id) RulesetEditor.insertArticleRef(editor, id);
-    setArticleRefMenuOpen(false);
-    setTimeout(() => {
-      ReactEditor.focus(editor);
-    }, 0);
-  };
-
   const [keywordMenuEditor, setKeywordMenuEditor] = useState(null);
   const [keywordRefMenuOpen, setKeywordRefMenuOpen] = useState(false);
-  const openKeywordRefMenu = (value, editor) => {
-    setKeywordRefMenuOpen(value);
-    setKeywordMenuEditor(editor);
-  };
   const [keywordRefMenuPosition, setKeywordRefMenuPosition] = useState({ top: 0, left: 0 });
+
+  const openArticleRefMenu = (event, editor, shortcut = false) => {
+    event.preventDefault();
+    setArticleRefMenuOpen(true);
+    setArticleMenuEditor(editor);
+    if (!shortcut) setArticleRefMenuPosition({ top: event.clientY, left: event.clientX });
+    else {
+      const nativeSelection = window.getSelection();
+      if (nativeSelection?.rangeCount) {
+        const range = nativeSelection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setArticleRefMenuPosition({ left: rect.left, top: rect.bottom });
+      }
+    }
+  };
+  const openKeywordRefMenu = (event, editor, shortcut = false) => {
+    event.preventDefault();
+    setKeywordRefMenuOpen(true);
+    setKeywordMenuEditor(editor);
+    if (!shortcut) setKeywordRefMenuPosition({ top: event.clientY, left: event.clientX });
+    else {
+      const nativeSelection = window.getSelection();
+      if (nativeSelection?.rangeCount) {
+        const range = nativeSelection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom });
+      }
+    }
+  };
+
+  const handleArticleRefMenuClose = (id, editor) => {
+    if (!id || !editor) {
+      setArticleRefMenuOpen(false);
+      return;
+    }
+    if (id) {
+      const pointAfter = RulesetEditor.insertArticleRef(editor, id);
+      setArticleRefMenuOpen(false);
+      setTimeout(() => {
+        ReactEditor.focus(editor);
+        Transforms.select(editor, pointAfter);
+      }, 0);
+    }
+  };
   const handleKeywordRefMenuClose = (id, editor) => {
-    if (id) RulesetEditor.insertKeywordRef(editor, id);
-    setKeywordRefMenuOpen(false);
-    setTimeout(() => {
-      ReactEditor.focus(editor);
-    }, 0);
+    if (!id || !editor) {
+      setKeywordRefMenuOpen(false);
+      return;
+    }
+    if (id) {
+      const pointAfter = RulesetEditor.insertKeywordRef(editor, id);
+      setKeywordRefMenuOpen(false);
+      setTimeout(() => {
+        ReactEditor.focus(editor);
+        Transforms.select(editor, pointAfter);
+      }, 0);
+    }
   };
 
   const location = useLocation();
@@ -137,12 +174,6 @@ function EditorPage() {
       setCurrentSelection(Object.assign({}, newSelection));
     }
   };
-  const [currentNodeStyle, setCurrentNodeStyle] = useState('No Selection');
-  useEffect(() => {
-    if (!currentSelection) return;
-    const currentStyle = RulesetEditor.getCurrentElementType(editor);
-    setCurrentNodeStyle(currentStyle ? currentStyle : 'No Selection');
-  }, [currentSelection, editor]);
 
   const handleStyleChange = (newStyle) => {
     RulesetEditor.changeStyle(editor, newStyle);
@@ -150,28 +181,10 @@ function EditorPage() {
   const saveArticle = useCallback(() => {
     const { selection } = editor;
     saveRuleset(ruleset).then((newRuleset) => setRuleset(newRuleset));
+    setSynced(true);
     ReactEditor.focus(editor);
     if (editor.selection) Transforms.select(editor, selection);
-  }, [editor, ruleset, setRuleset]);
-
-  useEffect(() => {
-    if (currentArticle) {
-      const newArticle = findArticleInRuleset(currentArticle, ruleset.articles);
-      if (newArticle) {
-        editor.children = newArticle?.content;
-        editor.onChange();
-      }
-    } else {
-      // Sets the content and title of the article back to the initial value.
-      // Since the slate editor is an uncontrolled component it has to be done using the
-      // library's built in functions instead of simply replacing it
-      Transforms.deselect(editor);
-      editor.children.map(() => {
-        Transforms.delete(editor, { at: [0] });
-      });
-      Transforms.insertNodes(editor, initialValue, { at: [0] });
-    }
-  }, [currentArticle, ruleset.articles, editor, initialValue]);
+  }, [editor, ruleset, setRuleset, setSynced]);
 
   const toolbarRef = useRef(null);
   const boxRef = useRef(null);
@@ -211,6 +224,7 @@ function EditorPage() {
         open={articleRefMenuOpen}
         onClose={handleArticleRefMenuClose}
         editor={articleMenuEditor}
+        selection={currentSelection}
       />
       <ConfirmNavigationDialogue blocker={blocker} />{' '}
       <Box
@@ -226,20 +240,12 @@ function EditorPage() {
           articleId={currentArticle}
           ref={toolbarRef}
           elevation={1}
-          currentNodeStyle={currentNodeStyle}
           handleStyleChange={handleStyleChange}
           editor={editor}
           ruleset={ruleset}
           saveArticle={saveArticle}
-          openArticleRefMenu={(event) => {
-            event.preventDefault();
-            setArticleRefMenuOpen(true);
-            setArticleRefMenuPosition({ top: event.clientY, left: event.clientX });
-          }}
-          openKeywordRefMenu={(event) => {
-            setKeywordRefMenuOpen(true);
-            setKeywordRefMenuPosition({ top: event.clientY, left: event.clientX });
-          }}
+          openArticleRefMenu={openArticleRefMenu}
+          openKeywordRefMenu={openKeywordRefMenu}
         />
         <Box height={editorHeight} maxHeight={editorHeight}>
           <Grid
@@ -304,10 +310,8 @@ function EditorPage() {
                 inspectKeyword={selectKeyword}
                 elevation={6}
                 editor={editor}
-                setKeywordRefMenuOpen={openKeywordRefMenu}
-                setArticleRefMenuOpen={openArticleRefMenu}
-                setArticleRefMenuPosition={setArticleRefMenuPosition}
-                setKeywordRefMenuPosition={setKeywordRefMenuPosition}
+                openKeywordRefMenu={openKeywordRefMenu}
+                openArticleRefMenu={openArticleRefMenu}
                 setCurrentSelection={changeSelection}
                 saveArticle={saveArticle}
               />
@@ -355,11 +359,10 @@ function EditorPage() {
                 keywordId={selectedKeyword}
                 onSelectKeyword={selectKeyword}
                 elevation={0}
-                setKeywordRefMenuOpen={openKeywordRefMenu}
-                setArticleRefMenuOpen={openArticleRefMenu}
-                setArticleRefMenuPosition={setArticleRefMenuPosition}
-                setKeywordRefMenuPosition={setKeywordRefMenuPosition}
+                openArticleRefMenu={openArticleRefMenu}
+                openKeywordRefMenu={openKeywordRefMenu}
                 selectArticle={selectArticle}
+                setCurrentSelection={changeSelection}
                 saveArticle={saveArticle}
               />
             </Grid>

@@ -15,12 +15,11 @@ function KeywordInspector({
   onSelectKeyword,
   elevation,
   sx,
-  setKeywordRefMenuOpen,
-  setArticleRefMenuOpen,
-  setArticleRefMenuPosition,
-  setKeywordRefMenuPosition,
+  openKeywordRefMenu,
+  openArticleRefMenu,
   selectArticle,
   saveArticle,
+  setCurrentSelection,
 }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setSingleKeyword = useRulesetStore((state) => state.setSingleKeyword);
@@ -183,16 +182,15 @@ function KeywordInspector({
           >
             <KeywordEditor
               keywordId={keywordId}
-              setArticleRefMenuOpen={setArticleRefMenuOpen}
-              setArticleRefMenuPosition={setArticleRefMenuPosition}
-              setKeywordRefMenuOpen={setKeywordRefMenuOpen}
-              setKeywordRefMenuPosition={setKeywordRefMenuPosition}
+              openKeywordRefMenu={openKeywordRefMenu}
+              openArticleRefMenu={openArticleRefMenu}
               selectArticle={selectArticle}
               saveArticle={saveArticle}
               setSelectedView={setSelectedView}
               addTag={addTag}
               selectKeyword={selectKeyword}
               onKeywordUpdate={onKeywordUpdate}
+              setCurrentSelection={setCurrentSelection}
             />
           </Box>
         </Paper>
@@ -205,11 +203,10 @@ KeywordInspector.propTypes = {
   onSelectKeyword: PropTypes.func,
   sx: PropTypes.object,
   elevation: PropTypes.number,
-  setKeywordRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuPosition: PropTypes.func.isRequired,
-  setKeywordRefMenuPosition: PropTypes.func.isRequired,
+  openArticleRefMenu: PropTypes.func.isRequired,
+  openKeywordRefMenu: PropTypes.func.isRequired,
   selectArticle: PropTypes.func.isRequired,
   saveArticle: PropTypes.func.isRequired,
+  setCurrentSelection: PropTypes.func.isRequired,
 };
 export default KeywordInspector;

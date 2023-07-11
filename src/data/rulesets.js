@@ -66,14 +66,12 @@ export function addArticle(parentId, ruleset, newArticle) {
   } else {
     newRuleset.articles = [...newRuleset.articles, newArticle];
   }
-  newRuleset.synced = false;
   return sortRuleset(newRuleset);
 }
 
 export function addKeyword(ruleset, newKeyword) {
   const newRuleset = Object.assign({}, ruleset);
   newRuleset.keywords.push(newKeyword);
-  newRuleset.synced = false;
 
   return newRuleset;
 }
@@ -83,7 +81,6 @@ export function removeArticle(articleId, ruleset) {
   const article = findArticleInRuleset(articleId, newRuleset.articles);
   if (!article) return ruleset;
   deleteArticle(article);
-  newRuleset.synced = false;
   return sortRuleset(newRuleset);
 }
 
@@ -95,7 +92,6 @@ export function updateArticle(articleId, ruleset, newContent, newTitle) {
     article.title = newTitle || newTitle === '' ? newTitle : article.title;
     article.synched = false;
   }
-  newRuleset.synced = false;
   return sortRuleset(newRuleset);
 }
 
@@ -128,7 +124,6 @@ export function bulkUpdateKeywords(keywords, ruleset) {
       newKeyword.synced = false;
     }
   });
-  newRuleset.synced = false;
   return newRuleset;
 }
 
@@ -138,7 +133,6 @@ export function removeKeyword(keywordId, ruleset) {
   if (keyword) {
     keyword.deleted = true;
   }
-  newRuleset.synced = false;
   return newRuleset;
 }
 
@@ -211,7 +205,6 @@ export async function saveRuleset(ruleset) {
     posted: true,
   }));
   newRuleset.keywords = updatedKeywords;
-  newRuleset.synced = true;
 
   return newRuleset;
 }

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { bulkUpdateKeywords, updateKeyword } from '../data/keywords';
+import { updateArticle as replaceArticle } from '../data/articles';
 
 const emptyRuleset = {
   rn_name: null,
@@ -13,6 +14,7 @@ const emptyRuleset = {
 
 const useRulesetStore = create((set) => ({
   ruleset: emptyRuleset,
+  synced: true,
   clearRuleset: () => {
     set((state) => ({
       ...state,
@@ -36,12 +38,18 @@ const useRulesetStore = create((set) => ({
         synced: false,
       },
     })),
+  setRulesetChanged: (value = false) => {
+    set((state) => ({
+      ...state,
+      synced: value,
+    }));
+  },
   setSingleArticle: (articleId, newArticle) =>
     set((state) => {
       function updateArticle(articles) {
         return articles.map((article) => {
           if (article.id === articleId) {
-            return newArticle; // If this is the article we want to update, replace it with newArticle.
+            return replaceArticle(article, newArticle); // If this is the article we want to update, replace it with newArticle.
           } else if (article.childrenArticles) {
             // If this article has child articles, apply the update function to them as well.
             return {
@@ -56,20 +64,20 @@ const useRulesetStore = create((set) => ({
 
       return {
         ...state,
+        synced: false,
         ruleset: {
           ...state.ruleset,
           articles: updateArticle(state.ruleset.articles),
-          synced: false,
         },
       };
     }),
   setKeywords: (keywords) =>
     set((state) => ({
       ...state,
+      synced: false,
       ruleset: {
         ...state.ruleset,
         keywords: keywords,
-        synced: false,
       },
     })),
   setSingleKeyword: (keywordId, newKeyword) =>
@@ -92,10 +100,10 @@ const useRulesetStore = create((set) => ({
 
       return {
         ...state,
+        synced: false,
         ruleset: {
           ...state.ruleset,
           keywords: newKeywords,
-          synced: false,
         },
       };
     }),
@@ -104,10 +112,10 @@ const useRulesetStore = create((set) => ({
       const newKeywords = state.ruleset.keywords.filter((keyword) => keyword.id !== keywordId);
       return {
         ...state,
+        synced: false,
         ruleset: {
           ...state.ruleset,
           keywords: newKeywords,
-          synced: false,
         },
       };
     }),
@@ -117,10 +125,10 @@ const useRulesetStore = create((set) => ({
 
       return {
         ...state,
+        synced: false,
         ruleset: {
           ...state.ruleset,
           keywords: newKeywords,
-          synced: false,
         },
       };
     }),

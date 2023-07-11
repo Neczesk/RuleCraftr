@@ -10,30 +10,19 @@ import { PropTypes } from 'prop-types';
 import { ReactEditor } from 'slate-react';
 import RulesetEditor from '../SlateComponents/RulesetEditor';
 import useRulesetStore from '../../../stores/rulesetStore';
-import { forwardRef, useCallback, useContext, useEffect, useState } from 'react';
+import { forwardRef, useContext } from 'react';
 import EditorToolbarButton from './EditorToolbarButton';
-import { Editor } from 'slate';
 import { ColorModeContext } from '../../App';
 import SplitButton from '../../utils/SplitButton';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import useEditorStore from '../../../stores/editorStore';
 
 const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
-  const ruleset = useRulesetStore((state) => state.ruleset);
+  const synced = useRulesetStore((state) => state.synced);
   const theme = useTheme();
   const { editor } = props;
-  const [italicsActive, setItalicsActive] = useState(false);
-  const [underlineActive, setUnderlineActive] = useState(false);
-  const [boldActive, setBoldActive] = useState(false);
-  const fetchMarks = useCallback(() => {
-    if (!Editor.marks(editor)) return [];
-    return Object.keys(Editor.marks(editor));
-  }, [editor]);
-  useEffect(() => {
-    const marks = fetchMarks();
-    setItalicsActive(marks.includes('italic'));
-    setUnderlineActive(marks.includes('underline'));
-    setBoldActive(marks.includes('bold'));
-  }, [editor.selection, fetchMarks]);
+
+  const { italicsActive, boldActive, underlineActive, currentStyle } = useEditorStore();
 
   const colorModeContext = useContext(ColorModeContext);
   const exportFunctionalities = [
@@ -69,7 +58,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
           <Grid container sx={{ paddingX: 4, pt: 1 }} spacing={1}>
             <Grid item container xs={4}>
               <Grid item xs={1}>
-                <EditorToolbarButton type="icon" onClick={props.saveArticle} disabled={ruleset?.synced}>
+                <EditorToolbarButton type="icon" onClick={props.saveArticle} disabled={synced}>
                   <SaveOutlinedIcon fontSize="small" />
                 </EditorToolbarButton>
               </Grid>
@@ -78,7 +67,6 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   active={boldActive}
                   type="icon"
                   onClick={() => {
-                    setBoldActive(!boldActive);
                     RulesetEditor.toggleBoldMark(editor);
                     ReactEditor.focus(editor);
                   }}
@@ -91,7 +79,6 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   active={italicsActive}
                   type="icon"
                   onClick={() => {
-                    setItalicsActive(!italicsActive);
                     RulesetEditor.toggleItalicMark(editor);
                     ReactEditor.focus(editor);
                   }}
@@ -104,7 +91,6 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                   active={underlineActive}
                   type="icon"
                   onClick={() => {
-                    setUnderlineActive(!underlineActive);
                     RulesetEditor.toggleUnderlineMark(editor);
                     ReactEditor.focus(editor);
                   }}
@@ -115,7 +101,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
               <Grid item xs={4}>
                 <EditorToolbarButton
                   color="inherit"
-                  onClick={() => props.openArticleRefMenu(true, editor)}
+                  onClick={(event) => props.openArticleRefMenu(event, editor)}
                   startIcon={<ArticleOutlinedIcon />}
                 >
                   Reference
@@ -124,7 +110,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
               <Grid item xs={4}>
                 <EditorToolbarButton
                   color="inherit"
-                  onClick={() => props.openKeywordRefMenu(true, editor)}
+                  onClick={(event) => props.openKeywordRefMenu(event, editor)}
                   startIcon={<KeyOutlinedIcon />}
                 >
                   Reference
@@ -136,7 +122,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                 <StyleSelectAutocomplete
                   size="small"
                   possibleStyles={['code', 'paragraph', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']}
-                  currentStyle={props.currentNodeStyle}
+                  currentStyle={currentStyle}
                   onChange={props.handleStyleChange}
                 />
               </Grid>

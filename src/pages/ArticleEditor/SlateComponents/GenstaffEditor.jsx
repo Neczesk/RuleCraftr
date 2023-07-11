@@ -1,6 +1,13 @@
 import { useCallback } from 'react';
 import { Transforms } from 'slate';
-import { HeaderElement, CodeElement, KeywordLink, ArticleLink, DefaultElement, Leaf } from './elementComponents';
+import {
+  HeaderElement,
+  CodeElement,
+  KeywordLink,
+  ArticleLink,
+  DefaultElement,
+  Leaf,
+} from '../SlateComponents/elementComponents';
 import RulesetEditor from './RulesetEditor';
 
 export const GenstaffEditor = (editor) => {
@@ -25,10 +32,8 @@ export const useGenstaff = (
   editor,
   selectArticle,
   inspectKeyword,
-  setKeywordRefMenuOpen,
-  setArticleRefMenuOpen,
-  setArticleRefMenuPosition,
-  setKeywordRefMenuPosition,
+  openArticleRefMenu,
+  openKeywordRefMenu,
   saveArticle
 ) => {
   /* eslint-disable react/prop-types */
@@ -110,24 +115,10 @@ export const useGenstaff = (
       RulesetEditor.toggleItalicMark(editor);
     }
     if (event.key === 'a' && event.ctrlKey) {
-      event.preventDefault();
-      const nativeSelection = window.getSelection();
-      if (nativeSelection?.rangeCount) {
-        setArticleRefMenuOpen(true, editor);
-        const range = nativeSelection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        setArticleRefMenuPosition({ left: rect.left, top: rect.bottom });
-      }
+      openArticleRefMenu(event, editor, true);
     }
     if (event.key === 'k' && event.ctrlKey) {
-      event.preventDefault();
-      const nativeSelection = window.getSelection();
-      if (nativeSelection?.rangeCount) {
-        setKeywordRefMenuOpen(true, editor);
-        const range = nativeSelection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom });
-      }
+      openKeywordRefMenu(event, editor, true);
     }
     // if (event.key === 'Tab') {
     //   event.preventDefault();

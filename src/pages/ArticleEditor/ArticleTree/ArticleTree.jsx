@@ -152,7 +152,9 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
           }}
           selected={selectedNode}
         >
-          {ruleset.articles ? ruleset.articles.map((article) => renderArticle(article)) : null}
+          {ruleset.articles
+            ? ruleset.articles.sort((a, b) => a.sort - b.sort).map((article) => renderArticle(article))
+            : null}
         </TreeView>
       </Paper>
 

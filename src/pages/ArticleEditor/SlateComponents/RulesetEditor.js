@@ -1,5 +1,4 @@
 import { Editor, Transforms, Element } from 'slate';
-import { ReactEditor } from 'slate-react';
 
 const RulesetEditor = {
   changeStyle(editor, newStyle) {
@@ -72,6 +71,7 @@ const RulesetEditor = {
 
   insertArticleRef(editor, id) {
     if (!editor.selection) return;
+    const savedSelection = Object.assign({}, editor.selection);
     const articleRef = {
       type: 'articleRef',
       id: id,
@@ -79,15 +79,12 @@ const RulesetEditor = {
     };
     Transforms.insertNodes(editor, articleRef, { at: editor.selection, select: true });
     const pointAfter = Editor.after(editor, editor.selection.focus);
-    if (pointAfter) {
-      Transforms.select(editor, pointAfter);
-      ReactEditor.focus(editor);
-    }
+    return pointAfter ? pointAfter : savedSelection;
   },
 
   insertKeywordRef(editor, id) {
     if (!editor.selection) return;
-
+    const savedSelection = Object.assign({}, editor.selection);
     const keyword = {
       type: 'keyword',
       id: id,
@@ -95,9 +92,7 @@ const RulesetEditor = {
     };
     Transforms.insertNodes(editor, keyword, { at: editor.selection, select: true });
     const pointAfter = Editor.after(editor, editor.selection.focus);
-    if (pointAfter) {
-      Transforms.select(editor, pointAfter);
-    }
+    return pointAfter ? pointAfter : savedSelection;
   },
 
   toggleHeaderBlock(editor, newStyle) {

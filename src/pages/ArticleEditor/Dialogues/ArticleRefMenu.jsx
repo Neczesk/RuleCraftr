@@ -7,15 +7,10 @@ import { treeToArray } from '../../../data/articles';
 import { Transforms } from 'slate';
 
 const ArticleRefMenu = (props) => {
+  const { selection } = props;
   const ruleset = useRulesetStore((state) => state.ruleset);
   const inputRef = useRef(null);
-  const savedSelection = useRef(null);
-  useEffect(() => {
-    if (props.open && props.editor?.selection) {
-      savedSelection.current = Object.assign({}, props.editor.selection);
-    }
-    // props.open ? (savedSelection.current = Object.assign({}, props.editor?.selection)) : Transforms.select(props.editor)
-  }, [props.editor, props.open]);
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -49,7 +44,7 @@ const ArticleRefMenu = (props) => {
         sx={{ width: 400, margin: 1 }}
         renderInput={(params) => <TextField autoFocus inputRef={inputRef} {...params} label="Article to Reference" />}
         onChange={(event, value) => {
-          Transforms.select(props.editor, savedSelection.current);
+          Transforms.select(props.editor, selection);
           props.onClose(value.id, props.editor);
         }}
       ></Autocomplete>
@@ -61,5 +56,6 @@ ArticleRefMenu.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   editor: PropTypes.object,
+  selection: PropTypes.object,
 };
 export default ArticleRefMenu;

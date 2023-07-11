@@ -156,3 +156,13 @@ export function sortArticles(articles, parentId = null) {
 
   return result;
 }
+
+export function updateArticle(oldArticle, updateData) {
+  const newArticle = Object.assign({}, oldArticle);
+  if (updateData) {
+    newArticle.content = updateData.content ? updateData.content : newArticle.content;
+    newArticle.title = updateData.title ? updateData.title : newArticle.title;
+    newArticle.synched = false;
+  }
+  return newArticle;
+}

@@ -1,18 +1,23 @@
 // Import React dependencies.
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import objectHash from 'object-hash';
 
 //Slate Dependencies
-import { Transforms } from 'slate';
 import { Slate, Editable } from 'slate-react';
+import { Editor } from 'slate';
 // Custome slate dependencies
 // Material Dependencies
 import { Box, TextField, styled, Paper, useTheme } from '@mui/material';
 
 // Local modules
 import useRulesetStore from '../../../stores/rulesetStore';
-import { findArticleInRuleset, updateArticle } from '../../../data/rulesets';
+import { findArticleInRuleset } from '../../../data/rulesets';
 import { useGenstaff } from '../SlateComponents/GenstaffEditor';
+
+import { debounce } from 'lodash';
+import RulesetEditor from '../SlateComponents/RulesetEditor';
+import useEditorStore from '../../../stores/editorStore';
 
 const StyledTextField = styled(TextField)({
   '& .MuiInputBase-input': {
@@ -31,50 +36,71 @@ export default function ArticleEditor({
   inspectKeyword,
   elevation,
   editor,
-  setKeywordRefMenuOpen,
-  setArticleRefMenuOpen,
-  setArticleRefMenuPosition,
-  setKeywordRefMenuPosition,
+  openArticleRefMenu,
+  openKeywordRefMenu,
   setCurrentSelection,
   saveArticle,
 }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
-  const setRuleset = useRulesetStore((state) => state.setRuleset);
-  const [article, setArticle] = useState(null);
+  const setSingleArticle = useRulesetStore((state) => state.setSingleArticle);
   const { renderElement, renderLeaf, onKeyDown } = useGenstaff(
     editor,
     selectArticle,
     inspectKeyword,
-    setKeywordRefMenuOpen,
-    setArticleRefMenuOpen,
-    setArticleRefMenuPosition,
-    setKeywordRefMenuPosition,
+    openArticleRefMenu,
+    openKeywordRefMenu,
     saveArticle
   );
+  const { setBoldActive, setUnderlineActive, setItalicsActive, setCurrentStyle } = useEditorStore();
 
-  const setArticleChanged = () => {
-    setRuleset(updateArticle(articleId, ruleset, editor.children, null));
+  const fetchMarks = useCallback(() => {
+    if (!Editor.marks(editor)) return [];
+    return Object.keys(Editor.marks(editor));
+  }, [editor]);
+
+  const handleChange = () => {
+    if (articleId) {
+      if (editor.selection) {
+        const currentStyle = RulesetEditor.getCurrentElementType(editor);
+        setCurrentStyle(currentStyle ? currentStyle : 'No Selection');
+      }
+      const marks = fetchMarks();
+      setItalicsActive(marks.includes('italic'));
+      setUnderlineActive(marks.includes('underline'));
+      setBoldActive(marks.includes('bold'));
+
+      const article = findArticleInRuleset(articleId, ruleset.articles);
+      if (objectHash.sha1(editor.children) !== objectHash.sha1(article.content)) {
+        setArticleChanged(article);
+      }
+    }
   };
+  const debouncedHandleChange = debounce(handleChange, 200);
 
+  const setArticleChanged = (article) => {
+    const updateData = { ...article, content: editor.children };
+    setSingleArticle(article.id, updateData);
+  };
+  const [oldArticle, setOldArticle] = useState(null);
   useEffect(() => {
-    Transforms.deselect(editor);
-  }, [articleId, editor]);
-
-  useEffect(() => {
+    if (oldArticle === articleId) return;
+    setOldArticle(articleId);
     if (articleId) {
       const newArticle = findArticleInRuleset(articleId, ruleset.articles);
       if (newArticle) {
-        setArticle(newArticle);
         setArticleTitle(newArticle.title);
+        RulesetEditor.replaceContents(editor, newArticle.content);
+        // setArticleHash(objectHash.sha1(newArticle.content));
       }
     } else {
+      RulesetEditor.replaceContents(editor, initialValue);
       setArticleTitle('No Article Selected');
     }
-  }, [articleId, ruleset.articles, initialValue]);
+  }, [articleId, ruleset.articles, initialValue, editor, oldArticle]);
 
   const [articleTitle, setArticleTitle] = useState('No Article Selected');
   const handleTitleChange = (event) => {
-    setRuleset(updateArticle(articleId, ruleset, null, event.target.value));
+    setSingleArticle(articleId, { id: articleId, title: articleTitle });
     setArticleTitle(event.target.value);
   };
 
@@ -115,21 +141,12 @@ export default function ArticleEditor({
               }}
               editor={editor}
               initialValue={initialValue}
-              onChange={() => {
-                if (
-                  article &&
-                  JSON.stringify(article.content) != JSON.stringify(editor.children) &&
-                  article.id == articleId
-                ) {
-                  setArticleChanged();
-                }
-                const { selection } = editor;
-                if (selection) {
-                  setCurrentSelection(selection);
-                }
-              }}
+              onChange={debouncedHandleChange}
             >
               <Editable
+                onBlur={() => {
+                  setCurrentSelection(editor.selection);
+                }}
                 style={{
                   height: '100%',
                   wordBreak: 'break-all',
@@ -154,10 +171,8 @@ ArticleEditor.propTypes = {
   inspectKeyword: PropTypes.func,
   elevation: PropTypes.number,
   editor: PropTypes.object,
-  setArticleRefMenuOpen: PropTypes.func.isRequired,
-  setKeywordRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuPosition: PropTypes.func.isRequired,
-  setKeywordRefMenuPosition: PropTypes.func.isRequired,
   setCurrentSelection: PropTypes.func.isRequired,
   saveArticle: PropTypes.func.isRequired,
+  openArticleRefMenu: PropTypes.func.isRequired,
+  openKeywordRefMenu: PropTypes.func.isRequired,
 };

@@ -17,14 +17,13 @@ function LongDefinitionEditor(props) {
   const {
     onChange,
     color,
-    setKeywordRefMenuOpen,
-    setArticleRefMenuOpen,
-    setArticleRefMenuPosition,
-    setKeywordRefMenuPosition,
+    openArticleRefMenu,
+    openKeywordRefMenu,
     selectArticle,
     saveArticle,
     inspectKeyword,
     keyword,
+    setCurrentSelection,
     ...others
   } = props;
   const [editor] = useState(() => withReact(GenstaffEditor(createEditor())));
@@ -58,24 +57,10 @@ function LongDefinitionEditor(props) {
       RulesetEditor.toggleItalicMark(editor);
     }
     if (event.key === 'a' && event.ctrlKey) {
-      event.preventDefault();
-      const nativeSelection = window.getSelection();
-      if (nativeSelection?.rangeCount) {
-        setArticleRefMenuOpen(true, editor);
-        const range = nativeSelection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        setArticleRefMenuPosition({ left: rect.left, top: rect.bottom });
-      }
+      openArticleRefMenu(event, editor, true);
     }
     if (event.key === 'k' && event.ctrlKey) {
-      event.preventDefault();
-      const nativeSelection = window.getSelection();
-      if (nativeSelection?.rangeCount) {
-        setKeywordRefMenuOpen(true, editor);
-        const range = nativeSelection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom });
-      }
+      openKeywordRefMenu(event, editor, true);
     }
     if (event.key === 's' && event.ctrlKey) {
       event.preventDefault();
@@ -171,15 +156,7 @@ function LongDefinitionEditor(props) {
           }}
           size="small"
           onMouseDown={(event) => event.preventDefault()}
-          onClick={() => {
-            const nativeSelection = window.getSelection();
-            if (nativeSelection?.rangeCount) {
-              setArticleRefMenuOpen(true, editor);
-              const range = nativeSelection.getRangeAt(0);
-              const rect = range.getBoundingClientRect();
-              setArticleRefMenuPosition({ left: rect.left, top: rect.bottom });
-            }
-          }}
+          onClick={(event) => openArticleRefMenu(event, editor)}
         >
           <ArticleOutlinedIcon fontSize="small" />
         </IconButton>
@@ -189,15 +166,7 @@ function LongDefinitionEditor(props) {
           }}
           size="small"
           onMouseDown={(event) => event.preventDefault()}
-          onClick={() => {
-            const nativeSelection = window.getSelection();
-            if (nativeSelection?.rangeCount) {
-              setKeywordRefMenuOpen(true, editor);
-              const range = nativeSelection.getRangeAt(0);
-              const rect = range.getBoundingClientRect();
-              setKeywordRefMenuPosition({ left: rect.left, top: rect.bottom });
-            }
-          }}
+          onClick={(event) => openKeywordRefMenu(event, editor)}
         >
           <KeyOutlinedIcon fontSize="small" />
         </IconButton>
@@ -226,6 +195,7 @@ function LongDefinitionEditor(props) {
           <Editable
             onBlur={() => {
               if (keyword) onChange(editor.children);
+              setCurrentSelection(editor.selection);
             }}
             onKeyDown={onKeyDown}
             renderElement={renderElement}
@@ -240,14 +210,13 @@ function LongDefinitionEditor(props) {
 LongDefinitionEditor.propTypes = {
   others: PropTypes.array,
   color: PropTypes.string,
-  setKeywordRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuOpen: PropTypes.func.isRequired,
-  setArticleRefMenuPosition: PropTypes.func.isRequired,
-  setKeywordRefMenuPosition: PropTypes.func.isRequired,
+  openKeywordRefMenu: PropTypes.func.isRequired,
+  openArticleRefMenu: PropTypes.func.isRequired,
   selectArticle: PropTypes.func.isRequired,
   inspectKeyword: PropTypes.func.isRequired,
   saveArticle: PropTypes.func.isRequired,
   keyword: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  setCurrentSelection: PropTypes.func.isRequired,
 };
 export default LongDefinitionEditor;

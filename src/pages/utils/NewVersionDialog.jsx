@@ -29,46 +29,63 @@ function NewVersionDialog(props) {
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6" fontWeight="bold">
+          Update Alpha.4
+        </Typography>
+        <Typography variant="body1">
+          No new features in this update, but the performance of large rulesets (many articles or keywords) should be
+          vastly improved.
+        </Typography>
+        <Typography variant="h6" fontWeight="bold">
           New Features:
         </Typography>
         <ul>
           <li>
-            The two side panels (article tree and keyword manager) are now sliding panels that you can open or close
+            (Alpha 3) The two side panels (article tree and keyword manager) are now sliding panels that you can open or
+            close
           </li>
           <li>
-            Keyword long definitions are now fully featured editors supporting the basic formatting marks as well as
-            referencing articles and other keywords.
+            (Alpha 3) Keyword long definitions are now fully featured editors supporting the basic formatting marks as
+            well as referencing articles and other keywords.
           </li>
-          <li>The formatted long definition should export correctly as well</li>
-          <li>The keyword interface has been completely overhauled.</li>
+          <li>(Alpha 3) The formatted long definition should export correctly as well</li>
+          <li>(Alpha 3) The keyword interface has been completely overhauled.</li>
           <li>
-            The keyword manager now lets you organize your keywords into tags, move keywords between tags, rename your
-            tags, delete keywords, delete tags, etc
+            (Alpha 3) The keyword manager now lets you organize your keywords into tags, move keywords between tags,
+            rename your tags, delete keywords, delete tags, etc
           </li>
-          <li>The Keyword manager also lets you search through your keywords and only show the relevant ones.</li>
+          <li>
+            (Alpha 3) The Keyword manager also lets you search through your keywords and only show the relevant ones.
+          </li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           Bug Fixes:
         </Typography>
         <ul>
           <li>
-            Extremely long words were breaking the export as well as the editor. While this is unlikely to come up in
-            practice, I{"'"}m still fixing it by breaking long words
+            (Alpha 3) Extremely long words were breaking the export as well as the editor. While this is unlikely to
+            come up in practice, I{"'"}m still fixing it by breaking long words
           </li>
           <li>
-            If you had too many articles, it would cause the main page to grow beyond the editor. The article tree now
-            has an internal scroll for both this vertical case, and in the case of too deeply nested articles it should
-            scroll to the side as well.
+            (Alpha 3) If you had too many articles, it would cause the main page to grow beyond the editor. The article
+            tree now has an internal scroll for both this vertical case, and in the case of too deeply nested articles
+            it should scroll to the side as well.
+          </li>
+          <li>
+            The editor toolbar was incorrectly showing the active formatting elements if the keyboard shortcuts were
+            used
           </li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           What{"'"}s Next:
         </Typography>
         <ul>
-          <li>Alpha 4: Performance fixes for large ruleset with lots of articles and keywords</li>
           <li>Beta 1: Ruleset Manager update, including searching, tagging, and pagination of rulesets</li>
           <li>
             Beta 2: Editor overhaul, including tables and lists and possibly images to be added to the article editor
+          </li>
+          <li>
+            Beta 3: Article Tree overhaul, including article moving, typing of articles, adding folders and categories
+            as well as marking if an article should be exported or not.
           </li>
         </ul>
       </DialogContent>
