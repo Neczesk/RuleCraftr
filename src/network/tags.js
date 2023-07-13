@@ -21,7 +21,7 @@ export async function fetchAllTags(searchTerm) {
 }
 
 export async function updateRulesetTags(rulesetid, tags) {
-  const url = import.meta.env.VITE_API_URL + '/rulesets/' + rulesetid + '/tags';
+  const url = import.meta.env.VITE_API_URL + 'rulesets/' + rulesetid + '/tags';
   let response;
   try {
     response = await instance.put(url, tags);
