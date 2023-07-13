@@ -30,7 +30,7 @@ const cherryTheme = (mode) =>
         primaryContainer: {
           main: '#FAF7F8',
           dark: '#EED3D9',
-          light: '#FFFFFF',
+          light: '#FFF0F5',
         },
         background: {
           default: '#F8F8F8',
@@ -39,7 +39,7 @@ const cherryTheme = (mode) =>
         secondaryContainer: {
           main: '#FFFFEB',
           dark: '#EDE0D3',
-          light: '#F5D6BF',
+          light: '#F5E8DF',
         },
         paperBorder: {
           main: '#BBBBBB',
@@ -83,7 +83,7 @@ const vaporwaveTheme = (mode) =>
         primaryContainer: {
           main: '#E6ECF0',
           dark: '#D7EBF5',
-          light: '#FFFFFF',
+          light: '#C9DBF0',
         },
         background: {
           default: '#E6ECF0',

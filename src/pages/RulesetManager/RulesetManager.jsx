@@ -417,8 +417,8 @@ function RulesetManager() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Container sx={{ padding: 2 }}>
-        <Paper>
+      <Container sx={{ padding: { xs: 0, md: 1, lg: 2 }, minHeight: { xs: '100%', sm: '80%', md: '75%' } }}>
+        <Paper sx={{ height: '100%' }}>
           <Typography variant="h4" align="center">
             Ruleset Manager
           </Typography>

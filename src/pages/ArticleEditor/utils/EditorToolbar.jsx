@@ -148,7 +148,6 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
 
 EditorToolbar.propTypes = {
   handleStyleChange: PropTypes.func.isRequired,
-  currentNodeStyle: PropTypes.string.isRequired,
   openArticleRefMenu: PropTypes.func.isRequired,
   openKeywordRefMenu: PropTypes.func.isRequired,
   editor: PropTypes.object.isRequired,

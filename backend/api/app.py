@@ -12,6 +12,7 @@ from .services import users as users
 from .services import articles as articles
 from .services import keywords as keywords
 from .services import invite_codes as invite_codes
+from .services import tags as tags
 from .models.user import User
 
 app = Flask(__name__)
@@ -230,6 +231,35 @@ def standard_response(body, code):
     return response
 
 
+@app.route("/api/rulesets/<int:id>/tags", methods=['GET', 'OPTIONS', 'PUT'], strict_slashes=True)
+def tags_endpoint(id: int):
+    ruleset = rulesets.get_ruleset(id)
+    if request.method == 'GET':
+        body = tags.get_tags_for_ruleset(id)
+        return standard_response(body, 200)
+    elif request.method == 'PUT':
+        if current_user.is_authenticated:
+            if current_user.id == ruleset["user_id"]:
+                body = tags.update_tags_for_ruleset(request.get_json(), id)
+                return standard_response(body, 200)
+            else:
+                body = {"Failure": "Cannot edit ruleset belonging to another user"}
+                return standard_response(body, 403)
+        else:
+            body = {"Failure": "You must be logged into edit a ruleset"}
+            return standard_response(body, 401)
+    elif request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add('access-control-allow-credentials', 'true')
+
+        response.headers.add("access-control-allow-origin",
+                             'http://localhost:5173')
+        response.headers.add(
+            "access-control-allow-methods", "OPTIONS, PUT, GET")
+        response.headers.add("access-control-allow-headers", "Content-type")
+        return response
+
+
 @app.route("/api/rulesets/<int:id>", methods=['GET', 'DELETE', 'OPTIONS'], strict_slashes=True)
 @login_required
 def get_ruleset(id: int):
@@ -254,6 +284,22 @@ def get_ruleset(id: int):
             "access-control-allow-methods", "OPTIONS, DELETE, GET")
         response.headers.add("access-control-allow-headers", "Content-type")
         return response
+
+
+@app.route("/api/rulesets/public", methods=['GET'])
+def get_public_rulesets():
+    if request.method == 'GET':
+        admin = False
+        if (current_user.is_authenticated):
+            admin = True
+        users = request.args.get('user')
+        tags = request.args.get('tags')
+        name = request.args.get('name')
+        page = request.args.get('page')
+        per_page = request.args.get('perpage')
+        body = rulesets.get_rulesets(
+            admin=admin, users=users, tags=tags, names=name, page=page, per_page=per_page)
+        return standard_response(body, 200)
 
 
 @app.route("/api/rulesets", methods=['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'], strict_slashes=True)
@@ -402,3 +448,10 @@ def create_keyword():
 @app.route("/api/version", methods=['GET'])
 def get_version():
     return standard_response(os.getenv('VITE_VERSION'), 200)
+
+
+@app.route("/api/tags", methods=['GET'])
+def get_tags():
+    search_term = request.args.get('searchterm')
+    body = tags.search_tags(search_term)
+    return standard_response(body, 200)

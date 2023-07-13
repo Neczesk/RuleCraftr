@@ -10,43 +10,43 @@ import {
   Tabs,
   Tab,
   LinearProgress,
-} from '@mui/material'
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
-import { validate_password_strength, get_password_suggestion } from '../../data/passwords'
-import { createAccount, loginUser } from '../../data/users'
-import { useSnackbar } from 'notistack'
-import useUserStore from '../../stores/userStore'
+} from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { validate_password_strength, get_password_suggestion } from '../../data/passwords';
+import { createAccount, loginUser } from '../../data/users';
+import { useSnackbar } from 'notistack';
+import useUserStore from '../../stores/userStore';
 
 function LoginPage() {
-  const navigate = useNavigate()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const validateLogin = () => {
-    return username !== '' && password !== ''
-  }
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [inviteCode, setInviteCode] = useState('')
+    return username !== '' && password !== '';
+  };
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const validateAccountCreate = () => {
     //First check that there are values in all the fields
-    let status = username !== '' && password !== '' && inviteCode !== ''
-    if (validate_password_strength(password, username) <= 1) status = false
-    if (confirmPassword == '') status = false
-    return status
-  }
+    let status = username !== '' && password !== '' && inviteCode !== '';
+    if (validate_password_strength(password, username) <= 1) status = false;
+    if (confirmPassword == '') status = false;
+    return status;
+  };
   const shouldDisplayPasswordMatchError = () => {
-    if (password !== '' && confirmPassword !== '' && password !== confirmPassword) return true
-    else return false
-  }
+    if (password !== '' && confirmPassword !== '' && password !== confirmPassword) return true;
+    else return false;
+  };
 
-  const [currentTab, setCurrentTab] = useState(0)
+  const [currentTab, setCurrentTab] = useState(0);
   const handleNewTab = (event, newValue) => {
-    setUsername('')
-    setPassword('')
-    setConfirmPassword('')
-    setInviteCode('')
-    setCurrentTab(newValue)
-  }
+    setUsername('');
+    setPassword('');
+    setConfirmPassword('');
+    setInviteCode('');
+    setCurrentTab(newValue);
+  };
 
   const prepareCreateAccountForm = () => {
     return {
@@ -54,71 +54,71 @@ function LoginPage() {
       password: password,
       confirmPassword: confirmPassword,
       inviteCode: cleanInviteCode(inviteCode),
-    }
-  }
+    };
+  };
 
   const cleanInviteCode = (keyWDashes) => {
-    return keyWDashes.replace(/-/g, '')
-  }
+    return keyWDashes.replace(/-/g, '');
+  };
 
   const displayInviteCode = (value) => {
     // Remove all dashes
-    let cleaned = value.replace(/-/g, '')
+    let cleaned = value.replace(/-/g, '');
 
     // Insert dashes between every 4 characters
-    let formatted = ''
+    let formatted = '';
     for (let i = 0; i < cleaned.length; i++) {
       if (i > 0 && i % 5 === 0) {
-        formatted += '-'
+        formatted += '-';
       }
-      formatted += cleaned[i]
+      formatted += cleaned[i];
     }
 
-    return formatted
-  }
+    return formatted;
+  };
 
-  const { enqueueSnackbar } = useSnackbar()
-  const setUser = useUserStore((state) => state.setUser)
+  const { enqueueSnackbar } = useSnackbar();
+  const setUser = useUserStore((state) => state.setUser);
 
   const login = async (form) => {
-    const newUser = await loginUser(form)
+    const newUser = await loginUser(form);
     if (Object.keys(newUser).includes('Failure')) {
-      enqueueSnackbar('Either the username or password is incorrect', { variant: 'error' })
-      return newUser
+      enqueueSnackbar('Either the username or password is incorrect', { variant: 'error' });
+      return newUser;
     } else {
-      setUser(newUser)
-      enqueueSnackbar('Successfully logged in', { variant: 'success' })
-      const path = '../user/' + newUser.id.toString() + '/rulesets'
-      navigate(path)
+      setUser(newUser);
+      enqueueSnackbar('Successfully logged in', { variant: 'success' });
+      const path = '../user/' + newUser.id.toString() + '/rulesets';
+      navigate(path);
     }
-  }
+  };
 
   const signup = async (form) => {
-    const newUser = await createAccount(form)
+    const newUser = await createAccount(form);
     if (Object.keys(newUser).includes('Failure')) {
-      const message = newUser.Failure
-      enqueueSnackbar(message, { variant: 'error' })
-      return newUser
+      const message = newUser.Failure;
+      enqueueSnackbar(message, { variant: 'error' });
+      return newUser;
     } else {
-      setUser(newUser)
-      enqueueSnackbar('Successfully Created Account', { variant: 'success' })
-      const path = '../user/' + newUser.id.toString() + '/rulesets'
-      navigate(path)
+      setUser(newUser);
+      enqueueSnackbar('Successfully Created Account', { variant: 'success' });
+      const path = '../user/' + newUser.id.toString() + '/rulesets';
+      navigate(path);
     }
-  }
+  };
 
   const handleKeys = (event) => {
     if (event.key === 'Enter') {
-      event.preventDefault()
+      event.preventDefault();
       switch (currentTab) {
         case 0:
-          if (validateLogin()) login({ username, password })
-          break
+          if (validateLogin()) login({ username, password });
+          break;
         case 1:
-          if (validateAccountCreate()) signup(prepareCreateAccountForm())
+          if (validateAccountCreate()) signup(prepareCreateAccountForm());
       }
     }
-  }
+  };
 
   const createAccountCard = (
     <>
@@ -161,18 +161,18 @@ function LoginPage() {
             sx={{ mb: 2, maxWidth: '400px' }}
             variant="determinate"
             color={(() => {
-              if (password === '') return 'inherit'
+              if (password === '') return 'inherit';
               switch (validate_password_strength(password, username)) {
                 case 0:
-                  return 'primary'
+                  return 'primary';
                 case 1:
-                  return 'primary'
+                  return 'primary';
                 case 2:
-                  return 'secondary'
+                  return 'secondary';
                 case 3:
-                  return 'secondary'
+                  return 'secondary';
                 case 4:
-                  return 'secondary'
+                  return 'secondary';
               }
             })()}
             value={(() => validate_password_strength(password, username) * 25)()}
@@ -199,7 +199,7 @@ function LoginPage() {
               maxWidth: '400px',
             }}
             onChange={(event) => {
-              if (event.target.value.length < 30) setInviteCode(displayInviteCode(event.target.value))
+              if (event.target.value.length < 30) setInviteCode(displayInviteCode(event.target.value));
             }}
             type="text"
             label="Invite Code"
@@ -211,7 +211,7 @@ function LoginPage() {
       <CardActions>
         <Button
           onClick={() => {
-            signup(prepareCreateAccountForm())
+            signup(prepareCreateAccountForm());
           }}
           disabled={!validateAccountCreate() || shouldDisplayPasswordMatchError()}
           variant="contained"
@@ -220,7 +220,7 @@ function LoginPage() {
         </Button>
       </CardActions>
     </>
-  )
+  );
 
   const loginCard = (
     <>
@@ -256,7 +256,7 @@ function LoginPage() {
       <CardActions>
         <Button
           onClick={() => {
-            login({ username, password })
+            login({ username, password });
           }}
           variant="contained"
           disabled={!validateLogin()}
@@ -265,11 +265,25 @@ function LoginPage() {
         </Button>
       </CardActions>
     </>
-  )
+  );
 
   return (
-    <Container onKeyDown={handleKeys}>
-      <Card sx={{ mt: 5 }} elevation={5}>
+    <Container
+      onKeyDown={handleKeys}
+      sx={{
+        mt: { xs: 0, md: 3, lg: 5 },
+        padding: { xs: 0, sm: 1, md: 2 },
+        height: { xs: '100%', md: 'fit-content' },
+      }}
+    >
+      <Card
+        elevation={5}
+        sx={{
+          width: { xs: '100%', sm: '90%', md: '75%' },
+          margin: 'auto',
+          height: { xs: '100%', md: 'fit-content' },
+        }}
+      >
         <Tabs value={currentTab} onChange={handleNewTab}>
           <Tab label="Login to existing account"></Tab>
           <Tab label="Create new account"></Tab>
@@ -277,14 +291,14 @@ function LoginPage() {
         {(() => {
           switch (currentTab) {
             case 0:
-              return loginCard
+              return loginCard;
             case 1:
-              return createAccountCard
+              return createAccountCard;
           }
         })()}
       </Card>
     </Container>
-  )
+  );
 }
 
-export default LoginPage
+export default LoginPage;

@@ -2,7 +2,7 @@ import { Container, Typography, Paper } from '@mui/material';
 
 function Home() {
   return (
-    <Container sx={{ padding: 2, flexGrow: 1 }}>
+    <Container sx={{ padding: { xs: 0, md: 2 }, flexGrow: 1 }}>
       <Paper sx={{ padding: 5, height: '100%' }}>
         <Typography align="center" variant="h3">
           {import.meta.env.VITE_APPLICATION_NAME}

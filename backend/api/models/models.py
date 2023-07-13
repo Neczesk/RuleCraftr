@@ -12,6 +12,22 @@ t_schema_version = Table(
 )
 
 
+class Tags(Base):
+    __tablename__ = 'tags'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='tags_pkey'),
+        UniqueConstraint('tag', name='tags_tag_key')
+    )
+
+    id = Column(UUID, server_default=text('gen_random_uuid()'))
+    tag = Column(String(255), nullable=False)
+    is_core = Column(Boolean, nullable=False, server_default=text('false'))
+    created_at = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+    updated_at = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+
+    ruleset = relationship('Rulesets', secondary='tags_rulesets', back_populates='tag')
+
+
 class Users(Base):
     __tablename__ = 'users'
     __table_args__ = (
@@ -63,9 +79,11 @@ class Rulesets(Base):
     public = Column(Boolean, nullable=False, server_default=text('false'))
     user_id = Column(Integer, nullable=False)
     created_date = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
+    last_modified = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
     description = Column(Text, server_default=text("'Your description here...'::text"))
 
     user = relationship('Users', back_populates='rulesets')
+    tag = relationship('Tags', secondary='tags_rulesets', back_populates='ruleset')
     articles = relationship('Articles', back_populates='rulesets')
     keywords = relationship('Keywords', back_populates='rulesets')
 
@@ -109,3 +127,12 @@ class Keywords(Base):
     dummy = Column(Boolean, server_default=text('false'))
 
     rulesets = relationship('Rulesets', back_populates='keywords')
+
+
+t_tags_rulesets = Table(
+    'tags_rulesets', metadata,
+    Column('tag_id', UUID, nullable=False),
+    Column('ruleset_id', Integer, nullable=False),
+    ForeignKeyConstraint(['ruleset_id'], ['rulesets.id'], name='tags_rulesets_ruleset_id_fkey'),
+    ForeignKeyConstraint(['tag_id'], ['tags.id'], name='tags_rulesets_tag_id_fkey')
+)

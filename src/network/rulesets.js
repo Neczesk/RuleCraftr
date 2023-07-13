@@ -75,6 +75,34 @@ export async function fetchRulesetsForUser(userId) {
   return rulesets;
 }
 
+export async function fetchPublicRulesets(userSearchString, nameSearchString, tagSearchString, page, perPage) {
+  const url = import.meta.env.VITE_API_URL + 'rulesets/' + 'public';
+  let rulesets;
+  try {
+    rulesets = (
+      await instance.get(url, {
+        withCredentials: true,
+        params: {
+          tags: tagSearchString,
+          name: nameSearchString,
+          user: userSearchString,
+          page: page,
+          perpage: perPage,
+        },
+      })
+    ).data;
+  } catch (e) {
+    if (Object.keys(e.response?.data).includes('Failure')) {
+      return e.response.data;
+    } else {
+      return {
+        Failure: 'Unknown error occured',
+      };
+    }
+  }
+  return rulesets;
+}
+
 export async function fetchArticlesForRuleset(id) {
   const url = import.meta.env.VITE_API_URL + 'rulesets/' + id + '/articles';
   let articles;
@@ -121,7 +149,7 @@ export async function fetchKeywordsForRuleset(id) {
 }
 
 export async function putRulesetMetadata(rulesetData) {
-  if (!rulesetData || !rulesetData.length) return;
+  if (!rulesetData || !rulesetData.length) return { Failure: 'Error in attempt to update ruleset' };
 
   const url = import.meta.env.VITE_API_URL + 'rulesets';
   const putData = rulesetData.map((ruleset) => ({
@@ -129,6 +157,7 @@ export async function putRulesetMetadata(rulesetData) {
     description: ruleset.description,
     rn_name: ruleset.rn_name,
     public: ruleset.public,
+    last_modified: ruleset.last_modified,
   }));
 
   let response;

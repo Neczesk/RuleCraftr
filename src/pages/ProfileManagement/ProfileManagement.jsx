@@ -254,12 +254,15 @@ function ProfileManagement() {
         </DialogActions>
       </Dialog>
 
-      <Container sx={{ mt: 5 }}>
+      <Container
+        sx={{ mt: { xs: 0, sm: 5 }, padding: { xs: 0, sm: 1, md: 2 }, height: { xs: '100%', sm: 'fit-content' } }}
+      >
         <Paper
           elevation={5}
           sx={{
-            maxWidth: '75%',
+            maxWidth: { xs: '100%', sm: '90%', md: '75%' },
             margin: 'auto',
+            height: { xs: '100%', sm: 'fit-content' },
           }}
         >
           <Box display="flex" flexDirection="column" padding={2}>

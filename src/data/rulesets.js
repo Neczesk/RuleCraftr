@@ -7,6 +7,7 @@ import {
   insertRuleset,
   putRulesetMetadata,
   deleteRuleset as netDeleteRuleset,
+  fetchPublicRulesets,
 } from '../network/rulesets';
 import { deleteKeywords, postKeywords, updateKeywords } from '../network/keywords';
 import { buildArticleTree, deleteArticle, findArticleInTree, sortArticle, sortArticles, treeToArray } from './articles';
@@ -19,6 +20,10 @@ import { sortKeywords } from './keywords';
 import tocEntry from '../pages/utils/exportTemplates/tocEntry';
 import { getCSS } from './exports';
 import keywordContentTemplate from '../pages/utils/exportTemplates/keywordContent.Template';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { editRulesetTags } from './tags';
+dayjs.extend(utc);
 
 export async function createRuleset(newRulesetData) {
   return await insertRuleset(newRulesetData);
@@ -205,12 +210,33 @@ export async function saveRuleset(ruleset) {
     posted: true,
   }));
   newRuleset.keywords = updatedKeywords;
+  updateRulesetMetadata([{ id: newRuleset.id }]);
 
   return newRuleset;
 }
 
+export async function getPublicRulesets(searchString, page, perPage) {
+  const tokens = searchString.split(' ');
+  const userSearch = tokens.filter((token) => token.startsWith('user:')).map((token) => token.replace('user:', ''));
+  const tagSearch = tokens.filter((token) => token.startsWith('tag:')).map((token) => token.replace('tag:', ''));
+  const nameSearch = tokens.filter((token) => !token.startsWith('user:') && !token.startsWith('tag:'));
+  const userSearchString = userSearch.join();
+  const nameSearchString = nameSearch.join();
+  const tagSearchString = tagSearch.join();
+  return await fetchPublicRulesets(userSearchString, nameSearchString, tagSearchString, page, perPage);
+}
+
 export async function updateRulesetMetadata(rulesetData) {
-  await putRulesetMetadata(rulesetData);
+  const datawithdate = await Promise.all(
+    rulesetData.map(async (ruleset) => {
+      const { tags, ...rest } = ruleset;
+      await editRulesetTags(ruleset.id, tags);
+      return { ...rest, last_modified: dayjs.utc().format() };
+    })
+  );
+  console.log(datawithdate);
+  const response = await putRulesetMetadata(datawithdate);
+  return response;
 }
 
 export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
