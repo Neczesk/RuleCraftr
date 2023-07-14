@@ -234,7 +234,6 @@ export async function updateRulesetMetadata(rulesetData) {
       return { ...rest, last_modified: dayjs.utc().format() };
     })
   );
-  console.log(datawithdate);
   const response = await putRulesetMetadata(datawithdate);
   return response;
 }

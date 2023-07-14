@@ -57,9 +57,9 @@ function PublicRulesetViewer(props) {
     return date.local().format('MMM D, YYYY h:mmA');
   };
   const refreshRulesets = () => {
-    getPublicRulesets(searchValue).then((response) => {
+    getPublicRulesets(searchValue, 1, perPage).then((response) => {
       if (Object.keys(response).includes('Success')) {
-        setPage(response.page);
+        setPage(1);
         setTotalCount(response.count);
         setRulesets(response.body);
       }

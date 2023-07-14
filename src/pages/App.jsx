@@ -13,6 +13,8 @@ import useUserStore from '../stores/userStore';
 import { getCurrentVersion } from '../data/version';
 import { updateUser } from '../data/users';
 import NewVersionDialog from './utils/NewVersionDialog';
+import About from './AboutPage/AboutPage';
+import RoadMap from './RoadMap/RoadMap';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -69,6 +71,14 @@ function App() {
         {
           path: '/user/:userid/profile',
           element: <ProfileManagement />,
+        },
+        {
+          path: '/about',
+          element: <About />,
+        },
+        {
+          path: '/roadmap',
+          element: <RoadMap />,
         },
       ],
     },

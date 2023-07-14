@@ -1,14 +1,33 @@
 import { PropTypes } from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, IconButton, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  Divider,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 function NewVersionDialog(props) {
   const { currentVersion, onClose, ...others } = props;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   return (
     <Dialog
       {...others}
       onClose={onClose}
-      PaperProps={{ sx: { width: '600px', maxWidth: '600px', maxHeight: '700px', overflow: 'auto' } }}
+      fullScreen={fullScreen}
+      PaperProps={{
+        sx: {
+          width: '600px',
+          maxWidth: { xs: undefined, md: '600px' },
+          maxHeight: { xs: undefined, md: '700px' },
+          overflow: 'auto',
+        },
+      }}
     >
       <DialogTitle>
         Version {currentVersion.toString()}{' '}
@@ -29,63 +48,78 @@ function NewVersionDialog(props) {
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6" fontWeight="bold">
-          Update Alpha.4
+          Beta Release Candidate 1
         </Typography>
         <Typography variant="body1">
-          No new features in this update, but the performance of large rulesets (many articles or keywords) should be
-          vastly improved.
+          This update focuses on the experience of finding and viewing public rulesets, as well as cleaning up the
+          website around the app. As a release candidate, there are several known issues that prevent this from being
+          the actual beta 1 release. These and others found during testing will be fixed before this is the final
+          release of the beta version of the app.
         </Typography>
+        <Divider sx={{ my: 2 }}></Divider>
+        <Typography variant="h6" fontWeight="bold">
+          Known Issues:
+        </Typography>
+        <ul>
+          <li>
+            The ruleset is prematurely cleared when you use the navigation drawer to leave the editor while the editor
+            has unsaved changes
+          </li>
+          <li>
+            Due to the redirect from root / to /home on first loading the site, the back button does not work as
+            expected.
+          </li>
+          <li>
+            The export has a few issues related to keywords:
+            <ul>
+              <li>The dummy keywords used to implement the keyword tag system are being exported</li>
+              <li>The keyword labels are not being exported correctly</li>
+            </ul>
+          </li>
+          <li>Editing the title of an article has a one character lag time when typing.</li>
+          <li>
+            When typing in an article&apos;s content, the text is forced to break on the edge of the editor. Since this
+            is due to handling excessively long words that are unlikely to come up, most likely I will just revert that
+            and accept that words longer than the width of the editor will break.
+          </li>
+        </ul>
         <Typography variant="h6" fontWeight="bold">
           New Features:
         </Typography>
         <ul>
           <li>
-            (Alpha 3) The two side panels (article tree and keyword manager) are now sliding panels that you can open or
-            close
+            The ruleset manager has been replaced by a new grid based manager that separates rulesets into your own
+            rulesets and public rulesets while still providing the functionality to create a new ruleset.
           </li>
           <li>
-            (Alpha 3) Keyword long definitions are now fully featured editors supporting the basic formatting marks as
-            well as referencing articles and other keywords.
-          </li>
-          <li>(Alpha 3) The formatted long definition should export correctly as well</li>
-          <li>(Alpha 3) The keyword interface has been completely overhauled.</li>
-          <li>
-            (Alpha 3) The keyword manager now lets you organize your keywords into tags, move keywords between tags,
-            rename your tags, delete keywords, delete tags, etc
+            On your own rulesets you can now add and edit tags associated with the ruleset. If the ruleset is public,
+            these tags can be used to find the ruleset.
           </li>
           <li>
-            (Alpha 3) The Keyword manager also lets you search through your keywords and only show the relevant ones.
+            In the public ruleset viewer, you can click on a tag to filter by tag, click on a user to filter by that
+            ruleset, and type in the search box to filter by the name of the ruleset.
           </li>
+          <li>A discord link has been added to the navigation drawer for users to find where to contact me.</li>
+          <li>The home page has been completely revamped to help introduce new users to the app and its features.</li>
         </ul>
-        <Typography variant="h6" fontWeight="bold">
+        {/* <Typography variant="h6" fontWeight="bold">
           Bug Fixes:
-        </Typography>
-        <ul>
-          <li>
-            (Alpha 3) Extremely long words were breaking the export as well as the editor. While this is unlikely to
-            come up in practice, I{"'"}m still fixing it by breaking long words
-          </li>
-          <li>
-            (Alpha 3) If you had too many articles, it would cause the main page to grow beyond the editor. The article
-            tree now has an internal scroll for both this vertical case, and in the case of too deeply nested articles
-            it should scroll to the side as well.
-          </li>
-          <li>
-            The editor toolbar was incorrectly showing the active formatting elements if the keyboard shortcuts were
-            used
-          </li>
-        </ul>
+        </Typography> */}
+
         <Typography variant="h6" fontWeight="bold">
-          What{"'"}s Next:
+          What&apos;s Next:
         </Typography>
         <ul>
-          <li>Beta 1: Ruleset Manager update, including searching, tagging, and pagination of rulesets</li>
           <li>
             Beta 2: Editor overhaul, including tables and lists and possibly images to be added to the article editor
           </li>
           <li>
             Beta 3: Article Tree overhaul, including article moving, typing of articles, adding folders and categories
             as well as marking if an article should be exported or not.
+          </li>
+          <li>
+            Beta 4: Database overhaul, hopefully allowing for recovery of deleted rulesets, articles, and keywords as
+            well as autosave and versioning.
           </li>
         </ul>
       </DialogContent>

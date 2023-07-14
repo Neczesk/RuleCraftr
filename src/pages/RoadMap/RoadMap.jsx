@@ -1,0 +1,86 @@
+import { Card, CardContent, CardHeader, Container, Stack } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { getCurrentVersion } from '../../data/version';
+
+function RoadMap() {
+  const [currentVersion, setCurrentVersion] = useState('');
+  useEffect(() => {
+    getCurrentVersion().then((value) => setCurrentVersion(value));
+  });
+  return (
+    <Container sx={{ padding: { xs: 0, md: 2 }, flexGrow: 1 }}>
+      <Stack direction="column" spacing={5}>
+        <Card>
+          <CardHeader title={currentVersion} />
+          <CardContent>
+            This is the first, initial release of RuleCrafter. These are the currently known issues:
+            <ul>
+              <li>
+                When changing an article&apos;s title, it does not take effect right away after each character entered.
+                You can workaround this by typing an extra letter then saving, then switching to a different article and
+                back again.
+              </li>
+              <li>
+                If you have only a single keyword in your ruleset, you cannot delete it. You can work around this by
+                creating another keyword, then deleting the one you intended to delete
+              </li>
+              <li>
+                The word breaking in the editor is not working as intended and the text should be wrapping more
+                normally. You can work around this with extra spacing, but I intend to fix this one in a hurry (likely
+                before the final release of beta 1)
+              </li>
+              <li>Navigating from the home page back to google does not work as intended.</li>
+            </ul>
+            There are certainly other bugs and issues that I do not know about, so if you find one please join us on
+            Discord and let me know about them!
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader title="Beta 2: Editor Update 1" />
+          <CardContent>
+            The first beta update will be adding several missing features to the article editor itself. Currently, the
+            plan is to add:
+            <ul>
+              <li>Creating tables</li>
+              <li>Ordered and unorderded lists</li>
+              <li>And of course allowing these to be exported to html as well.</li>
+            </ul>
+            If you have further suggestions as to what the editor needs to be useful for your project, please join us on
+            Discord!
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader title="Beta 3: Article Tree Overhaul" />
+          <CardContent>
+            The second beta update will overhaul the article tree. The interface is likely to be updated, but most
+            importantly the following features will be added:
+            <ul>
+              <li>Organizing your articles into folders</li>
+              <li>
+                Designating articles as non-export, meaning that they won&apos;t be added to the export version of the
+                ruleset.
+              </li>
+              <li>Re-ordering articles and moving them to different parent articles</li>
+            </ul>
+            Further ideas for features of the article tree may be added as well as the update approaches. If you have
+            any ideas, contact me on discord and let me know!
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader title="Beta 4: The Boring Update" />
+          <CardContent>
+            The third beta update is likely to not add any exciting features, but will be important for keeping the app
+            on a steady foundation in the future. I will be profiling the app and paying attention to the data and cpu
+            requirements as the user base starts to grow, refactoring the performance of critical parts of the code to
+            ensure that it will continue to be acceptably fast as I add more features, and structure the data storage
+            aspects of the app to be more flexible. I may take this opportunity to change how resource deletion works,
+            so that deleted keywords, articles, and rulesets would be available for a limited period of time for
+            restoration. In addition, I will be exploring autosave and versioning of the ruleset, so that users can
+            revert to previous versions and know that their changes will never be discarded.
+          </CardContent>
+        </Card>
+      </Stack>
+    </Container>
+  );
+}
+export default RoadMap;

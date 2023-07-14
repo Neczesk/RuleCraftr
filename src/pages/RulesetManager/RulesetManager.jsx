@@ -374,9 +374,7 @@ function RulesetManager() {
                 size="small"
                 value={metadataEditedValue.public}
                 onChange={(event) => {
-                  console.log(event.target.value);
                   setMetadataEditedValue({ ...metadataEditedValue, public: Boolean(event.target.value) });
-                  console.log(metadataEditedValue);
                 }}
               >
                 <option value={true}>True</option>

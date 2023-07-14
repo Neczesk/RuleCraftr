@@ -35,6 +35,8 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { getCurrentVersion } from '../data/version';
+import NewVersionDialog from './utils/NewVersionDialog';
+import PrivacyDialogue from './utils/PrivacyDialogue';
 
 function Root() {
   const ruleset = useRulesetStore((state) => state.ruleset);
@@ -124,8 +126,17 @@ function Root() {
   };
 
   const [themeMenuAnchorEl, setThemeMenuAnchorEl] = useState(null);
+  const [newVersionDialogOpen, setNewVersionDialogOpen] = useState(false);
+  const [privacyDialogueOpen, setPrivacyDialogueOpen] = useState(false);
+
   return (
     <>
+      <PrivacyDialogue open={privacyDialogueOpen} onClose={() => setPrivacyDialogueOpen(false)} />
+      <NewVersionDialog
+        open={newVersionDialogOpen}
+        onClose={() => setNewVersionDialogOpen(false)}
+        currentVersion={appVersion}
+      />
       <Menu
         anchorOrigin={{
           vertical: 'top',
@@ -186,7 +197,7 @@ function Root() {
               <ListItemIcon>
                 <ListOutlinedIcon />
               </ListItemIcon>
-              <ListItemText primary="Manage Rulesets" />
+              <ListItemText primary={user ? 'View and Manage Rulesets' : 'View Rulesets'} />
             </ListItemButton>
             <ListItemButton onClick={setUserColorMode}>
               <ListItemIcon>
@@ -202,7 +213,7 @@ function Root() {
               </ListItemIcon>
               <ListItemText primary="Change theme" />
             </ListItemButton>
-            <ListItemButton>
+            <ListItemButton component={RouterLink} to="/about">
               <ListItemIcon>
                 <InfoOutlinedIcon />
               </ListItemIcon>
@@ -215,19 +226,22 @@ function Root() {
           </List>
           <Box flexGrow={1} display="flex" />
           <List>
-            <ListItem>
+            <ListItemButton onClick={() => setNewVersionDialogOpen(true)}>
               <ListItemIcon size="small">
                 <NumbersOutlinedIcon fontSize="small" />
               </ListItemIcon>
-              <Typography variant="caption">Version: {appVersion}</Typography>
-            </ListItem>
+              <ListItemText
+                primary={'Version: ' + appVersion.toString()}
+                primaryTypographyProps={{ variant: 'caption' }}
+              />
+            </ListItemButton>
             <ListItem>
               <ListItemIcon size="small">
                 <CopyrightOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="caption">&copy; 2023 Kyle Haltermann</Typography>
             </ListItem>
-            <ListItemButton>
+            <ListItemButton onClick={() => setPrivacyDialogueOpen(true)}>
               <ListItemIcon size="small">
                 <HelpOutlineOutlinedIcon fontSize="small" />
               </ListItemIcon>
@@ -249,7 +263,7 @@ function Root() {
               <HomeOutlinedIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {ruleset.rn_name}
+              {ruleset.rn_name ? ruleset.rn_name : 'RuleCrafter'}
             </Typography>
             <UserToolbarInterface onLogout={handleLogout} user={user} />
             <IconButton
