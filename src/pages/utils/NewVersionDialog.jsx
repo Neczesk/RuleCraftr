@@ -48,7 +48,7 @@ function NewVersionDialog(props) {
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6" fontWeight="bold">
-          Beta Release Candidate 1
+          Beta Release Candidate 3
         </Typography>
         <Typography variant="body1">
           This update focuses on the experience of finding and viewing public rulesets, as well as cleaning up the
@@ -66,7 +66,7 @@ function NewVersionDialog(props) {
         </Typography>
         <ul>
           <li>
-            (RC 2)Changed the editor font to be a serif font instead of a sans-serif font. In the future this will be
+            (RC 3)Changed the editor font to be a serif font instead of a sans-serif font. In the future this will be
             user choosable, but for now serif fonts are recommended for long text on the web.
           </li>
           <li>
