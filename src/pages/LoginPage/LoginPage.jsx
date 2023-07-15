@@ -11,7 +11,7 @@ import {
   Tab,
   LinearProgress,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { validate_password_strength, get_password_suggestion } from '../../data/passwords';
 import { createAccount, loginUser } from '../../data/users';
@@ -39,6 +39,10 @@ function LoginPage() {
     else return false;
   };
 
+  const user = useUserStore((state) => state.user);
+  useEffect(() => {
+    if (user) navigate('/home', { replace: true });
+  }, [user, navigate]);
   const [currentTab, setCurrentTab] = useState(0);
   const handleNewTab = (event, newValue) => {
     setUsername('');

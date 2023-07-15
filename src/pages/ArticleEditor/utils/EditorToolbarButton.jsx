@@ -1,8 +1,9 @@
-import { IconButton, Button } from '@mui/material'
-import { PropTypes } from 'prop-types'
+import { IconButton, Button } from '@mui/material';
+import { PropTypes } from 'prop-types';
+import { forwardRef } from 'react';
 
 function EditorToolbarButton(props) {
-  const { type, active, children, ...others } = props
+  const { type, active, children, ...others } = props;
 
   return type == 'icon' ? (
     <IconButton {...others} color={active ? 'primary' : ''} variant="outlined" size="small" sx={{ paddingX: 1 }}>
@@ -12,11 +13,12 @@ function EditorToolbarButton(props) {
     <Button {...others} fullWidth variant="text" size="small" sx={{ paddingX: 1 }}>
       {children}
     </Button>
-  )
+  );
 }
 EditorToolbarButton.propTypes = {
   children: PropTypes.node,
   type: PropTypes.string,
   active: PropTypes.bool,
-}
-export default EditorToolbarButton
+};
+const ForwardedRef = forwardRef(EditorToolbarButton);
+export default ForwardedRef;

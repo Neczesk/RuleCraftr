@@ -4,7 +4,7 @@ import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined';
 import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
-import { Box, Toolbar, Paper, useTheme, Tabs, Tab, Grid } from '@mui/material';
+import { Box, Toolbar, Paper, useTheme, Tabs, Tab, Grid, Tooltip } from '@mui/material';
 import StyleSelectAutocomplete from './StyleSelectAutocomplete';
 import { PropTypes } from 'prop-types';
 import { ReactEditor } from 'slate-react';
@@ -63,16 +63,18 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                 </EditorToolbarButton>
               </Grid>
               <Grid item xs={1}>
-                <EditorToolbarButton
-                  active={boldActive}
-                  type="icon"
-                  onClick={() => {
-                    RulesetEditor.toggleBoldMark(editor);
-                    ReactEditor.focus(editor);
-                  }}
-                >
-                  <FormatBoldOutlinedIcon fontSize="small" />
-                </EditorToolbarButton>
+                <Tooltip title="Bold (ctrl+b)">
+                  <EditorToolbarButton
+                    active={boldActive}
+                    type="icon"
+                    onClick={() => {
+                      RulesetEditor.toggleBoldMark(editor);
+                      ReactEditor.focus(editor);
+                    }}
+                  >
+                    <FormatBoldOutlinedIcon fontSize="small" />
+                  </EditorToolbarButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={1}>
                 <EditorToolbarButton

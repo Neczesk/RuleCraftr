@@ -29,6 +29,14 @@ const StyledTextField = styled(TextField)({
   },
 });
 
+const StyledEditable = styled(Editable)({
+  '&:focus-visible': {
+    outline: 'solid 1px #BBBBBB',
+  },
+  paddingLeft: '8px',
+  paddingRight: '8px',
+});
+
 export default function ArticleEditor({
   initialValue,
   articleId,
@@ -43,6 +51,7 @@ export default function ArticleEditor({
 }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setSingleArticle = useRulesetStore((state) => state.setSingleArticle);
+  const [editorFocused, setEditorFocused] = useState(false);
   const { renderElement, renderLeaf, onKeyDown } = useGenstaff(
     editor,
     selectArticle,
@@ -100,12 +109,12 @@ export default function ArticleEditor({
 
   const [articleTitle, setArticleTitle] = useState('No Article Selected');
   const handleTitleChange = (event) => {
-    setSingleArticle(articleId, { id: articleId, title: articleTitle });
-    setArticleTitle(event.target.value);
+    setSingleArticle(articleId, { id: articleId, title: event.target.value });
   };
 
-  const theme = useTheme();
+  const debouncedTitleChange = debounce(handleTitleChange, 200);
 
+  const theme = useTheme();
   return (
     <>
       <Paper
@@ -119,22 +128,32 @@ export default function ArticleEditor({
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           flexDirection: 'column',
-          paddingX: 5,
+          paddingX: 4,
+          maxWidth: '100%',
         }}
-        elevation={elevation}
+        elevation={elevation + (editorFocused ? 3 : 0)}
       >
-        <Box flexGrow="1" padding={1} display="flex" flexDirection="column">
+        <Box flexGrow="1" padding={1} display="flex" flexDirection="column" maxWidth="100%">
           <Box alignContent="center" justifyContent="center" display="flex" sx={{ mt: 1, mb: 1 }}>
             <StyledTextField
+              onKeyDown={(event) => {
+                if (event.key === 's' && event.ctrlKey) {
+                  event.preventDefault();
+                  saveArticle();
+                }
+              }}
               id="article-title"
               label="Title"
               variant="outlined"
               fullWidth
               value={articleTitle ? articleTitle : ' '}
-              onChange={handleTitleChange}
+              onChange={(event) => {
+                setArticleTitle(event.target.value);
+                debouncedTitleChange(event);
+              }}
             />
           </Box>
-          <Box display="flex" flexGrow={1} flexDirection="column">
+          <Box display="flex" flexGrow={1} flexDirection="column" maxWidth="100%" overflow="hidden">
             <Slate
               style={{
                 height: '100%',
@@ -143,13 +162,21 @@ export default function ArticleEditor({
               initialValue={initialValue}
               onChange={debouncedHandleChange}
             >
-              <Editable
+              <StyledEditable
+                onFocus={() => {
+                  setEditorFocused(true);
+                }}
                 onBlur={() => {
                   setCurrentSelection(editor.selection);
+                  setEditorFocused(false);
                 }}
                 style={{
                   height: '100%',
-                  wordBreak: 'break-all',
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'normal',
+                  maxWidth: '100%',
+                  overflow: 'auto',
                 }}
                 renderLeaf={renderLeaf}
                 renderElement={renderElement}

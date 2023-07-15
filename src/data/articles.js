@@ -6,6 +6,7 @@ import articleContentTemplate from '../pages/utils/exportTemplates/articleConten
 import { sortKeywords } from './keywords';
 import { getCSS } from './exports';
 import { fetchAllUsers } from '../network/users';
+import keywordContentTemplate from '../pages/utils/exportTemplates/keywordContent.Template';
 
 export function buildArticleTree(articles) {
   const lookup = {};
@@ -117,6 +118,8 @@ export async function serializeArticle(article, ruleset, showDark = false, theme
   const otherArticles = articles.flatMap((article) => treeToArray(article));
   Handlebars.registerPartial('article-content', articleContentTemplate);
   Handlebars.registerPartial('block-content', blockContentTemplate);
+  Handlebars.registerPartial('keyword-content', keywordContentTemplate);
+
   Handlebars.registerHelper('is-not-space', (text) => {
     if (text != ' ') return true;
   });

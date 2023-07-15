@@ -109,7 +109,10 @@ const useRulesetStore = create((set) => ({
     }),
   removeKeyword: (keywordId) =>
     set((state) => {
-      const newKeywords = state.ruleset.keywords.filter((keyword) => keyword.id !== keywordId);
+      const newKeywords = state.ruleset.keywords.map((keyword) =>
+        keyword.id === keywordId ? { ...keyword, deleted: true } : keyword
+      );
+
       return {
         ...state,
         synced: false,

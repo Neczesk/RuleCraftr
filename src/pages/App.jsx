@@ -36,7 +36,7 @@ function App() {
   };
 
   const RedirectToHome = () => {
-    return <Navigate to="/home" />;
+    return <Navigate to="/home" replace={true} />;
   };
 
   const router = createBrowserRouter([

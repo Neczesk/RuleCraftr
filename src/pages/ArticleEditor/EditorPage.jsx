@@ -300,6 +300,7 @@ function EditorPage() {
                 height: '100%',
                 backgroundColor: theme.palette.primaryContainer.main,
                 pt: 2,
+                overflow: 'hidden',
               }}
               zIndex="2"
             >
