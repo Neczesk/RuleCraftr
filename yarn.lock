@@ -440,6 +440,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/cutive@npm:^5.0.5":
+  version: 5.0.5
+  resolution: "@fontsource/cutive@npm:5.0.5"
+  checksum: 7ded98a3339f8d0d2412011dfc6c55533294be98fd86e840ebdda2bb892ded0bb60ea73ab0d583f94cea6131a811de0d554ffb2f8554c013c9c0863cd25d9c9e
+  languageName: node
+  linkType: hard
+
 "@fontsource/roboto@npm:^5.0.1":
   version: 5.0.4
   resolution: "@fontsource/roboto@npm:5.0.4"
@@ -2270,6 +2277,7 @@ __metadata:
   dependencies:
     "@emotion/react": ^11.11.0
     "@emotion/styled": ^11.11.0
+    "@fontsource/cutive": ^5.0.5
     "@fontsource/cutive-mono": ^5.0.5
     "@fontsource/roboto": ^5.0.1
     "@mui/icons-material": ^5.11.16

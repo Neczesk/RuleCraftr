@@ -5,7 +5,6 @@ import {
   CardContent,
   CardMedia,
   Button,
-  useTheme,
   Stack,
   CardHeader,
   CardActions,
@@ -23,10 +22,11 @@ import {
   TimelineOppositeContent,
   TimelineSeparator,
 } from '@mui/lab';
+import useUserStore from '../../stores/userStore';
 
 function Home() {
   const colorModeContext = useContext(ColorModeContext);
-  const theme = useTheme();
+  const user = useUserStore((state) => state.user);
   return (
     <Container sx={{ padding: { xs: 0, md: 2 }, flexGrow: 1 }}>
       <Stack direction="column" spacing={3}>
@@ -48,12 +48,11 @@ function Home() {
               only need to write them once, and export them into a convenient html document for easy reading from any
               device with a web browser. To start editing create an account
               <Button
+                sx={{ padding: 0, textDecoration: 'underline' }}
+                variant="text"
+                size="small"
                 component={RouterLink}
-                to="/login"
-                variant="filled"
-                sx={{
-                  color: theme.palette.primary.main,
-                }}
+                to={user?.id ? '/home' : '/login'}
               >
                 here
               </Button>

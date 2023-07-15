@@ -101,7 +101,6 @@ function EditorPage() {
   const [keywordRefMenuPosition, setKeywordRefMenuPosition] = useState({ top: 0, left: 0 });
 
   const openArticleRefMenu = (event, editor, shortcut = false) => {
-    event.preventDefault();
     setArticleRefMenuOpen(true);
     setArticleMenuEditor(editor);
     if (!shortcut) setArticleRefMenuPosition({ top: event.clientY, left: event.clientX });

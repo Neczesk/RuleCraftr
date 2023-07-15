@@ -277,13 +277,9 @@ function Root() {
       <Box height="100vh" display="flex" flexDirection="column">
         <AppBar position="sticky" color="primary">
           <Toolbar variant="dense">
-            {/* <IconButton component={RouterLink} to="/home" color="inherit">
-              {appIcon}
-            </IconButton>
-            <Typography variant="h5" component="div" fontFamily="cutive-mono" sx={{ flexGrow: 1 }}>
-              {'RuleCrafter'}
-            </Typography> */}
             <Button
+              component={RouterLink}
+              to="/home"
               sx={{ paddingY: 0, fontFamily: 'cutive-mono', textTransform: 'none', fontSize: '24px' }}
               color="inherit"
             >

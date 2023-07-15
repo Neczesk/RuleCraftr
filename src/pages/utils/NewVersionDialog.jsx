@@ -52,41 +52,27 @@ function NewVersionDialog(props) {
         </Typography>
         <Typography variant="body1">
           This update focuses on the experience of finding and viewing public rulesets, as well as cleaning up the
-          website around the app. As a release candidate, there are several known issues that prevent this from being
-          the actual beta 1 release. These and others found during testing will be fixed before this is the final
-          release of the beta version of the app.
+          website around the app. As a release candidate, there may be issues that will prevent this from being
+          officially released to the public. I have fixed the ones I knew about, but the more it is tested the more I
+          can be sure there aren&apos;t any showstopper issues.
         </Typography>
         <Divider sx={{ my: 2 }}></Divider>
-        <Typography variant="h6" fontWeight="bold">
+        {/* <Typography variant="h6" fontWeight="bold">
           Known Issues:
-        </Typography>
-        <ul>
-          <li>
-            The ruleset is prematurely cleared when you use the navigation drawer to leave the editor while the editor
-            has unsaved changes
-          </li>
-          <li>
-            Due to the redirect from root / to /home on first loading the site, the back button does not work as
-            expected.
-          </li>
-          <li>
-            The export has a few issues related to keywords:
-            <ul>
-              <li>The dummy keywords used to implement the keyword tag system are being exported</li>
-              <li>The keyword labels are not being exported correctly</li>
-            </ul>
-          </li>
-          <li>Editing the title of an article has a one character lag time when typing.</li>
-          <li>
-            When typing in an article&apos;s content, the text is forced to break on the edge of the editor. Since this
-            is due to handling excessively long words that are unlikely to come up, most likely I will just revert that
-            and accept that words longer than the width of the editor will break.
-          </li>
-        </ul>
+        </Typography> */}
+
         <Typography variant="h6" fontWeight="bold">
           New Features:
         </Typography>
         <ul>
+          <li>
+            (RC 2)Changed the editor font to be a serif font instead of a sans-serif font. In the future this will be
+            user choosable, but for now serif fonts are recommended for long text on the web.
+          </li>
+          <li>
+            (RC 2)Changed the toolbar slightly to add tooltips and better format them similarly to other text editors.
+          </li>
+          <li>(RC 2)Changed the article reference shortcut to Ctrl L instead of Ctrl A</li>
           <li>
             The ruleset manager has been replaced by a new grid based manager that separates rulesets into your own
             rulesets and public rulesets while still providing the functionality to create a new ruleset.
@@ -102,9 +88,18 @@ function NewVersionDialog(props) {
           <li>A discord link has been added to the navigation drawer for users to find where to contact me.</li>
           <li>The home page has been completely revamped to help introduce new users to the app and its features.</li>
         </ul>
-        {/* <Typography variant="h6" fontWeight="bold">
+        <Typography variant="h6" fontWeight="bold">
           Bug Fixes:
-        </Typography> */}
+        </Typography>
+        <ul>
+          <li>(RC 2)The logo at the top now functions correctly as a home page link</li>
+          <li>
+            (RC 2)The redirect has been fixed to no longer trap the user from going back to the site they were using
+            before RuleCrafter
+          </li>
+          <li>(RC 2)The keyword export has been fixed</li>
+          <li>(RC 2)Deleting the last keyword has been fixed</li>
+        </ul>
 
         <Typography variant="h6" fontWeight="bold">
           What&apos;s Next:

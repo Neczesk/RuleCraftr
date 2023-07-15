@@ -48,7 +48,7 @@ function SplitButton(props) {
       <Box display="flex" flexDirection="row" width="100%" {...others}>
         <ButtonGroup ref={buttonGroupRef} variant={variant ? variant : 'contained'} color={color}>
           <Button
-            sx={{ paddingX: 0 }}
+            sx={{ paddingX: 0, paddingRight: 1 }}
             startIcon={icon ? icon : null}
             ref={mainActionRef}
             fullWidth

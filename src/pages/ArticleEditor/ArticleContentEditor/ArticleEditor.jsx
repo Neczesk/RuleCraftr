@@ -146,6 +146,12 @@ export default function ArticleEditor({
               label="Title"
               variant="outlined"
               fullWidth
+              InputProps={{
+                spellCheck: 'false',
+                style: {
+                  fontFamily: 'cutive',
+                },
+              }}
               value={articleTitle ? articleTitle : ' '}
               onChange={(event) => {
                 setArticleTitle(event.target.value);
