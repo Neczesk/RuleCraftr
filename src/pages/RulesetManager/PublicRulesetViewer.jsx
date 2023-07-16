@@ -37,6 +37,27 @@ function PublicRulesetViewer(props) {
   const [totalCount, setTotalCount] = useState(0);
   const [numPages, setNumPages] = useState(0);
   const [perPage, setPerPage] = useState(5);
+  const [searchValue, setSearchValue] = useState('');
+  const [users, setUsers] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+  const [exportingRuleset, setExportingRuleset] = useState(null);
+  const [exportType, setExportType] = useState(null);
+  const searchRulesets = useDebouncedCallback(
+    // function
+    async (searchString, page = 1) => {
+      const response = await getPublicRulesets(searchString, page, perPage);
+      if (!Array.isArray(response) && Object.keys(response).includes('Failure')) {
+        enqueueSnackbar(response.Failure, { variant: 'error' });
+      } else if (Object.keys(response).includes('Success')) {
+        setPage(page);
+        setTotalCount(response.count);
+        setRulesets(response.body);
+      }
+    },
+    // delay in ms
+    200
+  );
+
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -50,7 +71,11 @@ function PublicRulesetViewer(props) {
   useEffect(() => {
     const totalPages = Math.ceil(totalCount / perPage);
     setNumPages(totalPages);
-  }, [perPage, totalCount]);
+    if (page > numPages) setPage(1);
+  }, [perPage, totalCount, page, numPages]);
+  useEffect(() => {
+    searchRulesets(searchValue, page);
+  }, [perPage, page, searchValue, searchRulesets]);
   let limit = 5;
   const displayDate = (db_date) => {
     const date = dayjs.utc(db_date);
@@ -75,7 +100,6 @@ function PublicRulesetViewer(props) {
       setUsers(userMap);
     });
   };
-  const [users, setUsers] = useState(null);
   useEffect(() => {
     refreshUsers();
   }, []);
@@ -90,24 +114,6 @@ function PublicRulesetViewer(props) {
     searchRulesets(userString + ' ' + searchValue);
   };
 
-  const searchRulesets = useDebouncedCallback(
-    // function
-    async (searchString, page = 1) => {
-      const response = await getPublicRulesets(searchString, page, perPage);
-      if (!Array.isArray(response) && Object.keys(response).includes('Failure')) {
-        enqueueSnackbar(response.Failure, { variant: 'error' });
-      } else if (Object.keys(response).includes('Success')) {
-        setPage(page);
-        setTotalCount(response.count);
-        setRulesets(response.body);
-      }
-    },
-    // delay in ms
-    200
-  );
-  const [expandedId, setExpandedId] = useState(null);
-  const [exportingRuleset, setExportingRuleset] = useState(null);
-  const [exportType, setExportType] = useState(null);
   const rows =
     rulesets && rulesets.length && users
       ? rulesets.map((ruleset, index) => {
@@ -189,7 +195,6 @@ function PublicRulesetViewer(props) {
           );
         })
       : null;
-  const [searchValue, setSearchValue] = useState('');
   return (
     <>
       <ExportDialog
@@ -256,11 +261,12 @@ function PublicRulesetViewer(props) {
           page={page}
           onChange={(event, value) => {
             setPage(value);
-            searchRulesets(searchValue, value);
           }}
         />
         <NativeSelect
-          onChange={(event) => setPerPage(parseInt(event.target.value))}
+          onChange={(event) => {
+            setPerPage(parseInt(event.target.value));
+          }}
           size="small"
           defaultValue={5}
           inputProps={{ label: 'Rulesets per Page' }}
