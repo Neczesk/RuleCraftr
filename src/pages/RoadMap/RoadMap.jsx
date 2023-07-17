@@ -22,9 +22,9 @@ function RoadMap() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader title="Beta 2: Editor Update 1" />
+          <CardHeader title="Alpha 2: Editor Update 1" />
           <CardContent>
-            The first beta update will be adding several missing features to the article editor itself. Currently, the
+            The first alpha update will be adding several missing features to the article editor itself. Currently, the
             plan is to add:
             <ul>
               <li>Creating tables</li>
@@ -38,9 +38,9 @@ function RoadMap() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader title="Beta 3: Article Tree Overhaul" />
+          <CardHeader title="Alpha 3: Article Tree Overhaul" />
           <CardContent>
-            The second beta update will overhaul the article tree. The interface is likely to be updated, but most
+            The second alpha update will overhaul the article tree. The interface is likely to be updated, but most
             importantly the following features will be added:
             <ul>
               <li>Organizing your articles into folders</li>
@@ -55,9 +55,9 @@ function RoadMap() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader title="Beta 4: The Boring Update" />
+          <CardHeader title="Alpha 4: The Boring Update" />
           <CardContent>
-            The third beta update is likely to not add any exciting features, but will be important for keeping the app
+            The third alpha update is likely to not add any exciting features, but will be important for keeping the app
             on a steady foundation in the future. I will be profiling the app and paying attention to the data and cpu
             requirements as the user base starts to grow, refactoring the performance of critical parts of the code to
             ensure that it will continue to be acceptably fast as I add more features, and structure the data storage

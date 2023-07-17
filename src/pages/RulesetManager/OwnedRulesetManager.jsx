@@ -157,15 +157,11 @@ function OwnedRulesetManager(props) {
                   <Button
                     color="secondary"
                     component={Typography}
-                    onClick={() => {
-                      setEditingRulesetValue(ruleset.rn_name);
-                      setEditingRulesetName(ruleset.id);
-                    }}
+                    onClick={() => startEditingRuleset(ruleset.id)}
                     variant="text"
                     sx={{
                       textTransform: 'none',
                     }}
-                    endIcon={<EditOutlinedIcon />}
                   >
                     {ruleset.rn_name}
                   </Button>
@@ -188,10 +184,13 @@ function OwnedRulesetManager(props) {
               </Grid>
               <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
                 <IconButton
-                  onClick={() => startEditingRuleset(ruleset.id)}
+                  onClick={() => {
+                    setEditingRulesetValue(ruleset.rn_name);
+                    setEditingRulesetName(ruleset.id);
+                  }}
                   sx={{ color: theme.palette.secondary.main }}
                 >
-                  <EditNoteOutlinedIcon />
+                  <EditOutlinedIcon />
                 </IconButton>
               </Grid>
               <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
@@ -357,7 +356,7 @@ function OwnedRulesetManager(props) {
           Tags
         </Grid>
         <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
-          Open Editor
+          Rename
         </Grid>
         <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
           View Export

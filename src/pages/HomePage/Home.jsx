@@ -73,11 +73,11 @@ function Home() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader title="Beta Release" />
+          <CardHeader title="Alpha Release" />
           <CardContent>
             <Timeline>
               <TimelineItem>
-                <TimelineOppositeContent>Beta 1</TimelineOppositeContent>
+                <TimelineOppositeContent>Alpha 1</TimelineOppositeContent>
 
                 <TimelineSeparator>
                   <TimelineDot color="success" />
@@ -86,7 +86,7 @@ function Home() {
                 <TimelineContent>First public release</TimelineContent>
               </TimelineItem>
               <TimelineItem>
-                <TimelineOppositeContent>Beta 2</TimelineOppositeContent>
+                <TimelineOppositeContent>Alpha 2</TimelineOppositeContent>
 
                 <TimelineSeparator>
                   <TimelineDot />
@@ -95,7 +95,7 @@ function Home() {
                 <TimelineContent>First rich text editing overhaul</TimelineContent>
               </TimelineItem>
               <TimelineItem>
-                <TimelineOppositeContent>Beta 3</TimelineOppositeContent>
+                <TimelineOppositeContent>Alpha 3</TimelineOppositeContent>
 
                 <TimelineSeparator>
                   <TimelineDot />
@@ -103,9 +103,9 @@ function Home() {
                 <TimelineContent>First article navigation overhaul</TimelineContent>
               </TimelineItem>
             </Timeline>
-            The app is far from complete yet, but the feedback from beta testers is invaluable to developing it further.
-            I have big plans for new features and improvements, and with your feedback I can make this app the most
-            useful tool anyone can find for making new tabletop games.
+            The app is far from complete yet, but the feedback from alpha testers is invaluable to developing it
+            further. I have big plans for new features and improvements, and with your feedback I can make this app the
+            most useful tool anyone can find for making new tabletop games.
           </CardContent>
           <CardActions>
             <Button component={RouterLink} to="/roadmap" color="primary" variant="contained">

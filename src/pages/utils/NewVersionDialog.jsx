@@ -48,7 +48,7 @@ function NewVersionDialog(props) {
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6" fontWeight="bold">
-          Beta 1
+          Alpha 1
         </Typography>
         <Typography variant="body1">
           The first public release of the app! There are still going to be bugs and problems of course, but I hope
@@ -103,6 +103,9 @@ function NewVersionDialog(props) {
           Bug Fixes:
         </Typography>
         <ul>
+          <li>(Public Release)Creating a keyword in the reference insertion menu works as expected</li>
+          <li>(Public Release)Articles with an empty title now display in the tree as Untitled Article</li>
+          <li>(Public Release)Dummy keywords no longer show up in the reference menus</li>
           <li>(RC 2)The logo at the top now functions correctly as a home page link</li>
           <li>
             (RC 2)The redirect has been fixed to no longer trap the user from going back to the site they were using
@@ -117,14 +120,14 @@ function NewVersionDialog(props) {
         </Typography>
         <ul>
           <li>
-            Beta 2: Editor overhaul, including tables and lists and possibly images to be added to the article editor
+            Alpha 2: Editor overhaul, including tables and lists and possibly images to be added to the article editor
           </li>
           <li>
-            Beta 3: Article Tree overhaul, including article moving, typing of articles, adding folders and categories
+            Alpha 3: Article Tree overhaul, including article moving, typing of articles, adding folders and categories
             as well as marking if an article should be exported or not.
           </li>
           <li>
-            Beta 4: Database overhaul, hopefully allowing for recovery of deleted rulesets, articles, and keywords as
+            Alpha 4: Database overhaul, hopefully allowing for recovery of deleted rulesets, articles, and keywords as
             well as autosave and versioning.
           </li>
         </ul>
