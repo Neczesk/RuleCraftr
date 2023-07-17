@@ -290,7 +290,7 @@ def get_ruleset(id: int):
 def get_public_rulesets():
     if request.method == 'GET':
         admin = False
-        if (current_user.is_authenticated):
+        if (current_user.is_authenticated and current_user.is_admin):
             admin = True
         users = request.args.get('user')
         tags = request.args.get('tags')
