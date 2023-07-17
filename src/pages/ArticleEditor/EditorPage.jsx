@@ -10,7 +10,7 @@ import RulesetEditor from './SlateComponents/RulesetEditor';
 import Grid from '@mui/material/Grid';
 import { Box, useTheme, IconButton } from '@mui/material';
 
-import { findArticleInRuleset, findKeywordInRuleset, getRuleset, saveRuleset } from '../../data/rulesets';
+import { addArticle, findArticleInRuleset, findKeywordInRuleset, getRuleset, saveRuleset } from '../../data/rulesets';
 import useRulesetStore from '../../stores/rulesetStore';
 import EditorToolbar from './utils/EditorToolbar';
 import ArticleEditor from './ArticleContentEditor/ArticleEditor';
@@ -21,6 +21,7 @@ import KeywordRefMenu from './Dialogues/KeywordRefMenu';
 import ArticleRefMenu from './Dialogues/ArticleRefMenu';
 import ExportDialog from '../utils/ExportDialog';
 import MenuOpenOutlinedIcon from '@mui/icons-material/MenuOpenOutlined';
+import { createArticle } from '../../data/articles';
 
 function EditorPage() {
   const ruleset = useRulesetStore((state) => state.ruleset);
@@ -52,6 +53,14 @@ function EditorPage() {
       getRuleset(rulesetId).then((value) => setRuleset(value));
     }
   }, [rulesetId, setRuleset, clearRuleset]);
+  useEffect(() => {
+    if (ruleset?.articles?.length === 0) {
+      setRuleset(addArticle(null, ruleset, createArticle(ruleset.id, null, 0)));
+    }
+    setTimeout(() => {
+      if (currentArticle == null && ruleset?.articles?.length) setCurrentArticle(ruleset.articles[0].id);
+    }, 0);
+  }, [rulesetId, setRuleset, ruleset?.articles?.length, ruleset.id, currentArticle, ruleset.articles, ruleset]);
   useEffect(() => {
     const article = findArticleInRuleset(currentArticle, ruleset.articles);
     if (!article) {

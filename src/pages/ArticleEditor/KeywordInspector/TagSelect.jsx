@@ -43,9 +43,9 @@ function TagSelect(props) {
     if (!value) return;
     if (value && value.inputValue) {
       addTag(value.inputValue);
+      updateKeyword({ id: keyword.id, tag: value.inputValue });
       setValue({ label: value.inputValue, value: value.inputValue });
       if (closeOnChange) {
-        updateKeyword({ id: keyword.id, tag: value.value });
         onClose();
       }
       return;

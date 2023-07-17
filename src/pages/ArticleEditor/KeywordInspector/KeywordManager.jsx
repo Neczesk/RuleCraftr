@@ -282,6 +282,12 @@ function KeywordManager(props) {
               })
               .map((tag) => RenderTag(tag))
           : null}
+        <ListItem>
+          <ListItemText
+            sx={{ textDecoration: 'underline', fontStyle: 'italic' }}
+            primary="Untagged Keywords:"
+          ></ListItemText>
+        </ListItem>
         {rootKeywords.length
           ? rootKeywords
               .sort((a, b) => a.keyword.localeCompare(b.keyword))

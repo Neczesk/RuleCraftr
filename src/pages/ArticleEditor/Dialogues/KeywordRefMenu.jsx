@@ -32,13 +32,11 @@ const KeywordRefMenu = (props) => {
   const [newKeywordDialogValue, setNewKeywordDialogValue] = useState({
     keyword: '',
     shortDefinition: '',
-    longDefinition: '',
   });
   const onNewKeywordDialogClose = () => {
     setNewKeywordDialogValue({
       keyword: '',
       shortDefinition: '',
-      longDefinition: '',
     });
     setNewKeywordDialogOpen(false);
   };
@@ -57,7 +55,7 @@ const KeywordRefMenu = (props) => {
   if ((typeof ruleset.keywords !== 'undefined' || ruleset.keywords === null) && !Array.isArray(ruleset.keywords))
     return;
   const options = ruleset.keywords
-    .filter((keyword) => !keyword.deleted)
+    .filter((keyword) => !keyword.deleted && !keyword.dummy)
     .map((keyword) => ({ label: keyword.keyword, id: keyword.id }));
   const filter = createFilterOptions();
 
@@ -153,19 +151,6 @@ const KeywordRefMenu = (props) => {
             type="text"
             variant="standard"
           />
-          <TextField
-            fullWidth
-            margin="dense"
-            id="longDefinition"
-            value={newKeywordDialogValue.longDefinition}
-            onChange={(event) => {
-              setNewKeywordDialogValue({ ...newKeywordDialogValue, longDefinition: event.target.value });
-            }}
-            label="Long Definition"
-            type="text"
-            variant="standard"
-            multiline
-          />
         </DialogContent>
         <DialogActions>
           <Button
@@ -180,6 +165,7 @@ const KeywordRefMenu = (props) => {
               const newKeyword = createKeyword(ruleset.id, newKeywordDialogValue);
               setRuleset(addKeyword(ruleset, newKeyword));
               onNewKeywordDialogClose();
+              props.onClose(newKeyword.id, props.editor);
             }}
           >
             Add Keyword

@@ -56,5 +56,9 @@ export function createKeyword(rulesetId, keywordData = null) {
 
 export function sortKeywords(keywords) {
   if (!keywords || !keywords.length) return;
-  return keywords.sort((a, b) => a.keyword.localeCompare(b.keyword));
+  return keywords.sort((a, b) => {
+    const tagComparison = a.tag.localeCompare(b.tag);
+    if (tagComparison !== 0) return tagComparison; // if tags are not the same, sort by tag
+    return a.keyword.localeCompare(b.keyword); // if tags are the same, sort by keyword
+  });
 }

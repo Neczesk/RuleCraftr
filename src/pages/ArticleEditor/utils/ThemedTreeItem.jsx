@@ -26,13 +26,12 @@ function ThemedTreeItem(props) {
     },
   }));
   const { onContextMenu, bgColor, color, articleId, label, ...other } = props;
-
   return (
     <ThemeTreeItemRoot
       onContextMenu={onContextMenu}
       key={articleId ? articleId : -1}
       nodeId={articleId ? articleId : '-1'}
-      label={label}
+      label={label?.trim().length ? label : 'Untitled Article'}
       style={{
         '--tree-view-color': color,
         '--tree-view-bg-color': bgColor,
