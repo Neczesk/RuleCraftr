@@ -4,6 +4,9 @@ import FormatItalicOutlinedIcon from '@mui/icons-material/FormatItalicOutlined';
 import FormatUnderlinedOutlinedIcon from '@mui/icons-material/FormatUnderlinedOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
+import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
+import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
+import FormatListNumberedOutlinedIcon from '@mui/icons-material/FormatListNumberedOutlined';
 import {
   Box,
   Toolbar,
@@ -86,9 +89,6 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
           <Grid container sx={{ paddingX: 4, pt: 1 }} spacing={1}>
             <Grid item xs />
             <Grid item xs={1}>
-              {/* <EditorToolbarButton type="icon" onClick={props.saveArticle} disabled={synced}>
-                <SaveOutlinedIcon fontSize="small" />
-              </EditorToolbarButton> */}
               <Tooltip title="Save (Ctrl + S)">
                 <span>
                   <LonelyIconButton disabled={synced || ruleset.id === null} onClick={props.saveArticle}>
@@ -134,13 +134,13 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                 </Tooltip>
               </ToggleButtonGroup>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
               <Tooltip
                 open={showRefTooltip}
                 disableHoverListener
                 onMouseEnter={() => setShowRefTooltip(true)}
                 onMouseLeave={() => setShowRefTooltip(false)}
-                title="Insert Article Reference (Ctrl + L) or Keyword Reference (Ctrl + K)"
+                title="Insert Article Reference (Ctrl + L) or Keyword Reference (Ctrl + K) or Table (Ctrl + T)"
               >
                 <ButtonGroup sx={{ border: `1px solid ${theme.palette.divider}` }}>
                   <IconButtonInGroup
@@ -159,6 +159,19 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                     }}
                   >
                     <KeyOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                  <IconButtonInGroup
+                    onMouseDown={() => {
+                      RulesetEditor.insertTable(editor);
+                    }}
+                  >
+                    <TableChartOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                  <IconButtonInGroup>
+                    <FormatListBulletedOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                  <IconButtonInGroup>
+                    <FormatListNumberedOutlinedIcon fontSize="small" />
                   </IconButtonInGroup>
                 </ButtonGroup>
               </Tooltip>

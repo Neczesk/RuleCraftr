@@ -237,7 +237,7 @@ function Root() {
               </ListItemIcon>
               <ListItemText primary="About" />
             </ListItemButton>
-            <ListItemButton href="https://discord.gg/fdAZtwSsER" target="_blank">
+            <ListItemButton href="https://discord.gg/pP8W3eJeU3" target="_blank">
               <ListItemIcon>{discordIcon}</ListItemIcon>
               <ListItemText primary="Join us on Discord!" />
             </ListItemButton>

@@ -77,6 +77,31 @@ ArticleLink.propTypes = {
   selectArticle: PropTypes.func,
 };
 
+export const TableElement = (props) => {
+  return (
+    <table>
+      <tbody>{props.children}</tbody>
+    </table>
+  );
+};
+TableElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
+};
+
+export const TableRowElement = (props) => {
+  return <tr>{props.children}</tr>;
+};
+TableRowElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
+};
+
+export const TableCellElement = (props) => {
+  return <td>{props.children}</td>;
+};
+TableCellElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
+};
+
 export const DefaultElement = (props) => {
   return (
     <Typography variant="body1" sx={{ textIndent: '2em' }} {...props.attributes}>

@@ -7,6 +7,9 @@ import {
   ArticleLink,
   DefaultElement,
   Leaf,
+  TableElement,
+  TableCellElement,
+  TableRowElement,
 } from '../SlateComponents/elementComponents';
 import RulesetEditor from './RulesetEditor';
 
@@ -53,6 +56,12 @@ export const useGenstaff = (
             return <KeywordLink selectKeyword={inspectKeyword} {...props} />;
           case 'articleRef':
             return <ArticleLink selectArticle={handleArticleSelect} {...props} />;
+          case 'table':
+            return <TableElement {...props} />;
+          case 'cell':
+            return <TableCellElement {...props} />;
+          case 'row':
+            return <TableRowElement {...props} />;
           default:
             return <DefaultElement {...props} />;
         }

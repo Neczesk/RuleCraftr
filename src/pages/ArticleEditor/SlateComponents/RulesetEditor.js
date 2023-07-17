@@ -69,6 +69,42 @@ const RulesetEditor = {
     return !!match;
   },
 
+  insertTable(editor) {
+    const newTable = {
+      type: 'table',
+      columnNames: ['Column1', 'Column2'],
+      children: [
+        {
+          type: 'row',
+          children: [
+            {
+              type: 'cell',
+              children: [{ text: 'content' }],
+            },
+            {
+              type: 'cell',
+              children: [{ text: 'content' }],
+            },
+          ],
+        },
+        {
+          type: 'row',
+          children: [
+            {
+              type: 'cell',
+              children: [{ text: 'content' }],
+            },
+            {
+              type: 'cell',
+              children: [{ text: 'content' }],
+            },
+          ],
+        },
+      ],
+    };
+    Transforms.insertNodes(editor, newTable, { at: editor.selection, select: true });
+  },
+
   insertArticleRef(editor, id) {
     if (!editor.selection) return;
     const savedSelection = Object.assign({}, editor.selection);
