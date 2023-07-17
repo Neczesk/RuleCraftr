@@ -15,25 +15,16 @@ import api.services.invite_codes as invite_codes
 
 def create_user(user_data):
     new_user = api.models.user.User()
-    invite_status = invite_codes.validate_invite_code(
-        user_data['inviteCode'])
-    if not invite_status:
-        return {"Failure": "Invalid invite code"}, 403
     password_status = validate_new_password(
         user_data["password"], user_data["confirmPassword"])
     if not password_status:
         return {"Failure": "Password is invalid"}, 400
-
     new_user.username = user_data["username"]
     new_user.set_password(user_data['password'])
 
     saved_user = save_user(new_user)
     if not saved_user:
         return {"Failure": "Error occured saving the user to the database"}, 500
-    code_status = invite_codes.set_invite_code_user_used(
-        user_data['inviteCode'], saved_user["id"])
-    if not code_status:
-        return {"Failure": "Error occured validating the invite code"}, 500
 
     new_user.id = saved_user['id']
 

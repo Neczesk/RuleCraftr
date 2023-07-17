@@ -20,7 +20,7 @@ function RulesetManagerGrid() {
     getRulesetsForUser(user.id).then((value) => setRulesets(value));
   };
   const { enqueueSnackbar } = useSnackbar;
-  const [tabValue, setTabValue] = useState(user ? 1 : 0);
+  const [tabValue, setTabValue] = useState(user?.id ? 1 : 0);
   const theme = useTheme();
   const smallWidth = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ function RulesetManagerGrid() {
           </Tabs>
           <Divider sx={{ mb: 2 }}></Divider>
           <Box flex={1} padding={{ xs: 0, md: 1 }} sx={{ overflow: 'auto' }} display="flex">
-            <Box display={tabValue === 1 ? 'flex' : 'none'}>
+            <Box display={tabValue === 1 ? 'flex' : 'none'} flexGrow={1}>
               <OwnedRulesetManager startEditingRuleset={startEditingRuleset} refresh={refresh} rulesets={rulesets} />
             </Box>
             <Box display={tabValue === 2 ? 'flex' : 'none'} flexGrow={1}>

@@ -136,13 +136,14 @@ function OwnedRulesetManager(props) {
               md={12}
               sx={{
                 padding: 0.5,
+                maxHeight: '10em',
                 borderTop: 'solid 1px',
                 borderColor: theme.palette.paperBorder.main,
                 backgroundColor:
                   index % 2 === 0 ? theme.palette.primaryContainer.light : theme.palette.primaryContainer.dark,
               }}
             >
-              <Grid item xs={1} sm={3} md={4}>
+              <Grid item xs={1} sm={3} md={4} sx={{ maxHeight: '2em' }}>
                 {editingRulesetName == ruleset.id ? (
                   <TextField
                     onKeyDown={renameFieldKeyHandler}
@@ -170,7 +171,7 @@ function OwnedRulesetManager(props) {
                   </Button>
                 )}
               </Grid>
-              <Grid item xs={1} sm={1} md={1}>
+              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
                 <IconButton
                   onClick={() => setChangingPublicRulesetId(ruleset.id)}
                   sx={{ color: theme.palette.secondary.main }}
@@ -178,14 +179,14 @@ function OwnedRulesetManager(props) {
                   {ruleset.public ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                 </IconButton>
               </Grid>
-              <Grid item xs={1} sm={2} md={3}>
+              <Grid item xs={1} sm={2} md={3} sx={{ maxHeight: '2em' }}>
                 <TagsCell
                   tags={ruleset.tags}
                   limit={limit}
                   clickHandler={() => tagClickHandler(ruleset.id, ruleset.tags)}
                 />
               </Grid>
-              <Grid item xs={1} sm={1} md={1}>
+              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
                 <IconButton
                   onClick={() => startEditingRuleset(ruleset.id)}
                   sx={{ color: theme.palette.secondary.main }}
@@ -193,7 +194,7 @@ function OwnedRulesetManager(props) {
                   <EditNoteOutlinedIcon />
                 </IconButton>
               </Grid>
-              <Grid item xs={1} sm={1} md={1}>
+              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
                 <IconButton
                   onClick={async () => {
                     const exportingRuleset = await getRuleset(ruleset.id);
@@ -205,7 +206,7 @@ function OwnedRulesetManager(props) {
                   <OpenInNewOutlinedIcon />
                 </IconButton>
               </Grid>
-              <Grid item xs={1} sm={1} md={2}>
+              <Grid item xs={1} sm={1} md={2} sx={{ maxHeight: '2em' }}>
                 <IconButton
                   onClick={() => setDeletingRulesetId(ruleset.id)}
                   sx={{ color: theme.palette.secondary.main }}
@@ -213,13 +214,13 @@ function OwnedRulesetManager(props) {
                   <DeleteOutlineOutlinedIcon />
                 </IconButton>
               </Grid>
-              <Grid item xs={4} sm={7} md={10}>
+              <Grid item xs={4} sm={7} md={10} sx={{ maxHeight: '1em' }}>
                 <Typography variant="caption">Description</Typography>
               </Grid>
-              <Grid item xs={2} sm={2} md={2}>
+              <Grid item xs={2} sm={2} md={2} sx={{ maxHeight: '1em' }}>
                 <Typography variant="caption">Last Modified</Typography>
               </Grid>
-              <Grid item xs={6} sm={9} md={12}>
+              <Grid item xs={6} sm={9} md={12} sx={{ maxHeight: '1em' }}>
                 <Divider />
               </Grid>
               <Grid item xs={4} sm={7} md={10}>
@@ -257,6 +258,12 @@ function OwnedRulesetManager(props) {
           );
         })
     : null;
+  if (rows?.length < 5 && rows?.length > 0) {
+    const neededRows = 5 - rows.length;
+    for (let i = 0; i < neededRows; i++) {
+      rows.push(<Grid item xs={6} sm={9} md={12} sx={{ height: '10em' }} />);
+    }
+  }
   const [changingPublicRulesetId, setChangingPublicRulesetId] = useState(null);
   const [exportingRuleset, setExportingRuleset] = useState();
   const [exportType, setExportType] = useState(null);
@@ -338,27 +345,26 @@ function OwnedRulesetManager(props) {
         {...rest}
         container
         columns={{ xs: 6, sm: 9, md: 12 }}
-        sx={{ borderBottom: 'solid 1px', borderColor: theme.palette.paperBorder.main }}
+        sx={{ borderBottom: 'solid 1px', borderColor: theme.palette.paperBorder.main, width: '100%' }}
       >
-        <Grid item xs={1} sm={3} md={4}>
+        <Grid item xs={1} sm={3} md={4} sx={{ maxHeight: '2em' }}>
           Ruleset Name
         </Grid>
-        <Grid item xs={1} sm={1} md={1}>
+        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
           Public
         </Grid>
-        <Grid item xs={1} sm={2} md={3}>
+        <Grid item xs={1} sm={2} md={3} sx={{ maxHeight: '2em' }}>
           Tags
         </Grid>
-        <Grid item xs={1} sm={1} md={1}>
+        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
           Open Editor
         </Grid>
-        <Grid item xs={1} sm={1} md={1}>
+        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
           View Export
         </Grid>
-        <Grid item xs={1} sm={1} md={2}>
+        <Grid item xs={1} sm={1} md={2} sx={{ maxHeight: '2em' }}>
           Delete Ruleset
         </Grid>
-        <Grid item xs={1} sm={2} md={4} />
         {rows}
       </Grid>
     </>

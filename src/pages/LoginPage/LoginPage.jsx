@@ -26,10 +26,9 @@ function LoginPage() {
     return username !== '' && password !== '';
   };
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
   const validateAccountCreate = () => {
     //First check that there are values in all the fields
-    let status = username !== '' && password !== '' && inviteCode !== '';
+    let status = username !== '' && password !== '';
     if (validate_password_strength(password, username) <= 1) status = false;
     if (confirmPassword == '') status = false;
     return status;
@@ -48,7 +47,6 @@ function LoginPage() {
     setUsername('');
     setPassword('');
     setConfirmPassword('');
-    setInviteCode('');
     setCurrentTab(newValue);
   };
 
@@ -57,28 +55,7 @@ function LoginPage() {
       username: username,
       password: password,
       confirmPassword: confirmPassword,
-      inviteCode: cleanInviteCode(inviteCode),
     };
-  };
-
-  const cleanInviteCode = (keyWDashes) => {
-    return keyWDashes.replace(/-/g, '');
-  };
-
-  const displayInviteCode = (value) => {
-    // Remove all dashes
-    let cleaned = value.replace(/-/g, '');
-
-    // Insert dashes between every 4 characters
-    let formatted = '';
-    for (let i = 0; i < cleaned.length; i++) {
-      if (i > 0 && i % 5 === 0) {
-        formatted += '-';
-      }
-      formatted += cleaned[i];
-    }
-
-    return formatted;
   };
 
   const { enqueueSnackbar } = useSnackbar();
@@ -194,21 +171,6 @@ function LoginPage() {
             label="Confirm password"
             required
             id="confirm-password-field"
-          />
-          <TextField
-            error={inviteCode === ''}
-            value={inviteCode}
-            helperText="You should have received an invite code if you know that this app exists, otherwise ask me for one."
-            sx={{
-              maxWidth: '400px',
-            }}
-            onChange={(event) => {
-              if (event.target.value.length < 30) setInviteCode(displayInviteCode(event.target.value));
-            }}
-            type="text"
-            label="Invite Code"
-            required
-            id="invite-code-field"
           />
         </Box>
       </CardContent>
