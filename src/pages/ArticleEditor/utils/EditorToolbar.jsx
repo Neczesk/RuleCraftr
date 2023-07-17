@@ -32,6 +32,7 @@ import useEditorStore from '../../../stores/editorStore';
 
 const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
   const synced = useRulesetStore((state) => state.synced);
+  const ruleset = useRulesetStore((state) => state.ruleset);
   const theme = useTheme();
   const { editor } = props;
 
@@ -90,7 +91,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
               </EditorToolbarButton> */}
               <Tooltip title="Save (Ctrl + S)">
                 <span>
-                  <LonelyIconButton disabled={synced} onClick={props.saveArticle}>
+                  <LonelyIconButton disabled={synced || ruleset.id === null} onClick={props.saveArticle}>
                     <SaveOutlinedIcon fontSize="small" />
                   </LonelyIconButton>
                 </span>

@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardActions,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ColorModeContext } from '../App';
 import Carousel from 'react-material-ui-carousel';
@@ -23,10 +23,14 @@ import {
   TimelineSeparator,
 } from '@mui/lab';
 import useUserStore from '../../stores/userStore';
+import useRulesetStore from '../../stores/rulesetStore';
+import { createDemoRuleset } from '../../data/rulesets';
 
 function Home() {
   const colorModeContext = useContext(ColorModeContext);
+  const setRuleset = useRulesetStore((state) => state.setRuleset);
   const user = useUserStore((state) => state.user);
+  const navigate = useNavigate();
   return (
     <Container sx={{ padding: { xs: 0, md: 2 }, flexGrow: 1 }}>
       <Stack direction="column" spacing={3}>
@@ -46,13 +50,22 @@ function Home() {
               game rulesets. It can&apos;t come up with ideas for your or stop you from making your favorite unit game
               breakingly overpowered, but it can help you organize your thoughts, cross reference your own rules so you
               only need to write them once, and export them into a convenient html document for easy reading from any
-              device with a web browser. To start editing create an account
+              device with a web browser. You can get started with a demo
               <Button
                 sx={{ padding: 0, textDecoration: 'underline' }}
                 variant="text"
                 size="small"
-                component={RouterLink}
-                to={user?.id ? '/home' : '/login'}
+                onClick={() => {
+                  if (!user?.id) {
+                    const demo = createDemoRuleset();
+                    setRuleset(demo);
+                    setTimeout(() => {
+                      navigate('/user/demo/rulesets/demo/editor');
+                    }, 100);
+                  } else {
+                    navigate('/home', { replace: true });
+                  }
+                }}
               >
                 here
               </Button>

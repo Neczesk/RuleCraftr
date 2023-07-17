@@ -115,9 +115,11 @@ export const useGenstaff = (
       RulesetEditor.toggleItalicMark(editor);
     }
     if (event.key === 'l' && event.ctrlKey) {
+      event.preventDefault();
       openArticleRefMenu(event, editor, true);
     }
     if (event.key === 'k' && event.ctrlKey) {
+      event.preventDefault();
       openKeywordRefMenu(event, editor, true);
     }
     // if (event.key === 'Tab') {

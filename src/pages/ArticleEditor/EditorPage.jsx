@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { unstable_useBlocker as useBlocker, useParams, useLocation } from 'react-router';
+import { unstable_useBlocker as useBlocker, useParams } from 'react-router';
 
 import { createEditor, Transforms } from 'slate';
 import { withReact, ReactEditor } from 'slate-react';
@@ -26,6 +26,9 @@ function EditorPage() {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
   const clearRuleset = useRulesetStore((state) => state.clearRuleset);
+  const clearRulesetCallback = useCallback(() => {
+    clearRuleset();
+  }, [clearRuleset]);
   const synced = useRulesetStore((state) => state.synced);
   const setSynced = useRulesetStore((state) => state.setRulesetChanged);
   const [currentArticle, setCurrentArticle] = useState(null);
@@ -44,8 +47,8 @@ function EditorPage() {
   useEffect(() => {
     setCurrentArticle(null);
     setSelectedKeyword(null);
-    clearRuleset();
-    if (rulesetId) {
+    if (rulesetId && rulesetId !== 'demo') {
+      clearRuleset();
       getRuleset(rulesetId).then((value) => setRuleset(value));
     }
   }, [rulesetId, setRuleset, clearRuleset]);
@@ -157,15 +160,13 @@ function EditorPage() {
     }
   };
 
-  const location = useLocation();
-
   useEffect(() => {
     // This will run when the location changes, but the clearRuleset
     // function will only run when the component is unmounting.
     return () => {
-      clearRuleset();
+      clearRulesetCallback();
     };
-  }, [location, clearRuleset]);
+  }, [clearRulesetCallback]);
 
   const [currentSelection, setCurrentSelection] = useState(null);
   const changeSelection = (newSelection) => {

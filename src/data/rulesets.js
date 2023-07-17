@@ -29,6 +29,18 @@ export async function createRuleset(newRulesetData) {
   return await insertRuleset(newRulesetData);
 }
 
+export function createDemoRuleset() {
+  return {
+    id: null,
+    articles: [],
+    keywords: [],
+    rn_name: 'DEMO: ALL CHANGES WILL BE LOST',
+    user_id: null,
+    synced: true,
+    demo: true,
+  };
+}
+
 export async function deleteRuleset(id) {
   return await netDeleteRuleset(id);
 }
