@@ -48,23 +48,34 @@ function NewVersionDialog(props) {
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6" fontWeight="bold">
-          Beta Release Candidate 3
+          Beta 1
         </Typography>
         <Typography variant="body1">
-          This update focuses on the experience of finding and viewing public rulesets, as well as cleaning up the
-          website around the app. As a release candidate, there may be issues that will prevent this from being
-          officially released to the public. I have fixed the ones I knew about, but the more it is tested the more I
-          can be sure there aren&apos;t any showstopper issues.
+          The first public release of the app! There are still going to be bugs and problems of course, but I hope
+          people can start using it. I can&apos;t wait to see what people create!
         </Typography>
         <Divider sx={{ my: 2 }}></Divider>
-        {/* <Typography variant="h6" fontWeight="bold">
+        <Typography variant="h6" fontWeight="bold">
           Known Issues:
-        </Typography> */}
+        </Typography>
+        <ul>
+          <li>
+            The editor is not at all mobile friendly. That may change in the future, but it is not on the immediate
+            roadmap. You may be able to work around this on a tablet in landscape mode; as long as the screen is wide
+            enough I believe it will work ok. The rest of the site is working on mobile devices though, so feel free to
+            browse the public rulesets and view their exported versions!
+          </li>
+        </ul>
 
         <Typography variant="h6" fontWeight="bold">
           New Features:
         </Typography>
         <ul>
+          <li>(Public Release)Removed the invite code requirements</li>
+          <li>
+            (Public Release)The home page now links to a demo version of the editor that can be used without creating an
+            account
+          </li>
           <li>
             (RC 3)Changed the editor font to be a serif font instead of a sans-serif font. In the future this will be
             user choosable, but for now serif fonts are recommended for long text on the web.

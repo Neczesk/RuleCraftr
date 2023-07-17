@@ -13,23 +13,9 @@ function RoadMap() {
         <Card>
           <CardHeader title={currentVersion} />
           <CardContent>
-            This is the first, initial release of RuleCrafter. These are the currently known issues:
+            This is the first public release of RuleCrafter. These are the currently known issues:
             <ul>
-              <li>
-                When changing an article&apos;s title, it does not take effect right away after each character entered.
-                You can workaround this by typing an extra letter then saving, then switching to a different article and
-                back again.
-              </li>
-              <li>
-                If you have only a single keyword in your ruleset, you cannot delete it. You can work around this by
-                creating another keyword, then deleting the one you intended to delete
-              </li>
-              <li>
-                The word breaking in the editor is not working as intended and the text should be wrapping more
-                normally. You can work around this with extra spacing, but I intend to fix this one in a hurry (likely
-                before the final release of beta 1)
-              </li>
-              <li>Navigating from the home page back to google does not work as intended.</li>
+              <li>The editor is not mobile friendly. Unfortunately that will not become a priority for some time.</li>
             </ul>
             There are certainly other bugs and issues that I do not know about, so if you find one please join us on
             Discord and let me know about them!
@@ -44,6 +30,8 @@ function RoadMap() {
               <li>Creating tables</li>
               <li>Ordered and unorderded lists</li>
               <li>And of course allowing these to be exported to html as well.</li>
+              <li>Editor and export font choices</li>
+              <li>General aesthetic improvements to the editor</li>
             </ul>
             If you have further suggestions as to what the editor needs to be useful for your project, please join us on
             Discord!
