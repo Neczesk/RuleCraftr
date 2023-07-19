@@ -143,7 +143,7 @@ function OwnedRulesetManager(props) {
                   index % 2 === 0 ? theme.palette.primaryContainer.light : theme.palette.primaryContainer.dark,
               }}
             >
-              <Grid item xs={1} sm={3} md={4} sx={{ maxHeight: '2em' }}>
+              <Grid item xs={1} sm={3} md={4} sx={{ maxHeight: '4em' }}>
                 {editingRulesetName == ruleset.id ? (
                   <TextField
                     onKeyDown={renameFieldKeyHandler}
@@ -167,7 +167,7 @@ function OwnedRulesetManager(props) {
                   </Button>
                 )}
               </Grid>
-              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
+              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '4em' }}>
                 <IconButton
                   onClick={() => setChangingPublicRulesetId(ruleset.id)}
                   sx={{ color: theme.palette.secondary.main }}
@@ -175,14 +175,14 @@ function OwnedRulesetManager(props) {
                   {ruleset.public ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                 </IconButton>
               </Grid>
-              <Grid item xs={1} sm={2} md={3} sx={{ maxHeight: '2em' }}>
+              <Grid item xs={1} sm={2} md={3} sx={{ maxHeight: '4em' }}>
                 <TagsCell
                   tags={ruleset.tags}
                   limit={limit}
                   clickHandler={() => tagClickHandler(ruleset.id, ruleset.tags)}
                 />
               </Grid>
-              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
+              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '4em' }}>
                 <IconButton
                   onClick={() => {
                     setEditingRulesetValue(ruleset.rn_name);
@@ -193,7 +193,7 @@ function OwnedRulesetManager(props) {
                   <EditOutlinedIcon />
                 </IconButton>
               </Grid>
-              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
+              <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '4em' }}>
                 <IconButton
                   onClick={async () => {
                     const exportingRuleset = await getRuleset(ruleset.id);
@@ -205,7 +205,7 @@ function OwnedRulesetManager(props) {
                   <OpenInNewOutlinedIcon />
                 </IconButton>
               </Grid>
-              <Grid item xs={1} sm={1} md={2} sx={{ maxHeight: '2em' }}>
+              <Grid item xs={1} sm={1} md={2} sx={{ maxHeight: '4em' }}>
                 <IconButton
                   onClick={() => setDeletingRulesetId(ruleset.id)}
                   sx={{ color: theme.palette.secondary.main }}
@@ -346,22 +346,22 @@ function OwnedRulesetManager(props) {
         columns={{ xs: 6, sm: 9, md: 12 }}
         sx={{ borderBottom: 'solid 1px', borderColor: theme.palette.paperBorder.main, width: '100%' }}
       >
-        <Grid item xs={1} sm={3} md={4} sx={{ maxHeight: '2em' }}>
+        <Grid item xs={1} sm={3} md={4} sx={{ maxHeight: '4em' }}>
           Ruleset Name
         </Grid>
-        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
+        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '4em' }}>
           Public
         </Grid>
-        <Grid item xs={1} sm={2} md={3} sx={{ maxHeight: '2em' }}>
+        <Grid item xs={1} sm={2} md={3} sx={{ maxHeight: '4em' }}>
           Tags
         </Grid>
-        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
+        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '4em' }}>
           Rename
         </Grid>
-        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '2em' }}>
+        <Grid item xs={1} sm={1} md={1} sx={{ maxHeight: '4em' }}>
           View Export
         </Grid>
-        <Grid item xs={1} sm={1} md={2} sx={{ maxHeight: '2em' }}>
+        <Grid item xs={1} sm={1} md={2} sx={{ maxHeight: '4em' }}>
           Delete Ruleset
         </Grid>
         {rows}
