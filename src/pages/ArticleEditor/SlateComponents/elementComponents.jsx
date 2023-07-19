@@ -1,7 +1,23 @@
-import { Typography, Button, Tooltip } from '@mui/material';
+import { Typography, Button, Tooltip, styled } from '@mui/material';
 import PropTypes from 'prop-types';
 import useRulesetStore from '../../../stores/rulesetStore';
 import { findArticleInRuleset } from '../../../data/rulesets';
+
+const EditorTable = styled('table')({
+  border: `solid 1px #000000`,
+  borderCollapse: 'collapse',
+  width: '100%',
+});
+
+const EditorRow = styled('tr')({});
+
+const EditorCell = styled('td')({
+  border: 'solid 1px #000000',
+});
+
+const EditorTableHead = styled('th')({
+  border: 'solid 1px #000000',
+});
 
 export const CodeElement = (props) => {
   return (
@@ -78,25 +94,43 @@ ArticleLink.propTypes = {
 };
 
 export const TableElement = (props) => {
-  return (
-    <table>
-      <tbody>{props.children}</tbody>
-    </table>
-  );
+  return <EditorTable>{props.children}</EditorTable>;
 };
 TableElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
+  element: PropTypes.object,
+};
+
+export const TableHeadElement = (props) => {
+  return <thead>{props.children}</thead>;
+};
+TableHeadElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
+};
+
+export const TableHeaderElement = (props) => {
+  return <EditorTableHead>{props.children}</EditorTableHead>;
+};
+TableHeaderElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
+};
+
+export const TableBodyElement = (props) => {
+  return <tbody>{props.children}</tbody>;
+};
+TableBodyElement.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
 };
 
 export const TableRowElement = (props) => {
-  return <tr>{props.children}</tr>;
+  return <EditorRow>{props.children}</EditorRow>;
 };
 TableRowElement.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
 };
 
 export const TableCellElement = (props) => {
-  return <td>{props.children}</td>;
+  return <EditorCell>{props.children}</EditorCell>;
 };
 TableCellElement.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),

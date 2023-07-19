@@ -10,6 +10,9 @@ import {
   TableElement,
   TableCellElement,
   TableRowElement,
+  TableBodyElement,
+  TableHeadElement,
+  TableHeaderElement,
 } from '../SlateComponents/elementComponents';
 import RulesetEditor from './RulesetEditor';
 
@@ -58,9 +61,15 @@ export const useGenstaff = (
             return <ArticleLink selectArticle={handleArticleSelect} {...props} />;
           case 'table':
             return <TableElement {...props} />;
-          case 'cell':
+          case 'tableHead':
+            return <TableHeadElement {...props} />;
+          case 'tableBody':
+            return <TableBodyElement {...props} />;
+          case 'tableHeader':
+            return <TableHeaderElement {...props} />;
+          case 'tableCell':
             return <TableCellElement {...props} />;
-          case 'row':
+          case 'tableRow':
             return <TableRowElement {...props} />;
           default:
             return <DefaultElement {...props} />;
@@ -131,10 +140,15 @@ export const useGenstaff = (
       event.preventDefault();
       openKeywordRefMenu(event, editor, true);
     }
-    // if (event.key === 'Tab') {
-    //   event.preventDefault();
-    //   editor.insertText('\t');
-    // }
+    if (event.key === 'Enter' && !event.ctrlKey && RulesetEditor.isInTable(editor)) {
+      event.preventDefault();
+      RulesetEditor.addRow(editor);
+    }
+    if (event.key === 'Enter' && event.ctrlKey && RulesetEditor.isInTable(editor)) {
+      event.preventDefault();
+      RulesetEditor.addColumn(editor);
+    }
+
     if (event.key === 's' && event.ctrlKey) {
       event.preventDefault();
       saveArticle();

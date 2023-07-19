@@ -18,6 +18,7 @@ import { useGenstaff } from '../SlateComponents/GenstaffEditor';
 import { debounce } from 'lodash';
 import RulesetEditor from '../SlateComponents/RulesetEditor';
 import useEditorStore from '../../../stores/editorStore';
+import EditorContextMenu from './EditorContextMenu';
 
 const StyledTextField = styled(TextField)({
   '& .MuiInputBase-input': {
@@ -114,9 +115,18 @@ export default function ArticleEditor({
 
   const debouncedTitleChange = debounce(handleTitleChange, 200);
 
+  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ left: 0, top: 0 });
+  const closeContextMenu = () => setContextMenuOpen(false);
   const theme = useTheme();
   return (
     <>
+      <EditorContextMenu
+        open={contextMenuOpen}
+        onClose={closeContextMenu}
+        position={contextMenuPosition}
+        editor={editor}
+      />
       <Paper
         sx={{
           borderRadius: 0,
@@ -183,6 +193,12 @@ export default function ArticleEditor({
                   wordBreak: 'normal',
                   maxWidth: '100%',
                   overflow: 'auto',
+                }}
+                onContextMenu={(event) => {
+                  event.preventDefault();
+                  setContextMenuOpen(true);
+
+                  setContextMenuPosition({ left: event.clientX, top: event.clientY });
                 }}
                 renderLeaf={renderLeaf}
                 renderElement={renderElement}
