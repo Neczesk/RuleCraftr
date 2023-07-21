@@ -2,22 +2,46 @@ import { Typography, Button, Tooltip, styled } from '@mui/material';
 import PropTypes from 'prop-types';
 import useRulesetStore from '../../../stores/rulesetStore';
 import { findArticleInRuleset } from '../../../data/rulesets';
+import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
+import { useCallback, useEffect, useState } from 'react';
+import { ReactEditor, useSlate } from 'slate-react';
+import { Transforms } from 'slate';
 
-const EditorTable = styled('table')({
-  border: `solid 1px #000000`,
+const ResizeHandleIcon = styled(SyncAltOutlinedIcon)({
+  position: 'absolute',
+  right: 0,
+  top: '50%',
+  transform: 'translateY(-50%) scale(0.5,0.5)',
+  cursor: 'col-resize',
+});
+
+const EditorTable = styled('table')(({ theme }) => ({
+  border: `solid 1px ${theme.palette.divider}`,
   borderCollapse: 'collapse',
-  width: '100%',
-});
+  maxWidth: '100%',
+  overflowX: 'auto',
+  backgroundColor: theme.palette.primaryContainer.main, // use color from theme
+}));
 
-const EditorRow = styled('tr')({});
+const EditorRow = styled('tr')(({ theme }) => ({
+  backgroundColor: theme.palette.primary.light,
+  '&:nth-of-type(even)': {
+    backgroundColor: theme.palette.primaryContainer.main,
+  },
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.primaryContainer.dark,
+  },
+}));
 
-const EditorCell = styled('td')({
-  border: 'solid 1px #000000',
-});
+const EditorCell = styled('td')(({ theme }) => ({
+  border: `solid 1px ${theme.palette.divider}`,
+}));
 
-const EditorTableHead = styled('th')({
-  border: 'solid 1px #000000',
-});
+const EditorTableHead = styled('th')(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark,
+  color: theme.palette.getContrastText(theme.palette.primary.dark),
+  border: `solid 1px ${theme.palette.divider}`,
+}));
 
 export const CodeElement = (props) => {
   return (
@@ -29,6 +53,49 @@ export const CodeElement = (props) => {
 CodeElement.propTypes = {
   attributes: PropTypes.object,
   children: PropTypes.array,
+};
+
+const ResizeHandle = (props) => {
+  const editor = useSlate();
+  const { width, setWidth, path } = props;
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleMouseDown = () => {
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = useCallback(
+    (event) => {
+      if (!isDragging) return;
+      setWidth((prevWidth) => prevWidth + event.movementX);
+    },
+    [isDragging, setWidth]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    Transforms.setNodes(editor, { width: width }, { at: path });
+  }, [editor, path, width]);
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    } else {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+  return <ResizeHandleIcon onMouseDown={handleMouseDown} />;
+};
+ResizeHandle.propTypes = {
+  width: PropTypes.number,
+  setWidth: PropTypes.func,
+  path: PropTypes.arrayOf(PropTypes.number),
 };
 
 export const KeywordLink = (props) => {
@@ -64,6 +131,30 @@ KeywordLink.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   element: PropTypes.object,
   selectKeyword: PropTypes.func,
+};
+
+export const ListElement = (props) => {
+  const { element, children } = props;
+  switch (element.subtype) {
+    case 'ordered':
+      return <ol>{children}</ol>;
+    case 'unordered':
+      return <ul>{children}</ul>;
+    default:
+      return <ul>{children}</ul>;
+  }
+};
+ListElement.propTypes = {
+  element: PropTypes.object,
+  children: PropTypes.arrayOf(PropTypes.node),
+};
+
+export const ListItemElement = (props) => {
+  const { children } = props;
+  return <li>{children}</li>;
+};
+ListItemElement.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.node),
 };
 
 export const ArticleLink = (props) => {
@@ -109,10 +200,20 @@ TableHeadElement.propTypes = {
 };
 
 export const TableHeaderElement = (props) => {
-  return <EditorTableHead>{props.children}</EditorTableHead>;
+  const editor = useSlate();
+  const [width, setWidth] = useState(props.element.width);
+  return (
+    <EditorTableHead
+      sx={{ minWidth: width.toString() + 'px', maxWidth: width.toString() + 'px', position: 'relative' }}
+    >
+      {props.children}
+      <ResizeHandle width={width} setWidth={setWidth} path={ReactEditor.findPath(editor, props.element)} />
+    </EditorTableHead>
+  );
 };
 TableHeaderElement.propTypes = {
   children: PropTypes.arrayOf(PropTypes.node),
+  element: PropTypes.object,
 };
 
 export const TableBodyElement = (props) => {
@@ -138,7 +239,7 @@ TableCellElement.propTypes = {
 
 export const DefaultElement = (props) => {
   return (
-    <Typography variant="body1" sx={{ textIndent: '2em' }} {...props.attributes}>
+    <Typography variant="body1" {...props.attributes}>
       {props.children}
     </Typography>
   );
@@ -146,6 +247,15 @@ export const DefaultElement = (props) => {
 DefaultElement.propTypes = {
   attributes: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+const StyledTabSpan = styled('span')(() => ({
+  padding: '1em',
+  userSelect: 'none',
+}));
+
+export const TabElement = (props) => {
+  return <StyledTabSpan contentEditable={false} {...props} />;
 };
 
 export const HeaderElement = (props) => {

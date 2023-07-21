@@ -36,7 +36,17 @@ function EditorContextMenu(props) {
         onClose={() => setTableColumnMenuOpen(!tableColumnMenuOpen)}
       >
         <MenuList>
-          <MenuItem onClick={() => RulesetEditor.addColumn(editor)}>Add Column</MenuItem>
+          <MenuItem
+            onClick={() => {
+              RulesetEditor.addColumn(editor, 'start');
+              onClose();
+            }}
+          >
+            Add Column at Beginning
+          </MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addColumn(editor, 'end')}>Add Column at End</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addColumn(editor, 'before')}>Add Column to Left</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addColumn(editor, 'after')}>Add Column to Right</MenuItem>
           <MenuItem onClick={() => RulesetEditor.removeColumn(editor)}>Delete Column</MenuItem>
         </MenuList>
       </Menu>
@@ -47,8 +57,11 @@ function EditorContextMenu(props) {
         onClose={() => setTableRowMenuOpen(false)}
       >
         <MenuList dense>
-          <MenuItem onClick={() => RulesetEditor.addRow(editor)}>Add Row</MenuItem>
-          <MenuItem onClick={() => RulesetEditor.removeRow(editor)}>Delete Row</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addRow(editor, 'start')}>Insert Row at Top</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addRow(editor, 'end')}>Insert Row at Bottom</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addRow(editor, 'before')}>Insert Row Before Current</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.addRow(editor, 'after')}>Insert Row After Current</MenuItem>
+          <MenuItem onClick={() => RulesetEditor.removeRow(editor)}>Delete Current Row</MenuItem>
         </MenuList>
       </Menu>
       <Menu

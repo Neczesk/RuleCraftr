@@ -4,6 +4,7 @@ import { unstable_useBlocker as useBlocker, useParams } from 'react-router';
 
 import { createEditor, Transforms } from 'slate';
 import { withReact, ReactEditor } from 'slate-react';
+import { withHistory } from 'slate-history';
 import { GenstaffEditor } from './SlateComponents/GenstaffEditor';
 import RulesetEditor from './SlateComponents/RulesetEditor';
 
@@ -80,7 +81,7 @@ function EditorPage() {
   useEffect(() => {
     setSaved(synced);
   }, [synced]);
-  const [editor] = useState(() => withReact(GenstaffEditor(createEditor())));
+  const [editor] = useState(() => withReact(GenstaffEditor(withHistory(createEditor()))));
 
   useEffect(() => {
     const handleUnload = (e) => {

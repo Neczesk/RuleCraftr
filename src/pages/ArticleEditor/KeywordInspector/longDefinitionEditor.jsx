@@ -2,6 +2,8 @@ import { useState, useMemo, useEffect, useCallback, useContext } from 'react';
 import { Box, IconButton, Paper, Typography, useTheme } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import { Editable, Slate, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
+import { isKeyHotkey } from 'is-hotkey';
 import { createEditor, Editor } from 'slate';
 import { GenstaffEditor, useGenstaff } from '../SlateComponents/GenstaffEditor';
 import { ReactEditor } from 'slate-react';
@@ -26,7 +28,7 @@ function LongDefinitionEditor(props) {
     setCurrentSelection,
     ...others
   } = props;
-  const [editor] = useState(() => withReact(GenstaffEditor(createEditor())));
+  const [editor] = useState(() => withReact(GenstaffEditor(withHistory(createEditor()))));
   const [focused, setFocused] = useState(false);
   const initialValue = useMemo(
     () => [
@@ -65,6 +67,14 @@ function LongDefinitionEditor(props) {
     if (event.key === 's' && event.ctrlKey) {
       event.preventDefault();
       saveArticle();
+    }
+    if (isKeyHotkey('mod+z', event)) {
+      event.preventDefault();
+      editor.undo();
+    }
+    if (isKeyHotkey('mod+y', event)) {
+      event.preventDefault();
+      editor.undo();
     }
   };
   useEffect(() => {

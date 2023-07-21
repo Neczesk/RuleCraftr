@@ -53,13 +53,17 @@ export default function ArticleEditor({
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setSingleArticle = useRulesetStore((state) => state.setSingleArticle);
   const [editorFocused, setEditorFocused] = useState(false);
+  const [enterPressed, setEnterPressed] = useState(false);
+
   const { renderElement, renderLeaf, onKeyDown } = useGenstaff(
     editor,
     selectArticle,
     inspectKeyword,
     openArticleRefMenu,
     openKeywordRefMenu,
-    saveArticle
+    saveArticle,
+    enterPressed,
+    setEnterPressed
   );
   const { setBoldActive, setUnderlineActive, setItalicsActive, setCurrentStyle } = useEditorStore();
 
