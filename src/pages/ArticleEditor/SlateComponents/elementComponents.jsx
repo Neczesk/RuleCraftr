@@ -251,7 +251,7 @@ TableCellElement.propTypes = {
 
 export const DefaultElement = (props) => {
   return (
-    <Typography variant="body1" {...props.attributes}>
+    <Typography sx={{ paddingY: 1 }} variant="body1" {...props.attributes}>
       {props.children}
     </Typography>
   );
