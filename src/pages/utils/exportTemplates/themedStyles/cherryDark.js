@@ -11,6 +11,18 @@ const cherryDark = `
     a.keyword-link {
       color: #D1AB88;
     }
+    
+    table {
+      background-color: #1f1819;
+    }
+  
+    tbody tr:nth-of-type(even) {
+      background-color: #36282a;
+    }
+  
+    tbody tr:nth-of-type(odd) {
+      background-color: #2b1217;
+    }
   }
   @media print {
     a.article-link {

@@ -17,7 +17,6 @@ import {
   Grid,
   ToggleButtonGroup,
   ToggleButton,
-  ButtonGroup,
   IconButton,
   Tooltip,
   styled,
@@ -28,7 +27,7 @@ import { PropTypes } from 'prop-types';
 import { ReactEditor } from 'slate-react';
 import RulesetEditor from '../SlateComponents/RulesetEditor';
 import useRulesetStore from '../../../stores/rulesetStore';
-import { forwardRef, useContext, useState } from 'react';
+import { forwardRef, useContext } from 'react';
 import { ColorModeContext } from '../../App';
 import SplitButton from '../../utils/SplitButton';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -66,8 +65,6 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
     borderRadius: 0,
     color: `${theme.palette.text.primary}`,
   });
-
-  const [showRefTooltip, setShowRefTooltip] = useState(false);
 
   return (
     <Box ref={ref} sx={{ backgroundColor: 'white', zIndex: 99, mb: 0 }}>
@@ -136,59 +133,56 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
                 </ToggleButtonGroup>
               </Grid>
               <Grid item xs={3}>
-                <Tooltip
-                  open={showRefTooltip}
-                  disableHoverListener
-                  onMouseEnter={() => setShowRefTooltip(true)}
-                  onMouseLeave={() => setShowRefTooltip(false)}
-                  title="Insert Article Reference (Ctrl + L) or Keyword Reference (Ctrl + K) or Table (Ctrl + T)"
-                >
-                  <ButtonGroup sx={{ border: `1px solid ${theme.palette.divider}` }}>
-                    <IconButtonInGroup
-                      onMouseDown={(event) => {
-                        setShowRefTooltip(false);
-                        props.openArticleRefMenu(event, editor);
-                      }}
-                    >
-                      <ArticleOutlinedIcon fontSize="small" />
-                    </IconButtonInGroup>
-
-                    <IconButtonInGroup
-                      onMouseDown={(event) => {
-                        setShowRefTooltip(false);
-                        props.openKeywordRefMenu(event, editor);
-                      }}
-                    >
-                      <KeyOutlinedIcon fontSize="small" />
-                    </IconButtonInGroup>
-                    <IconButtonInGroup
-                      onMouseDown={() => {
-                        RulesetEditor.insertTable(editor);
-                      }}
-                    >
-                      <WindowOutlinedIcon fontSize="small" />
-                    </IconButtonInGroup>
-                    <IconButtonInGroup
-                      onMouseDown={() => {
-                        RulesetEditor.insertList(editor, 'unordered');
-                      }}
-                    >
-                      <FormatListBulletedOutlinedIcon fontSize="small" />
-                    </IconButtonInGroup>
-                    <IconButtonInGroup
-                      onMouseDown={() => {
-                        RulesetEditor.insertList(editor, 'ordered');
-                      }}
-                    >
-                      <FormatListNumberedOutlinedIcon fontSize="small" />
-                    </IconButtonInGroup>
-                  </ButtonGroup>
+                <Tooltip arrow title="Insert Article Reference (Ctrl+L)">
+                  <IconButtonInGroup
+                    onMouseDown={(event) => {
+                      props.openArticleRefMenu(event, editor);
+                    }}
+                  >
+                    <ArticleOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                </Tooltip>
+                <Tooltip arrow title="Insert Keyword Reference (Ctrl+K)">
+                  <IconButtonInGroup
+                    onMouseDown={(event) => {
+                      props.openKeywordRefMenu(event, editor);
+                    }}
+                  >
+                    <KeyOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                </Tooltip>
+                <Tooltip arrow title="Insert Table">
+                  <IconButtonInGroup
+                    onMouseDown={() => {
+                      RulesetEditor.insertTable(editor);
+                    }}
+                  >
+                    <WindowOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                </Tooltip>
+                <Tooltip arrow title="Insert Unordered List (Ctrl+Shift+7)">
+                  <IconButtonInGroup
+                    onMouseDown={() => {
+                      RulesetEditor.insertList(editor, 'unordered');
+                    }}
+                  >
+                    <FormatListBulletedOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
+                </Tooltip>
+                <Tooltip arrow title="Insert Ordered List (Ctrl+Shift+8)">
+                  <IconButtonInGroup
+                    onMouseDown={() => {
+                      RulesetEditor.insertList(editor, 'ordered');
+                    }}
+                  >
+                    <FormatListNumberedOutlinedIcon fontSize="small" />
+                  </IconButtonInGroup>
                 </Tooltip>
               </Grid>
               <Grid item xs={3}>
                 <StyleSelectAutocomplete
                   size="small"
-                  possibleStyles={['code', 'paragraph', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']}
+                  possibleStyles={['code', 'paragraph', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'list']}
                   currentStyle={currentStyle}
                   onChange={props.handleStyleChange}
                 />

@@ -75,6 +75,10 @@ function handlebarHelpers(helperName, otherArticles, keywords) {
         output = `<a class="keyword-link" href="#${id}">${refKeyword ? refKeyword.keyword : 'Keyword Missing'}</a>`;
         break;
       }
+      case 'tab': {
+        output = `<span style="padding-left: 1em; padding-right: 1em;"/>`;
+        break;
+      }
       default:
         break;
     }

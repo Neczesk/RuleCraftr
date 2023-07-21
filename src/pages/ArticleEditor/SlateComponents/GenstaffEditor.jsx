@@ -198,7 +198,7 @@ export const useGenstaff = (
       event.preventDefault();
       RulesetEditor.changeStyle(editor, 'paragraph');
     }
-    if (event.key === 'u' && event.ctrlKey) {
+    if (event.code === 'keyU' && event.ctrlKey && !event.shiftKey) {
       event.preventDefault();
       RulesetEditor.toggleUnderlineMark(editor);
     }
@@ -304,6 +304,14 @@ export const useGenstaff = (
           // Add your custom deletion logic here
         }
       }
+    }
+    if (isKeyHotkey('mod+shift+&', event)) {
+      event.preventDefault();
+      RulesetEditor.insertList(editor, 'unordered');
+    }
+    if (isKeyHotkey('mod+shift+*', event)) {
+      event.preventDefault();
+      RulesetEditor.insertList(editor, 'ordered');
     }
 
     if (isKeyHotkey('mod+z', event)) {

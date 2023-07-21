@@ -24,6 +24,22 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { editRulesetTags } from './tags';
 dayjs.extend(utc);
+import paragraphPartial from '../pages/utils/exportTemplates/topLevelBlocks/p';
+import h6Partial from '../pages/utils/exportTemplates/topLevelBlocks/h6';
+import h5Partial from '../pages/utils/exportTemplates/topLevelBlocks/h5';
+import h4Partial from '../pages/utils/exportTemplates/topLevelBlocks/h4';
+import h3Partial from '../pages/utils/exportTemplates/topLevelBlocks/h3';
+import h2Partial from '../pages/utils/exportTemplates/topLevelBlocks/h2';
+import h1Partial from '../pages/utils/exportTemplates/topLevelBlocks/h1';
+import table from '../pages/utils/exportTemplates/topLevelBlocks/table';
+import thead from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/thead';
+import tbody from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/tbody';
+import trow from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/trow';
+import td from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/td';
+import theadrow from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/theadrow';
+import theader from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/theader';
+import list from '../pages/utils/exportTemplates/topLevelBlocks/list';
+import li from '../pages/utils/exportTemplates/topLevelBlocks/listPartials/li';
 
 export async function createRuleset(newRulesetData) {
   return await insertRuleset(newRulesetData);
@@ -242,7 +258,8 @@ export async function updateRulesetMetadata(rulesetData) {
   const datawithdate = await Promise.all(
     rulesetData.map(async (ruleset) => {
       const { tags, ...rest } = ruleset;
-      await editRulesetTags(ruleset.id, tags);
+      console.log(tags);
+      if (tags?.length) await editRulesetTags(ruleset.id, tags);
       return { ...rest, last_modified: dayjs.utc().format() };
     })
   );
@@ -258,8 +275,28 @@ export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
   Handlebars.registerPartial('block-content', blockContentTemplate);
   Handlebars.registerPartial('toc-entry', tocEntry);
   Handlebars.registerPartial('keyword-content', keywordContentTemplate);
+  Handlebars.registerPartial('paragraph', paragraphPartial);
+  Handlebars.registerPartial('h6', h6Partial);
+  Handlebars.registerPartial('h5', h5Partial);
+  Handlebars.registerPartial('h4', h4Partial);
+  Handlebars.registerPartial('h3', h3Partial);
+  Handlebars.registerPartial('h2', h2Partial);
+  Handlebars.registerPartial('h1', h1Partial);
+  Handlebars.registerPartial('table', table);
+  Handlebars.registerPartial('thead', thead);
+  Handlebars.registerPartial('tbody', tbody);
+  Handlebars.registerPartial('trow', trow);
+  Handlebars.registerPartial('td', td);
+  Handlebars.registerPartial('theadrow', theadrow);
+  Handlebars.registerPartial('theader', theader);
+  Handlebars.registerPartial('list', list);
+  Handlebars.registerPartial('li', li);
+
   Handlebars.registerHelper('is-not-space', (text) => {
     if (text != ' ') return true;
+  });
+  Handlebars.registerHelper('eq', function (arg1, arg2) {
+    return arg1 === arg2;
   });
   Handlebars.registerHelper('closing-block-tag', handlebarHelpers('closing-block-tag', otherArticles, keywords));
   Handlebars.registerHelper('block-tag', handlebarHelpers('block-tag', otherArticles, keywords));

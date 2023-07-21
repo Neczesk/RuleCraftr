@@ -5,6 +5,18 @@
     max-width: 960px;
   }
 
+  table {
+    background-color: #1f1819;
+  }
+
+  tr &:nth-of-type(even) {
+    background-color: #36282a;
+  }
+
+  tr &:nth-of-type(odd) {
+    background-color: #2b1217;
+  }
+
   h4.table-of-contents-entry > a {
     color: inherit;
   }

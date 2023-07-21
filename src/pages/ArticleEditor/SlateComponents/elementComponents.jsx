@@ -18,15 +18,13 @@ const ResizeHandleIcon = styled(SyncAltOutlinedIcon)({
 const EditorTable = styled('table')(({ theme }) => ({
   border: `solid 1px ${theme.palette.divider}`,
   borderCollapse: 'collapse',
-  maxWidth: '100%',
   overflowX: 'auto',
   backgroundColor: theme.palette.primaryContainer.main, // use color from theme
 }));
 
 const EditorRow = styled('tr')(({ theme }) => ({
-  backgroundColor: theme.palette.primary.light,
   '&:nth-of-type(even)': {
-    backgroundColor: theme.palette.primaryContainer.main,
+    backgroundColor: theme.palette.primaryContainer.light,
   },
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.primaryContainer.dark,
@@ -35,11 +33,15 @@ const EditorRow = styled('tr')(({ theme }) => ({
 
 const EditorCell = styled('td')(({ theme }) => ({
   border: `solid 1px ${theme.palette.divider}`,
+  paddingLeft: '4px',
+  paddingTop: '2px',
+  paddingBottom: '2px',
+  paddingRight: '4px',
 }));
 
 const EditorTableHead = styled('th')(({ theme }) => ({
-  backgroundColor: theme.palette.primary.dark,
-  color: theme.palette.getContrastText(theme.palette.primary.dark),
+  backgroundColor: theme.palette.primaryContainer.main,
+  color: theme.palette.getContrastText(theme.palette.primaryContainer.main),
   border: `solid 1px ${theme.palette.divider}`,
 }));
 
@@ -107,12 +109,14 @@ export const KeywordLink = (props) => {
   return (
     <Tooltip arrow title={keyword ? keyword.shortDefinition : 'KEYWORD MISSING'}>
       <Button
+        disableRipple
         color="secondary"
         style={{ display: 'inline-block' }}
         variant="text"
         onClick={handleClick}
         sx={{
           padding: 0,
+          minWidth: 0,
           fontFamily: 'cutive',
           textTransform: 'none',
           textDecoration: 'underline',
@@ -165,12 +169,20 @@ export const ArticleLink = (props) => {
   };
   return (
     <Button
+      disableRipple
       color="primary"
       style={{ display: 'inline-block' }}
       variant="text"
       onClick={handleClick}
       {...props.attributes}
-      sx={{ padding: 0, fontFamily: 'cutive', textTransform: 'none', textDecoration: 'underline', fontSize: '1rem' }}
+      sx={{
+        minWidth: 0,
+        padding: 0,
+        fontFamily: 'cutive',
+        textTransform: 'none',
+        textDecoration: 'underline',
+        fontSize: '1rem',
+      }}
     >
       {props.children}
       {article ? article.title : 'Article Missing'}

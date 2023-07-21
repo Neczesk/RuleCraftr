@@ -130,6 +130,8 @@ export default function ArticleEditor({
         onClose={closeContextMenu}
         position={contextMenuPosition}
         editor={editor}
+        openArticleRefMenu={openArticleRefMenu}
+        openKeywordRefMenu={openKeywordRefMenu}
       />
       <Paper
         sx={{

@@ -13,28 +13,16 @@ function RoadMap() {
         <Card>
           <CardHeader title={currentVersion} />
           <CardContent>
-            This is the first public release of RuleCrafter. These are the currently known issues:
+            This is the second public release of RuleCrafter. These are the currently known issues:
             <ul>
               <li>The editor is not mobile friendly. Unfortunately that will not become a priority for some time.</li>
+              <li>Copying and pasting formatted text does not work as intended.</li>
+              <li>In particular this means copying and pasting tables and lists</li>
             </ul>
-            There are certainly other bugs and issues that I do not know about, so if you find one please join us on
-            Discord and let me know about them!
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader title="Alpha 2: Editor Update 1" />
-          <CardContent>
-            The first alpha update will be adding several missing features to the article editor itself. Currently, the
-            plan is to add:
-            <ul>
-              <li>Creating tables</li>
-              <li>Ordered and unorderded lists</li>
-              <li>And of course allowing these to be exported to html as well.</li>
-              <li>Editor and export font choices</li>
-              <li>General aesthetic improvements to the editor</li>
-            </ul>
-            If you have further suggestions as to what the editor needs to be useful for your project, please join us on
-            Discord!
+            The most recent update added several badly needed features to the article content editor, including adding
+            support for tables, ordered and unordered lists, and undo and redo support. There may still be bugs in these
+            features so if you find one let me know! There are certainly other bugs and issues that I do not know about,
+            so if you find one please join us on Discord and let me know about them!
           </CardContent>
         </Card>
         <Card>
@@ -65,6 +53,16 @@ function RoadMap() {
             so that deleted keywords, articles, and rulesets would be available for a limited period of time for
             restoration. In addition, I will be exploring autosave and versioning of the ruleset, so that users can
             revert to previous versions and know that their changes will never be discarded.
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader title="Alpha 5: Copy Paste" />
+          <CardContent>
+            While copy and paste doesn&apos;t seem like it should be a big deal, unfortunately it is a difficult feature
+            to implement. I will be taking this opportunity to spend the time needed to make it work. Note, this is only
+            to get fully formatted copy and paste to work. Simple text copying and pasting already works fine. If you
+            have further suggestions as to what the editor needs to be useful for your project, please join us on
+            Discord!
           </CardContent>
         </Card>
       </Stack>

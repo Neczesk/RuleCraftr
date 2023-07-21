@@ -48,11 +48,10 @@ function NewVersionDialog(props) {
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6" fontWeight="bold">
-          Alpha 1
+          Alpha 2
         </Typography>
         <Typography variant="body1">
-          The first public release of the app! There are still going to be bugs and problems of course, but I hope
-          people can start using it. I can&apos;t wait to see what people create!
+          The first major update of the public release. This update focused on adding new features to the editor.
         </Typography>
         <Divider sx={{ my: 2 }}></Divider>
         <Typography variant="h6" fontWeight="bold">
@@ -65,63 +64,39 @@ function NewVersionDialog(props) {
             enough I believe it will work ok. The rest of the site is working on mobile devices though, so feel free to
             browse the public rulesets and view their exported versions!
           </li>
+          <li>Copying and pasting tables and lists does not work.</li>
         </ul>
 
         <Typography variant="h6" fontWeight="bold">
           New Features:
         </Typography>
         <ul>
-          <li>(Public Release)Removed the invite code requirements</li>
           <li>
-            (Public Release)The home page now links to a demo version of the editor that can be used without creating an
-            account
+            Added support for tables to the editor. This includes any number of columns and rows, and resizing the
+            column widths. The tables are not responsive to screen width so be cautious if making the table fill the
+            page.
           </li>
+          <li>Added support for ordered and unordered lists. They are not customizable at the moment however.</li>
+          <li>Added a custom context menu for the editor.</li>
           <li>
-            (RC 3)Changed the editor font to be a serif font instead of a sans-serif font. In the future this will be
-            user choosable, but for now serif fonts are recommended for long text on the web.
+            Removed the automatic indenting of paragraphs and instead introduced tab spacing like other text editors.
           </li>
-          <li>
-            (RC 2)Changed the toolbar slightly to add tooltips and better format them similarly to other text editors.
-          </li>
-          <li>(RC 2)Changed the article reference shortcut to Ctrl L instead of Ctrl A</li>
-          <li>
-            The ruleset manager has been replaced by a new grid based manager that separates rulesets into your own
-            rulesets and public rulesets while still providing the functionality to create a new ruleset.
-          </li>
-          <li>
-            On your own rulesets you can now add and edit tags associated with the ruleset. If the ruleset is public,
-            these tags can be used to find the ruleset.
-          </li>
-          <li>
-            In the public ruleset viewer, you can click on a tag to filter by tag, click on a user to filter by that
-            ruleset, and type in the search box to filter by the name of the ruleset.
-          </li>
-          <li>A discord link has been added to the navigation drawer for users to find where to contact me.</li>
-          <li>The home page has been completely revamped to help introduce new users to the app and its features.</li>
         </ul>
         <Typography variant="h6" fontWeight="bold">
           Bug Fixes:
         </Typography>
         <ul>
-          <li>(Public Release)Creating a keyword in the reference insertion menu works as expected</li>
-          <li>(Public Release)Articles with an empty title now display in the tree as Untitled Article</li>
-          <li>(Public Release)Dummy keywords no longer show up in the reference menus</li>
-          <li>(RC 2)The logo at the top now functions correctly as a home page link</li>
           <li>
-            (RC 2)The redirect has been fixed to no longer trap the user from going back to the site they were using
-            before RuleCrafter
+            Minimum size of references has been reduced, avoiding the extranous spacing. The references may not be quite
+            as clearly interactive so this may get revisited.
           </li>
-          <li>(RC 2)The keyword export has been fixed</li>
-          <li>(RC 2)Deleting the last keyword has been fixed</li>
+          <li>Error when saving a ruleset with no tags has been prevented</li>
         </ul>
 
         <Typography variant="h6" fontWeight="bold">
           What&apos;s Next:
         </Typography>
         <ul>
-          <li>
-            Alpha 2: Editor overhaul, including tables and lists and possibly images to be added to the article editor
-          </li>
           <li>
             Alpha 3: Article Tree overhaul, including article moving, typing of articles, adding folders and categories
             as well as marking if an article should be exported or not.
@@ -130,6 +105,7 @@ function NewVersionDialog(props) {
             Alpha 4: Database overhaul, hopefully allowing for recovery of deleted rulesets, articles, and keywords as
             well as autosave and versioning.
           </li>
+          <li>Alpha 5: Copy and paste support for formatted elements in the editor</li>
         </ul>
       </DialogContent>
     </Dialog>

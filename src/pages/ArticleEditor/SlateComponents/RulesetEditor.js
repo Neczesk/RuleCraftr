@@ -153,7 +153,7 @@ const RulesetEditor = {
     const [grandParentList, grandParentListPath] = grandParentMatch;
 
     // The new path for the list item is in the grandparent list, directly after its parent list
-    const newListItemPath = [...grandParentListPath, grandParentList.children.indexOf(parentList) + 1];
+    const newListItemPath = [...grandParentListPath, grandParentList.children.indexOf(parentList)];
 
     // Move the list item to its new path
     Transforms.moveNodes(editor, { at: listItemPath, to: newListItemPath });

@@ -85,22 +85,31 @@ function Home() {
                 </TimelineSeparator>
                 <TimelineContent>First public release</TimelineContent>
               </TimelineItem>
+
               <TimelineItem>
                 <TimelineOppositeContent>Alpha 2</TimelineOppositeContent>
-
                 <TimelineSeparator>
-                  <TimelineDot />
+                  <TimelineDot color="success" />
                   <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>First rich text editing overhaul</TimelineContent>
               </TimelineItem>
+
               <TimelineItem>
                 <TimelineOppositeContent>Alpha 3</TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>First article navigation overhaul</TimelineContent>
+              </TimelineItem>
 
+              <TimelineItem>
+                <TimelineOppositeContent>Alpha 4</TimelineOppositeContent>
                 <TimelineSeparator>
                   <TimelineDot />
                 </TimelineSeparator>
-                <TimelineContent>First article navigation overhaul</TimelineContent>
+                <TimelineContent>First data storage overhaul</TimelineContent>
               </TimelineItem>
             </Timeline>
             The app is far from complete yet, but the feedback from alpha testers is invaluable to developing it

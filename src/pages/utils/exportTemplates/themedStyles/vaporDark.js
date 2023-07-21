@@ -12,6 +12,18 @@ const vaporLight = `
     a.keyword-link {
       color: #DB0037;
     }
+
+    table {
+      background-color: #00141F;
+    }
+  
+    tbody tr:nth-of-type(even) {
+      background-color: #2B1217;
+    }
+  
+    tbody tr:nth-of-type(odd) {
+      background-color: #002336;
+    }
   
   }
   @media print {
