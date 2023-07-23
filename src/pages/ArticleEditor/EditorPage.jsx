@@ -299,7 +299,7 @@ function EditorPage() {
                 }}
                 onArticleSelect={selectArticle}
                 elevation={0}
-                selectedNode={currentArticle ? [currentArticle.toString()] : [null]}
+                selectedNode={currentArticle ? [currentArticle] : [null]}
               />
             </Grid>
 

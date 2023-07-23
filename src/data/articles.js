@@ -23,8 +23,10 @@ import theadrow from '../pages/utils/exportTemplates/topLevelBlocks/tablePartial
 import theader from '../pages/utils/exportTemplates/topLevelBlocks/tablePartials/theader';
 import list from '../pages/utils/exportTemplates/topLevelBlocks/list';
 import li from '../pages/utils/exportTemplates/topLevelBlocks/listPartials/li';
+import _ from 'lodash';
 
 export function buildArticleTree(articles) {
+  articles = _.cloneDeep(articles); // Create a deep copy of articles
   const lookup = {};
   const roots = [];
 
@@ -42,6 +44,33 @@ export function buildArticleTree(articles) {
     }
   }
   return roots;
+}
+
+export function changeSort(articleArray, movingId, direction) {
+  normalizeArticleSort(articleArray);
+  const movingIndex = articleArray.findIndex((child) => child.id === movingId);
+  if (direction === 'up') {
+    if (movingIndex === 0) return;
+    let temp = articleArray[movingIndex].sort;
+    articleArray[movingIndex].sort = articleArray[movingIndex - 1].sort;
+    articleArray[movingIndex - 1].sort = temp;
+    articleArray[movingIndex].synched;
+  } else if (direction === 'down') {
+    if (movingIndex === articleArray.length - 1) return;
+    let temp = articleArray[movingIndex].sort;
+    articleArray[movingIndex].sort = articleArray[movingIndex + 1].sort;
+    articleArray[movingIndex + 1].sort = temp;
+  }
+  articleArray.sort((a, b) => a.sort - b.sort);
+  return articleArray;
+}
+
+export function normalizeArticleSort(articleArray) {
+  const articles = articleArray.sort((a, b) => a.sort - b.sort);
+  for (let i in articles) {
+    articles[i].sort = i;
+  }
+  return articles;
 }
 
 export async function getAllUsers() {
@@ -88,6 +117,10 @@ const emptyArticle = {
   parent: null,
   childrenArticles: [],
   id: null,
+  article_description: null,
+  is_folder: false,
+  no_export: false,
+  icon_name: null,
   synched: false,
   posted: false,
   sorted: 9999,
@@ -178,7 +211,7 @@ export async function serializeArticle(article, ruleset, showDark = false, theme
 
 export function sortArticles(articles, parentId = null) {
   // filter children for specific parent
-  const children = articles.filter((article) => article.parent === parentId);
+  const children = articles.filter((article) => article.parent === parentId && !article.no_export);
 
   // sort children
   children.sort((a, b) => a.sort - b.sort);
@@ -196,11 +229,17 @@ export function sortArticles(articles, parentId = null) {
 }
 
 export function updateArticle(oldArticle, updateData) {
-  const newArticle = Object.assign({}, oldArticle);
+  const newArticle = _.cloneDeep(oldArticle);
   if (updateData) {
     newArticle.content = updateData.content ? updateData.content : newArticle.content;
-    newArticle.title = updateData.title ? updateData.title : newArticle.title;
+    newArticle.title = updateData.title !== undefined ? updateData.title : newArticle.title;
     newArticle.synched = false;
+    newArticle.article_description =
+      updateData.article_description !== undefined ? updateData.article_description : newArticle.article_description;
+    newArticle.is_folder = updateData.is_folder !== undefined ? updateData.is_folder : newArticle.is_folder;
+    newArticle.no_export = updateData.no_export !== undefined ? updateData.no_export : newArticle.no_export;
+    newArticle.icon_name = updateData.icon_name !== undefined ? updateData.icon_name : newArticle.icon_name;
+    newArticle.parent = updateData.parent !== undefined ? updateData.parent : newArticle.parent;
   }
   return newArticle;
 }

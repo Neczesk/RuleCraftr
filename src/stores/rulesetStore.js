@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { bulkUpdateKeywords, updateKeyword } from '../data/keywords';
-import { updateArticle as replaceArticle } from '../data/articles';
+import { buildArticleTree, updateArticle as replaceArticle, treeToArray } from '../data/articles';
 
 const emptyRuleset = {
   rn_name: null,
@@ -62,12 +62,30 @@ const useRulesetStore = create((set) => ({
         });
       }
 
+      const newArticles = updateArticle(state.ruleset.articles).flatMap((article) => treeToArray(article));
+      const newTree = buildArticleTree(newArticles);
+
       return {
         ...state,
         synced: false,
         ruleset: {
           ...state.ruleset,
-          articles: updateArticle(state.ruleset.articles),
+          articles: newTree,
+        },
+      };
+    }),
+  addArticle: (newArticle) =>
+    set((state) => {
+      const newArticles = state.ruleset.articles.flatMap((article) => treeToArray(article));
+      newArticles.push(newArticle);
+      const newTree = buildArticleTree(newArticles);
+
+      return {
+        ...state,
+        synced: false,
+        ruleset: {
+          ...state.ruleset,
+          articles: newTree,
         },
       };
     }),

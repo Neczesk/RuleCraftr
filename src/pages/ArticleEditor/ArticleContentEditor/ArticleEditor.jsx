@@ -8,7 +8,7 @@ import { Slate, Editable } from 'slate-react';
 import { Editor } from 'slate';
 // Custome slate dependencies
 // Material Dependencies
-import { Box, TextField, styled, Paper, useTheme } from '@mui/material';
+import { Box, TextField, styled, Paper, useTheme, alpha } from '@mui/material';
 
 // Local modules
 import useRulesetStore from '../../../stores/rulesetStore';
@@ -52,8 +52,12 @@ export default function ArticleEditor({
 }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setSingleArticle = useRulesetStore((state) => state.setSingleArticle);
-  const [editorFocused, setEditorFocused] = useState(false);
   const [enterPressed, setEnterPressed] = useState(false);
+  const [folder, setFolder] = useState(false);
+  useEffect(() => {
+    const article = findArticleInRuleset(articleId, ruleset.articles);
+    if (article) setFolder(article.is_folder);
+  }, [articleId, ruleset.articles]);
 
   const { renderElement, renderLeaf, onKeyDown } = useGenstaff(
     editor,
@@ -147,7 +151,7 @@ export default function ArticleEditor({
           paddingX: 4,
           maxWidth: '100%',
         }}
-        elevation={elevation + (editorFocused ? 3 : 0)}
+        elevation={elevation}
       >
         <Box flexGrow="1" padding={1} display="flex" flexDirection="column" maxWidth="100%">
           <Box alignContent="center" justifyContent="center" display="flex" sx={{ mt: 1, mb: 1 }}>
@@ -185,12 +189,9 @@ export default function ArticleEditor({
               onChange={debouncedHandleChange}
             >
               <StyledEditable
-                onFocus={() => {
-                  setEditorFocused(true);
-                }}
+                readOnly={folder}
                 onBlur={() => {
                   setCurrentSelection(editor.selection);
-                  setEditorFocused(false);
                 }}
                 style={{
                   height: '100%',
@@ -199,6 +200,7 @@ export default function ArticleEditor({
                   wordBreak: 'normal',
                   maxWidth: '100%',
                   overflow: 'auto',
+                  color: folder ? alpha(theme.palette.grey[500], 0.5) : undefined,
                 }}
                 onContextMenu={(event) => {
                   event.preventDefault();

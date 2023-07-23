@@ -13,7 +13,11 @@ def article_to_dict(a: Articles):
         "content": a.content,
         "parent": a.parent,
         "created_date": a.created_date,
-        "sort": a.sort
+        "sort": a.sort,
+        "article_description": a.article_description,
+        "is_folder": a.is_folder,
+        "no_export": a.no_export,
+        "icon_name": a.icon_name
     }
 
 
@@ -24,7 +28,11 @@ def generate_new_article(articledata: dict):
         ruleset=articledata["ruleset"],
         content=articledata["content"],
         parent=articledata["parent"],
-        sort=articledata["sort"]
+        sort=articledata["sort"],
+        article_description=articledata["article_description"],
+        is_folder=articledata["is_folder"],
+        no_export=articledata["no_export"],
+        icon_name=articledata["icon_name"]
     )
 
 

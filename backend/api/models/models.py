@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKeyConstraint, Integer, JSON, PrimaryKeyConstraint, String, Table, Text, UniqueConstraint, text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKeyConstraint, Index, Integer, JSON, PrimaryKeyConstraint, String, Table, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -16,11 +16,12 @@ class Tags(Base):
     __tablename__ = 'tags'
     __table_args__ = (
         PrimaryKeyConstraint('id', name='tags_pkey'),
-        UniqueConstraint('tag', name='tags_tag_key')
+        UniqueConstraint('tag', name='tags_tag_key'),
+        Index('tags_tag_index', 'tag')
     )
 
     id = Column(UUID, server_default=text('gen_random_uuid()'))
-    tag = Column(String(255), nullable=False)
+    tag = Column(Text, nullable=False)
     is_core = Column(Boolean, nullable=False, server_default=text('false'))
     created_at = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
     updated_at = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
@@ -101,8 +102,12 @@ class Articles(Base):
     sort = Column(Integer, nullable=False, server_default=text('0'))
     created_date = Column(DateTime(True), nullable=False, server_default=text("(now() AT TIME ZONE 'utc'::text)"))
     id = Column(UUID, server_default=text('gen_random_uuid()'))
+    is_folder = Column(Boolean, nullable=False, server_default=text('false'))
+    no_export = Column(Boolean, nullable=False, server_default=text('false'))
     content = Column(JSON)
     parent = Column(UUID)
+    icon_name = Column(Text)
+    article_description = Column(Text)
 
     articles = relationship('Articles', remote_side=[id], back_populates='articles_reverse')
     articles_reverse = relationship('Articles', remote_side=[parent], back_populates='articles')

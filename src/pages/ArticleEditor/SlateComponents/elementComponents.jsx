@@ -1,7 +1,7 @@
 import { Typography, Button, Tooltip, styled } from '@mui/material';
 import PropTypes from 'prop-types';
 import useRulesetStore from '../../../stores/rulesetStore';
-import { findArticleInRuleset } from '../../../data/rulesets';
+import { findArticleInRuleset, getAncestry } from '../../../data/rulesets';
 import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
 import { useCallback, useEffect, useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
@@ -167,26 +167,32 @@ export const ArticleLink = (props) => {
   const handleClick = () => {
     props.selectArticle(props.element.id);
   };
+  const ancestry = !article.article_description ? getAncestry(props.element.id, ruleset.articles) : null;
+  const ancestryString = ancestry?.length
+    ? ancestry.reverse().map((ancestor, index) => ancestor.title + (index < ancestry.length - 1 ? ' > ' : ''))
+    : 'Top Level';
   return (
-    <Button
-      disableRipple
-      color="primary"
-      style={{ display: 'inline-block' }}
-      variant="text"
-      onClick={handleClick}
-      {...props.attributes}
-      sx={{
-        minWidth: 0,
-        padding: 0,
-        fontFamily: 'cutive',
-        textTransform: 'none',
-        textDecoration: 'underline',
-        fontSize: '1rem',
-      }}
-    >
-      {props.children}
-      {article ? article.title : 'Article Missing'}
-    </Button>
+    <Tooltip title={article.article_description ? article.article_description : ancestryString}>
+      <Button
+        disableRipple
+        color="primary"
+        style={{ display: 'inline-block' }}
+        variant="text"
+        onClick={handleClick}
+        {...props.attributes}
+        sx={{
+          minWidth: 0,
+          padding: 0,
+          fontFamily: 'cutive',
+          textTransform: 'none',
+          textDecoration: 'underline',
+          fontSize: '1rem',
+        }}
+      >
+        {props.children}
+        {article ? article.title : 'Article Missing'}
+      </Button>
+    </Tooltip>
   );
 };
 ArticleLink.propTypes = {

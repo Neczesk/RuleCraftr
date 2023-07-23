@@ -89,7 +89,7 @@ const EditorToolbar = forwardRef(function EditorToolBarRoot(props, ref) {
               <Grid item xs={1}>
                 <Tooltip title="Save (Ctrl + S)">
                   <span>
-                    <LonelyIconButton disabled={synced || ruleset.id === null} onClick={props.saveArticle}>
+                    <LonelyIconButton disabled={synced || ruleset.id === null} onMouseDown={props.saveArticle}>
                       <SaveOutlinedIcon fontSize="small" />
                     </LonelyIconButton>
                   </span>

@@ -23,6 +23,7 @@ import keywordContentTemplate from '../pages/utils/exportTemplates/keywordConten
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { editRulesetTags } from './tags';
+import _ from 'lodash';
 dayjs.extend(utc);
 import paragraphPartial from '../pages/utils/exportTemplates/topLevelBlocks/p';
 import h6Partial from '../pages/utils/exportTemplates/topLevelBlocks/h6';
@@ -177,7 +178,7 @@ export function sortRuleset(ruleset) {
 }
 
 export async function saveRuleset(ruleset) {
-  const newRuleset = Object.assign({}, ruleset);
+  const newRuleset = _.cloneDeep(ruleset);
   // Separate the articles into the ones that were created locally and not saved, the ones
   // that have been changed locally but not saved, and the ones that haven't been changed
   // from the version on the database, and the ones that have been deleted. Then save them as appropriate.
@@ -243,6 +244,19 @@ export async function saveRuleset(ruleset) {
   return newRuleset;
 }
 
+export function getAncestry(startId, articles) {
+  let article = findArticleInRuleset(startId, articles);
+
+  const ancestors = [];
+
+  while (article?.parent) {
+    article = findArticleInRuleset(article.parent, articles);
+    ancestors.push(article);
+  }
+
+  return ancestors.filter((ancestor) => ancestor != null);
+}
+
 export async function getPublicRulesets(searchString, page, perPage) {
   const tokens = searchString.split(' ');
   const userSearch = tokens.filter((token) => token.startsWith('user:')).map((token) => token.replace('user:', ''));
@@ -258,7 +272,6 @@ export async function updateRulesetMetadata(rulesetData) {
   const datawithdate = await Promise.all(
     rulesetData.map(async (ruleset) => {
       const { tags, ...rest } = ruleset;
-      console.log(tags);
       if (tags?.length) await editRulesetTags(ruleset.id, tags);
       return { ...rest, last_modified: dayjs.utc().format() };
     })
@@ -271,6 +284,8 @@ export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
   const { articles, keywords } = ruleset;
   const sortedKeywords = sortKeywords(keywords);
   const otherArticles = sortArticles(articles.flatMap((article) => treeToArray(article)));
+  const exportedRuleset = _.cloneDeep(ruleset);
+  exportedRuleset.articles = buildArticleTree(otherArticles);
   Handlebars.registerPartial('article-content', articleContentTemplate);
   Handlebars.registerPartial('block-content', blockContentTemplate);
   Handlebars.registerPartial('toc-entry', tocEntry);
@@ -313,7 +328,7 @@ export async function serializeRuleset(ruleset, showDark, theme = 'cherry') {
   const blob = new Blob(
     [
       template({
-        ruleset: ruleset,
+        ruleset: exportedRuleset,
         articles: otherArticles,
         keywords: sortedKeywords,
         articleCssUrl: articleCssUrl,

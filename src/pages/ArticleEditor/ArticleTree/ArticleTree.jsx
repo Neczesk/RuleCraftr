@@ -6,14 +6,18 @@ import { TreeView } from '@mui/lab';
 import useRulesetStore from '../../../stores/rulesetStore';
 import { Menu, MenuItem, Paper, Toolbar, useTheme } from '@mui/material';
 import { findArticleInRuleset, addArticle, removeArticle } from '../../../data/rulesets';
-import { createArticle } from '../../../data/articles';
+import { changeSort, createArticle } from '../../../data/articles';
 import SplitButton from '../../utils/SplitButton';
 import ThemedTreeItem from '../utils/ThemedTreeItem';
 import { ColorModeContext } from '../../App';
+import ArticleMetadataDialog from './ArticleMetadataDialog';
+import ReparentDialog from './ReparentDialog';
+import DuplicateDialog from './DuplicateDialog';
 
 function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
+  const setSingleArticle = useRulesetStore((state) => state.setSingleArticle);
   const onAddChild = (parentId, sort = 9999) => {
     const parentArticle = findArticleInRuleset(parentId, ruleset.articles);
     const newArticle = createArticle(ruleset.id, parentArticle ? parentArticle.id : null, sort);
@@ -43,8 +47,7 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
             event.stopPropagation();
             handleContextMenuOpen(event, article.id);
           }}
-          articleId={article?.id}
-          label={article.title + (article.synched ? '' : '*')}
+          article={article}
         >
           {article.childrenArticles?.length && !article.childrenArticles.every((article) => article.deleted)
             ? article.childrenArticles.map((article) => renderArticle(article))
@@ -114,8 +117,20 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
     },
   ];
 
+  const [metadataDialogAnchor, setMetadataDialogAnchor] = useState(null);
+  const [reparentDialogAnchor, setReparentDialogAnchor] = useState(null);
+  const [duplicateDialogAnchor, setDuplicateDialogAnchor] = useState(null);
   return (
     <>
+      <DuplicateDialog
+        anchorId={duplicateDialogAnchor}
+        onClose={() => setDuplicateDialogAnchor(null)}
+      ></DuplicateDialog>
+      <ReparentDialog anchorId={reparentDialogAnchor} onClose={() => setReparentDialogAnchor(null)}></ReparentDialog>
+      <ArticleMetadataDialog
+        metadataDialogAnchor={metadataDialogAnchor}
+        onClose={() => setMetadataDialogAnchor(null)}
+      ></ArticleMetadataDialog>
       <Paper
         sx={{
           ...sx,
@@ -148,7 +163,8 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
           defaultExpandIcon={<ChevronRightIcon />}
           sx={{ overflow: 'auto' }}
           onNodeSelect={(event, id) => {
-            onArticleSelect(id);
+            const article = findArticleInRuleset(id, ruleset.articles);
+            if (!article.is_folder) onArticleSelect(id);
           }}
           selected={selectedNode}
         >
@@ -197,6 +213,99 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
           }}
         >
           Add Sibling
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setReparentDialogAnchor(menuCurrentArticleId);
+            handleContextMenuClose();
+          }}
+        >
+          Move Article
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setDuplicateDialogAnchor(menuCurrentArticleId);
+            handleContextMenuClose();
+          }}
+        >
+          Duplicate Article
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const movingArticle = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
+            if (movingArticle) {
+              const parentArticle = findArticleInRuleset(movingArticle.parent, ruleset.articles);
+              const sortedArticles = changeSort(
+                parentArticle ? parentArticle.childrenArticles : ruleset.articles,
+                movingArticle.id,
+                'up'
+              );
+              if (!sortedArticles) return;
+              const movingIndex = sortedArticles.findIndex((article) => article.id === menuCurrentArticleId);
+              if (movingIndex.sort !== 0) {
+                const movingArticle = sortedArticles[movingIndex];
+                const swappedArticle = sortedArticles[movingIndex + 1];
+                setSingleArticle(movingArticle.id, movingArticle);
+                setSingleArticle(swappedArticle.id, swappedArticle);
+              }
+            }
+          }}
+        >
+          Sort Up
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const movingArticle = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
+            if (movingArticle) {
+              const parentArticle = findArticleInRuleset(movingArticle.parent, ruleset.articles);
+              const sortedArticles = changeSort(
+                parentArticle ? parentArticle.childrenArticles : ruleset.articles,
+                movingArticle.id,
+                'down'
+              );
+              if (!sortedArticles) return;
+              const movingIndex = sortedArticles.findIndex((article) => article.id === menuCurrentArticleId);
+              console.log(movingIndex);
+              if (movingIndex.sort < sortedArticles.length - 1) {
+                const movingArticle = sortedArticles[movingIndex];
+                const swappedArticle = sortedArticles[movingIndex - 1];
+                setSingleArticle(movingArticle.id, movingArticle);
+                setSingleArticle(swappedArticle.id, swappedArticle);
+              }
+            }
+          }}
+        >
+          Sort Down
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setMetadataDialogAnchor(menuCurrentArticleId);
+            handleContextMenuClose();
+          }}
+        >
+          Edit Article Metadata
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const article = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
+            if (article) {
+              article.no_export = !article.no_export;
+              setSingleArticle(menuCurrentArticleId, article);
+            }
+          }}
+        >
+          Toggle Export
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            const article = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
+            if (article) {
+              article.is_folder = !article.is_folder;
+              setSingleArticle(menuCurrentArticleId, article);
+            }
+          }}
+        >
+          Toggle Folder
         </MenuItem>
         <MenuItem
           onClick={() => {
