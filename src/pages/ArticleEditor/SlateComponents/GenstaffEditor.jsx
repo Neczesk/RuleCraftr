@@ -198,7 +198,7 @@ export const useGenstaff = (
       event.preventDefault();
       RulesetEditor.changeStyle(editor, 'paragraph');
     }
-    if (event.code === 'keyU' && event.ctrlKey && !event.shiftKey) {
+    if (event.key === 'u' && event.ctrlKey && !event.shiftKey) {
       event.preventDefault();
       RulesetEditor.toggleUnderlineMark(editor);
     }
