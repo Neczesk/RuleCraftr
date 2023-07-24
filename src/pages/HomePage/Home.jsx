@@ -98,7 +98,7 @@ function Home() {
               <TimelineItem>
                 <TimelineOppositeContent>Alpha 3</TimelineOppositeContent>
                 <TimelineSeparator>
-                  <TimelineDot />
+                  <TimelineDot color="success" />
                   <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>First article navigation overhaul</TimelineContent>
@@ -108,8 +108,17 @@ function Home() {
                 <TimelineOppositeContent>Alpha 4</TimelineOppositeContent>
                 <TimelineSeparator>
                   <TimelineDot />
+                  <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>First data storage overhaul</TimelineContent>
+              </TimelineItem>
+
+              <TimelineItem>
+                <TimelineOppositeContent>Alpha 5</TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot />
+                </TimelineSeparator>
+                <TimelineContent>Formatted Copy/Paste Operations</TimelineContent>
               </TimelineItem>
             </Timeline>
             The app is far from complete yet, but the feedback from alpha testers is invaluable to developing it

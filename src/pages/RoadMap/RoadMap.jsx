@@ -13,35 +13,25 @@ function RoadMap() {
         <Card>
           <CardHeader title={currentVersion} />
           <CardContent>
-            This is the second public release of RuleCrafter. These are the currently known issues:
+            This is the third public release of RuleCrafter. These are the currently known issues:
             <ul>
               <li>The editor is not mobile friendly. Unfortunately that will not become a priority for some time.</li>
               <li>Copying and pasting formatted text does not work as intended.</li>
               <li>In particular this means copying and pasting tables and lists</li>
-            </ul>
-            The most recent update added several badly needed features to the article content editor, including adding
-            support for tables, ordered and unordered lists, and undo and redo support. There may still be bugs in these
-            features so if you find one let me know! There are certainly other bugs and issues that I do not know about,
-            so if you find one please join us on Discord and let me know about them!
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader title="Alpha 3: Article Tree Overhaul" />
-          <CardContent>
-            The second alpha update will overhaul the article tree. The interface is likely to be updated, but most
-            importantly the following features will be added:
-            <ul>
-              <li>Organizing your articles into folders</li>
               <li>
-                Designating articles as non-export, meaning that they won&apos;t be added to the export version of the
-                ruleset.
+                The context menus (right click menus) do not work as I would like, but I am still searching for ways to
+                improve them. In the meantime they are still fully functional.
               </li>
-              <li>Re-ordering articles and moving them to different parent articles</li>
             </ul>
-            Further ideas for features of the article tree may be added as well as the update approaches. If you have
-            any ideas, contact me on discord and let me know!
+            The most recent updates added several badly needed features to the article content editor, including adding
+            support for tables, ordered and unordered lists, and undo and redo support. In addition the article tree has
+            been greatly expanded in functionality, allowing you to reparent and duplicate articles, mark articles as
+            either exported or non exported, and use articles as folders. There may still be bugs in these features so
+            if you find one let me know! There are certainly other bugs and issues that I do not know about, so if you
+            find one please join us on Discord and let me know about them too!
           </CardContent>
         </Card>
+
         <Card>
           <CardHeader title="Alpha 4: The Boring Update" />
           <CardContent>
@@ -63,6 +53,15 @@ function RoadMap() {
             to get fully formatted copy and paste to work. Simple text copying and pasting already works fine. If you
             have further suggestions as to what the editor needs to be useful for your project, please join us on
             Discord!
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader title="Alpha 6: Clean up for Beta 1" />
+          <CardContent>
+            After update 5, I believe the editor will be fit for purpose in terms of features. To prepare for a beta
+            release I will be taking time to clean up bugs found during other updates and user feedback, and assessing
+            if there are any other features that do need to be added. This update is not fully planned yet so if you
+            have feedback, please contact me!
           </CardContent>
         </Card>
       </Stack>
