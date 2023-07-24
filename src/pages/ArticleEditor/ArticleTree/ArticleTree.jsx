@@ -1,58 +1,36 @@
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TreeView } from '@mui/lab';
 import useRulesetStore from '../../../stores/rulesetStore';
-import { Menu, MenuItem, Paper, Toolbar, useTheme } from '@mui/material';
+import { Paper, Toolbar, useTheme } from '@mui/material';
 import { findArticleInRuleset, addArticle, removeArticle } from '../../../data/rulesets';
-import { changeSort, createArticle } from '../../../data/articles';
+import { createArticle } from '../../../data/articles';
 import SplitButton from '../../utils/SplitButton';
-import ThemedTreeItem from '../utils/ThemedTreeItem';
-import { ColorModeContext } from '../../App';
 import ArticleMetadataDialog from './ArticleMetadataDialog';
 import ReparentDialog from './ReparentDialog';
 import DuplicateDialog from './DuplicateDialog';
+import ArticleTreeItem from './ArticleTreeItem';
+import ArticleTreeContextMenu from './ArticleTreeContextMenu';
 
 function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
-  const setSingleArticle = useRulesetStore((state) => state.setSingleArticle);
-  const onAddChild = (parentId, sort = 9999) => {
-    const parentArticle = findArticleInRuleset(parentId, ruleset.articles);
-    const newArticle = createArticle(ruleset.id, parentArticle ? parentArticle.id : null, sort);
-    setRuleset(addArticle(parentArticle ? parentArticle.id : null, ruleset, newArticle));
-    onArticleSelect(newArticle.id);
-  };
   const onRemoveArticle = (articleId) => {
     setRuleset(removeArticle(articleId, ruleset));
   };
 
   const theme = useTheme();
-  const colorModeContext = useContext(ColorModeContext);
 
   const renderArticle = (article) => {
     if (!article.deleted) {
       return (
-        <ThemedTreeItem
-          key={article?.id}
-          color={colorModeContext.colorMode === 'dark' ? theme.palette.common.white : theme.palette.common.black}
-          bgColor={
-            colorModeContext.colorMode === 'dark'
-              ? theme.palette.primaryContainer.light
-              : theme.palette.primaryContainer.dark
-          }
-          onContextMenu={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            handleContextMenuOpen(event, article.id);
-          }}
-          article={article}
-        >
+        <ArticleTreeItem article={article} nodeId={article.id} key={article.id} onContextMenu={handleContextMenuOpen}>
           {article.childrenArticles?.length && !article.childrenArticles.every((article) => article.deleted)
             ? article.childrenArticles.map((article) => renderArticle(article))
             : null}
-        </ThemedTreeItem>
+        </ArticleTreeItem>
       );
     } else return null;
   };
@@ -64,6 +42,7 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   });
 
   const handleContextMenuOpen = (event, id) => {
+    event.preventDefault();
     setMenuAnchorPosition({ top: event.clientY, left: event.clientX });
     setMenuAnchor(id);
   };
@@ -80,8 +59,8 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
         const article = findArticleInRuleset(selectedNode, ruleset.articles);
         const [lastChild] = article.childrenArticles?.length ? article.childrenArticles.slice(-1) : [];
         const newSort = lastChild ? lastChild.sort + 1 : 1;
-        onAddChild(findArticleInRuleset(selectedNode, ruleset.articles).id, newSort);
-        handleContextMenuClose();
+        const newArticle = createArticle(ruleset.id, article.id, newSort);
+        addArticle(newArticle);
       },
     },
     {
@@ -100,8 +79,8 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
             });
           }
         }
-        onAddChild(article.parent, newSort);
-        handleContextMenuClose();
+        const newArticle = createArticle(ruleset.id, parentArticle?.id ? parentArticle.id : null, newSort);
+        addArticle(newArticle);
       },
     },
     {
@@ -122,6 +101,16 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   const [duplicateDialogAnchor, setDuplicateDialogAnchor] = useState(null);
   return (
     <>
+      <ArticleTreeContextMenu
+        menuAnchorPosition={menuAnchorPosition}
+        menuCurrentArticleId={menuCurrentArticleId}
+        onClose={handleContextMenuClose}
+        setReparentDialogAnchor={setReparentDialogAnchor}
+        setDuplicateDialogAnchor={setDuplicateDialogAnchor}
+        setMetadataDialogAnchor={setMetadataDialogAnchor}
+        onRemoveArticle={onRemoveArticle}
+        onArticleSelect={onArticleSelect}
+      />
       <DuplicateDialog
         anchorId={duplicateDialogAnchor}
         onClose={() => setDuplicateDialogAnchor(null)}
@@ -151,7 +140,8 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
               const sortedRoots = ruleset.articles.sort((a, b) => a.sort - b.sort);
               const highestCurrentSort = sortedRoots.length ? sortedRoots[sortedRoots.length - 1].sort : 1;
               const newSort = highestCurrentSort + 1;
-              onAddChild(null, newSort);
+              const newArticle = createArticle(ruleset.id, null, newSort);
+              addArticle(newArticle);
             }}
             mainActionLabel="Add Root Article"
             functionalities={functionalities}
@@ -173,151 +163,6 @@ function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
             : null}
         </TreeView>
       </Paper>
-
-      <Menu
-        anchorReference="anchorPosition"
-        anchorPosition={menuAnchorPosition}
-        open={Boolean(menuCurrentArticleId)}
-        onClose={handleContextMenuClose}
-      >
-        <MenuItem
-          onClick={() => {
-            const article = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
-            const [lastChild] = article.childrenArticles?.length ? article.childrenArticles.slice(-1) : [];
-            const newSort = lastChild ? lastChild.sort + 1 : 1;
-            onAddChild(findArticleInRuleset(menuCurrentArticleId, ruleset.articles).id, newSort);
-            handleContextMenuClose();
-          }}
-        >
-          Add Child
-        </MenuItem>
-        <MenuItem
-          // When adding a sibling, sort is equal to the target article + 1. If other articles have this sort
-          // or higher, implement them by one. This makes a sibling appear directly after the target in the sort order
-          onClick={() => {
-            const article = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
-            const newSort = article ? article.sort + 1 : 1;
-            const parentArticle = findArticleInRuleset(article.parent, ruleset.articles);
-            if (parentArticle) {
-              if (
-                parentArticle.childrenArticles &&
-                parentArticle.childrenArticles.some((article) => article.sort >= newSort)
-              ) {
-                parentArticle.childrenArticles.forEach((article) => {
-                  if (article.sort >= newSort) article.sort += 1;
-                });
-              }
-            }
-            onAddChild(article.parent, newSort);
-            handleContextMenuClose();
-          }}
-        >
-          Add Sibling
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setReparentDialogAnchor(menuCurrentArticleId);
-            handleContextMenuClose();
-          }}
-        >
-          Move Article
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setDuplicateDialogAnchor(menuCurrentArticleId);
-            handleContextMenuClose();
-          }}
-        >
-          Duplicate Article
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            const movingArticle = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
-            if (movingArticle) {
-              const parentArticle = findArticleInRuleset(movingArticle.parent, ruleset.articles);
-              const sortedArticles = changeSort(
-                parentArticle ? parentArticle.childrenArticles : ruleset.articles,
-                movingArticle.id,
-                'up'
-              );
-              if (!sortedArticles) return;
-              const movingIndex = sortedArticles.findIndex((article) => article.id === menuCurrentArticleId);
-              if (movingIndex.sort !== 0) {
-                const movingArticle = sortedArticles[movingIndex];
-                const swappedArticle = sortedArticles[movingIndex + 1];
-                setSingleArticle(movingArticle.id, movingArticle);
-                setSingleArticle(swappedArticle.id, swappedArticle);
-              }
-            }
-          }}
-        >
-          Sort Up
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            const movingArticle = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
-            if (movingArticle) {
-              const parentArticle = findArticleInRuleset(movingArticle.parent, ruleset.articles);
-              const sortedArticles = changeSort(
-                parentArticle ? parentArticle.childrenArticles : ruleset.articles,
-                movingArticle.id,
-                'down'
-              );
-              if (!sortedArticles) return;
-              const movingIndex = sortedArticles.findIndex((article) => article.id === menuCurrentArticleId);
-              console.log(movingIndex);
-              if (movingIndex.sort < sortedArticles.length - 1) {
-                const movingArticle = sortedArticles[movingIndex];
-                const swappedArticle = sortedArticles[movingIndex - 1];
-                setSingleArticle(movingArticle.id, movingArticle);
-                setSingleArticle(swappedArticle.id, swappedArticle);
-              }
-            }
-          }}
-        >
-          Sort Down
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setMetadataDialogAnchor(menuCurrentArticleId);
-            handleContextMenuClose();
-          }}
-        >
-          Edit Article Metadata
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            const article = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
-            if (article) {
-              article.no_export = !article.no_export;
-              setSingleArticle(menuCurrentArticleId, article);
-            }
-          }}
-        >
-          Toggle Export
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            const article = findArticleInRuleset(menuCurrentArticleId, ruleset.articles);
-            if (article) {
-              article.is_folder = !article.is_folder;
-              setSingleArticle(menuCurrentArticleId, article);
-            }
-          }}
-        >
-          Toggle Folder
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onRemoveArticle(menuCurrentArticleId);
-            const newSelection = findArticleInRuleset(menuCurrentArticleId, ruleset.articles)?.parent;
-            onArticleSelect(newSelection);
-            handleContextMenuClose();
-          }}
-        >
-          Delete Article
-        </MenuItem>
-      </Menu>
     </>
   );
 }

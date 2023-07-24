@@ -67,10 +67,9 @@ export function changeSort(articleArray, movingId, direction) {
 
 export function normalizeArticleSort(articleArray) {
   const articles = articleArray.sort((a, b) => a.sort - b.sort);
-  for (let i in articles) {
-    articles[i].sort = i;
-  }
-  return articles;
+  articles.forEach((article, index) => {
+    article.sort = index;
+  });
 }
 
 export async function getAllUsers() {
@@ -240,6 +239,7 @@ export function updateArticle(oldArticle, updateData) {
     newArticle.no_export = updateData.no_export !== undefined ? updateData.no_export : newArticle.no_export;
     newArticle.icon_name = updateData.icon_name !== undefined ? updateData.icon_name : newArticle.icon_name;
     newArticle.parent = updateData.parent !== undefined ? updateData.parent : newArticle.parent;
+    newArticle.sort = updateData.sort !== undefined ? updateData.sort : newArticle.sort;
   }
   return newArticle;
 }

@@ -244,10 +244,11 @@ export async function saveRuleset(ruleset) {
   return newRuleset;
 }
 
-export function getAncestry(startId, articles) {
+export function getAncestry(startId, articles, inclusive = false) {
   let article = findArticleInRuleset(startId, articles);
 
   const ancestors = [];
+  if (inclusive) ancestors.push(article);
 
   while (article?.parent) {
     article = findArticleInRuleset(article.parent, articles);

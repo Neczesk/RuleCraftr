@@ -39,12 +39,14 @@ function DuplicateDialog(props) {
           <Typography variant="caption">Selected Article:</Typography>
           <Typography variant="body2">
             {(() => {
-              const ancestry = article ? getAncestry(selectedArticleId, ruleset.articles) : null;
+              const ancestry = article ? getAncestry(selectedArticleId, ruleset.articles, true) : null;
               const ancestryString = ancestry?.length
-                ? ancestry
+                ? 'Top Level > ' +
+                  ancestry
                     .reverse()
-                    .map((ancestor, index) => ancestor.title + (index < ancestry.length - 1 ? ' > ' : ''))
-                : 'Top Level';
+                    .map((ancestor) => ancestor.title + ' > ')
+                    .join('')
+                : 'Top Level > ';
               return ancestryString;
             })()}
           </Typography>
