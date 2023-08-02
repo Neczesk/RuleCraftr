@@ -268,7 +268,8 @@ def get_ruleset(id: int):
             body = ruleset
             return standard_response(body, 200)
         else:
-            if (current_user.is_authenticated()):
+            print(current_user.is_authenticated)
+            if (current_user.is_authenticated):
                 if (current_user.id == ruleset["user_id"]):
                     body = ruleset
                     return standard_response(body, 200)
@@ -279,7 +280,7 @@ def get_ruleset(id: int):
                     "Failure": "Not allowed to access a private ruleset unless logged in as the owner"}
                 return standard_response(body, 403)
     elif request.method == 'DELETE':
-        if (ruleset["user_id"] != current_user.id or not current_user.is_authenticated()):
+        if (ruleset["user_id"] != current_user.id or not current_user.is_authenticated):
             return standard_response({"Failure": "Can't delete ruleset belonging to someone else"}, 403)
         body = rulesets.delete_ruleset(id)
         return standard_response(body, 200)
@@ -348,7 +349,7 @@ def get_rulesets():
 def get_articles_for_ruleset(id):
     ruleset = rulesets.get_ruleset(id)
     if not ruleset["public"]:
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             user_id = current_user.id
             body = articles.get_articles_for_ruleset(id)
             if (len(body) == 0 or articles.validate_get_articles(body, user_id) or current_user.is_admin):
@@ -368,7 +369,7 @@ def get_articles_for_ruleset(id):
 def get_keywords_for_ruleset(id):
     ruleset = rulesets.get_ruleset(id)
     if not ruleset["public"]:
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             user_id = current_user.id
             body = keywords.get_keywords_for_ruleset(id)
             if (len(body) == 0 or keywords.validate_get_keywords(body, user_id) or current_user.is_admin):
