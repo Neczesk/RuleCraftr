@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { TreeView } from '@mui/lab';
 import useRulesetStore from '../../../stores/rulesetStore';
 import { Paper, Toolbar, useTheme } from '@mui/material';
-import { findArticleInRuleset, addArticle, removeArticle } from '../../../data/rulesets';
+import { findArticleInRuleset, removeArticle } from '../../../data/rulesets';
 import { createArticle } from '../../../data/articles';
 import SplitButton from '../../utils/SplitButton';
 import ArticleMetadataDialog from './ArticleMetadataDialog';
@@ -17,6 +17,7 @@ import ArticleTreeContextMenu from './ArticleTreeContextMenu';
 function ArticleTree({ onArticleSelect, selectedNode, elevation, sx }) {
   const ruleset = useRulesetStore((state) => state.ruleset);
   const setRuleset = useRulesetStore((state) => state.setRuleset);
+  const addArticle = useRulesetStore((state) => state.addArticle);
   const onRemoveArticle = (articleId) => {
     setRuleset(removeArticle(articleId, ruleset));
   };

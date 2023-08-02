@@ -261,16 +261,25 @@ def tags_endpoint(id: int):
 
 
 @app.route("/api/rulesets/<int:id>", methods=['GET', 'DELETE', 'OPTIONS'], strict_slashes=True)
-@login_required
 def get_ruleset(id: int):
     ruleset = rulesets.get_ruleset(id)
     if request.method == 'GET':
-        if (ruleset["user_id"] != current_user.id and not ruleset["public"]):
-            return standard_response({"Failure": "Can't access a private ruleset belonging to someone else"}, 403)
-        body = ruleset
-        return standard_response(body, 200)
+        if (ruleset["public"]):
+            body = ruleset
+            return standard_response(body, 200)
+        else:
+            if (current_user.is_authenticated()):
+                if (current_user.id == ruleset["user_id"]):
+                    body = ruleset
+                    return standard_response(body, 200)
+                else:
+                    return standard_response({"Failure": "Can't access a private ruleset belonging to someone else"}, 403)
+            else:
+                body = {
+                    "Failure": "Not allowed to access a private ruleset unless logged in as the owner"}
+                return standard_response(body, 403)
     elif request.method == 'DELETE':
-        if (ruleset["user_id"] != current_user.id):
+        if (ruleset["user_id"] != current_user.id or not current_user.is_authenticated()):
             return standard_response({"Failure": "Can't delete ruleset belonging to someone else"}, 403)
         body = rulesets.delete_ruleset(id)
         return standard_response(body, 200)
@@ -336,25 +345,43 @@ def get_rulesets():
 
 
 @app.route("/api/rulesets/<int:id>/articles", methods=['GET'])
-@login_required
 def get_articles_for_ruleset(id):
-    user_id = current_user.id
-    body = articles.get_articles_for_ruleset(id)
-    if (len(body) == 0 or articles.validate_get_articles(body, user_id) or current_user.is_admin):
-        return standard_response(body, 200)
+    ruleset = rulesets.get_ruleset(id)
+    if not ruleset["public"]:
+        if current_user.is_authenticated():
+            user_id = current_user.id
+            body = articles.get_articles_for_ruleset(id)
+            if (len(body) == 0 or articles.validate_get_articles(body, user_id) or current_user.is_admin):
+                return standard_response(body, 200)
+            else:
+                return standard_response({"Failure": "Not allowed to access articles from another ruleset"}, 403)
+        else:
+            body = {
+                "Failure": "You must be logged in as the owner to access the articles of a private ruleset"}
+            return standard_response(body, 403)
     else:
-        return standard_response({"Failure": "Not allowed to access articles from another ruleset"}, 403)
+        body = articles.get_articles_for_ruleset(id)
+        return standard_response(body, 200)
 
 
 @app.route("/api/rulesets/<int:id>/keywords", methods=['GET'])
-@login_required
 def get_keywords_for_ruleset(id):
-    user_id = current_user.id
-    body = keywords.get_keywords_for_ruleset(id)
-    if (len(body) == 0 or keywords.validate_get_keywords(body, user_id) or current_user.is_admin):
-        return standard_response(body, 200)
+    ruleset = rulesets.get_ruleset(id)
+    if not ruleset["public"]:
+        if current_user.is_authenticated():
+            user_id = current_user.id
+            body = keywords.get_keywords_for_ruleset(id)
+            if (len(body) == 0 or keywords.validate_get_keywords(body, user_id) or current_user.is_admin):
+                return standard_response(body, 200)
+            else:
+                return standard_response({"Failure": "Not allowed to access keywords from another ruleset"}, 403)
+        else:
+            body = {
+                "Failure": "You must be logged in as the owner to access the keywords of a private ruleset"}
+            return standard_response(body, 403)
     else:
-        return standard_response({"Failure": "Not allowed to access keywords from another ruleset"}, 403)
+        body = keywords.get_keywords_for_ruleset(id)
+        return standard_response(body, 200)
 
 
 @app.route("/api/articles", methods=['POST', 'OPTIONS', 'PUT', 'DELETE'])
